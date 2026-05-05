@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../Social.Data/Social.Data.csproj" Id="920a1a04-6cc0-414f-8077-f2bc06d7c1a0" />
+  <Project Path="../Social.WebApi/Social.WebApi.csproj" Id="c71402e5-01c2-4187-b316-ac40af71a0de" />
+</Solution>
