@@ -15,12 +15,13 @@ namespace Social.Data.Migrations.Social
                 name: "app_social");
 
             migrationBuilder.CreateTable(
-                name: "recordstatuses",
+                name: "record_status",
                 schema: "app_social",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "integer", nullable: false),
                     status_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -28,7 +29,7 @@ namespace Social.Data.Migrations.Social
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_recordstatuses", x => x.id);
+                    table.PrimaryKey("pk_record_status", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,6 +47,7 @@ namespace Social.Data.Migrations.Social
                     storage_type = table.Column<int>(type: "integer", nullable: false),
                     is_public = table.Column<bool>(type: "boolean", nullable: false),
                     file_version = table.Column<bool>(type: "boolean", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -56,10 +58,10 @@ namespace Social.Data.Migrations.Social
                 {
                     table.PrimaryKey("pk_files", x => x.id);
                     table.ForeignKey(
-                        name: "fk_files_recordstatuses_reccord_status_id",
+                        name: "fk_files_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -71,6 +73,7 @@ namespace Social.Data.Migrations.Social
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     hash_tag_name = table.Column<string>(type: "text", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -81,10 +84,10 @@ namespace Social.Data.Migrations.Social
                 {
                     table.PrimaryKey("pk_hash_tags", x => x.id);
                     table.ForeignKey(
-                        name: "fk_hash_tags_recordstatuses_reccord_status_id",
+                        name: "fk_hash_tags_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -112,6 +115,7 @@ namespace Social.Data.Migrations.Social
                     phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     otp = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     otp_expiration_date_unix = table.Column<long>(type: "bigint", nullable: true),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -122,10 +126,10 @@ namespace Social.Data.Migrations.Social
                 {
                     table.PrimaryKey("pk_users", x => x.id);
                     table.ForeignKey(
-                        name: "fk_users_recordstatuses_reccord_status_id",
+                        name: "fk_users_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -143,6 +147,7 @@ namespace Social.Data.Migrations.Social
                     file_type = table.Column<int>(type: "integer", nullable: false),
                     file_size = table.Column<long>(type: "bigint", nullable: false),
                     storage_path = table.Column<string>(type: "text", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -160,10 +165,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_file_version_recordstatuses_reccord_status_id",
+                        name: "fk_file_version_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -184,6 +189,7 @@ namespace Social.Data.Migrations.Social
                     is_edit = table.Column<bool>(type: "boolean", nullable: false),
                     is_delete = table.Column<bool>(type: "boolean", nullable: false),
                     original_post_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -200,10 +206,10 @@ namespace Social.Data.Migrations.Social
                         principalTable: "posts",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "fk_posts_recordstatuses_reccord_status_id",
+                        name: "fk_posts_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -225,6 +231,7 @@ namespace Social.Data.Migrations.Social
                     file_id = table.Column<Guid>(type: "uuid", nullable: false),
                     file_type = table.Column<int>(type: "integer", nullable: false),
                     is_primary = table.Column<bool>(type: "boolean", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -242,10 +249,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_user_files_recordstatuses_reccord_status_id",
+                        name: "fk_user_files_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -270,6 +277,7 @@ namespace Social.Data.Migrations.Social
                     date_of_birth = table.Column<DateTime>(type: "timestamp without time zone", maxLength: 50, nullable: false),
                     gender = table.Column<int>(type: "integer", nullable: false),
                     address = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -280,10 +288,10 @@ namespace Social.Data.Migrations.Social
                 {
                     table.PrimaryKey("pk_user_profile", x => x.id);
                     table.ForeignKey(
-                        name: "fk_user_profile_recordstatuses_reccord_status_id",
+                        name: "fk_user_profile_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -305,6 +313,7 @@ namespace Social.Data.Migrations.Social
                     following_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     relation_type = table.Column<int>(type: "integer", nullable: false),
                     user_relation_status = table.Column<int>(type: "integer", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -315,10 +324,10 @@ namespace Social.Data.Migrations.Social
                 {
                     table.PrimaryKey("pk_user_relations", x => x.id);
                     table.ForeignKey(
-                        name: "fk_user_relations_recordstatuses_reccord_status_id",
+                        name: "fk_user_relations_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -351,6 +360,7 @@ namespace Social.Data.Migrations.Social
                     depth = table.Column<int>(type: "integer", nullable: false),
                     like_count = table.Column<int>(type: "integer", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -368,10 +378,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_post_comments_recordstatuses_reccord_status_id",
+                        name: "fk_post_comments_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -393,6 +403,7 @@ namespace Social.Data.Migrations.Social
                     file_id = table.Column<Guid>(type: "uuid", nullable: false),
                     file_type = table.Column<int>(type: "integer", nullable: false),
                     is_primary = table.Column<bool>(type: "boolean", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -417,10 +428,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_post_files_recordstatuses_reccord_status_id",
+                        name: "fk_post_files_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -433,6 +444,7 @@ namespace Social.Data.Migrations.Social
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     post_id = table.Column<Guid>(type: "uuid", nullable: false),
                     hash_tag_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -457,10 +469,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_post_hash_tags_recordstatuses_reccord_status_id",
+                        name: "fk_post_hash_tags_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -473,6 +485,7 @@ namespace Social.Data.Migrations.Social
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     post_id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -490,10 +503,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_post_likes_recordstatuses_reccord_status_id",
+                        name: "fk_post_likes_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -513,6 +526,7 @@ namespace Social.Data.Migrations.Social
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     post_id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -530,10 +544,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_post_saves_recordstatuses_reccord_status_id",
+                        name: "fk_post_saves_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -555,6 +569,7 @@ namespace Social.Data.Migrations.Social
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     positionx = table.Column<float>(type: "real", nullable: true),
                     positiony = table.Column<float>(type: "real", nullable: true),
+                    note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -572,10 +587,10 @@ namespace Social.Data.Migrations.Social
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_post_tags_recordstatuses_reccord_status_id",
+                        name: "fk_post_tags_record_status_reccord_status_id",
                         column: x => x.reccord_status_id,
                         principalSchema: "app_social",
-                        principalTable: "recordstatuses",
+                        principalTable: "record_status",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -867,9 +882,9 @@ namespace Social.Data.Migrations.Social
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_recordstatuses_created_by_user_id",
+                name: "ix_record_status_created_by_user_id",
                 schema: "app_social",
-                table: "recordstatuses",
+                table: "record_status",
                 column: "created_by_user_id");
 
             migrationBuilder.CreateIndex(
@@ -1033,7 +1048,7 @@ namespace Social.Data.Migrations.Social
                 schema: "app_social");
 
             migrationBuilder.DropTable(
-                name: "recordstatuses",
+                name: "record_status",
                 schema: "app_social");
         }
     }

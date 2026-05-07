@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Social.Data.Model.Base
 {
+    [Table("record_status")]
     public class RecordStatus : BaseModel
     {
         public enum Status

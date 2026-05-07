@@ -21,11 +21,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.7" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.1" />
+    <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="10.105.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Seed\Data\" />
-    <Folder Include="Seed\Models\Base\" />
     <Folder Include="Seed\Scripts\Base\" />
 	<None Update="appsettings.json">
 		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

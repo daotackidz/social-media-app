@@ -12,7 +12,7 @@ using Social.Data.Repository;
 namespace Social.Data.Migrations.Social
 {
     [DbContext(typeof(SocialDbContext))]
-    [Migration("20260507052931_InitialDb")]
+    [Migration("20260507081145_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -49,6 +49,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("integer")
                         .HasColumnName("display_order");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<string>("StatusName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -57,12 +61,12 @@ namespace Social.Data.Migrations.Social
                         .HasColumnOrder(1);
 
                     b.HasKey("Id")
-                        .HasName("pk_recordstatuses");
+                        .HasName("pk_record_status");
 
                     b.HasIndex("CreatedByUserId")
-                        .HasDatabaseName("ix_recordstatuses_created_by_user_id");
+                        .HasDatabaseName("ix_record_status_created_by_user_id");
 
-                    b.ToTable("recordstatuses", "app_social");
+                    b.ToTable("record_status", "app_social");
                 });
 
             modelBuilder.Entity("Social.Data.Model.File.FileVersion", b =>
@@ -119,6 +123,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("integer")
                         .HasColumnName("file_type")
                         .HasColumnOrder(5);
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<int>("RecordStatusId")
                         .HasColumnType("integer")
@@ -201,6 +209,10 @@ namespace Social.Data.Migrations.Social
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean")
                         .HasColumnName("is_public");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<int>("RecordStatusId")
                         .HasColumnType("integer")
@@ -309,6 +321,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("hash_tag_name")
                         .HasColumnOrder(1);
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<int>("RecordStatusId")
                         .HasColumnType("integer")
                         .HasColumnName("reccord_status_id");
@@ -365,6 +381,10 @@ namespace Social.Data.Migrations.Social
                     b.Property<int>("LikeCount")
                         .HasColumnType("integer")
                         .HasColumnName("like_count");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<Guid?>("ParentID")
                         .HasColumnType("uuid")
@@ -447,6 +467,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("is_primary")
                         .HasColumnOrder(4);
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid")
                         .HasColumnName("post_id")
@@ -502,6 +526,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("hash_tag_id")
                         .HasColumnOrder(2);
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid")
                         .HasColumnName("post_id")
@@ -551,6 +579,10 @@ namespace Social.Data.Migrations.Social
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer")
                         .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid")
@@ -607,6 +639,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("integer")
                         .HasColumnName("display_order");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<Guid>("PostId")
                         .HasColumnType("uuid")
                         .HasColumnName("post_id")
@@ -661,6 +697,10 @@ namespace Social.Data.Migrations.Social
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("integer")
                         .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<float?>("PositionX")
                         .HasColumnType("real")
@@ -753,6 +793,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("integer")
                         .HasColumnName("like_count");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<Guid?>("OriginalPostId")
                         .HasColumnType("uuid")
                         .HasColumnName("original_post_id");
@@ -829,6 +873,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("boolean")
                         .HasColumnName("is_primary")
                         .HasColumnOrder(4);
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<int>("RecordStatusId")
                         .HasColumnType("integer")
@@ -918,6 +966,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("last_name")
                         .HasColumnOrder(4);
 
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
                     b.Property<int>("RecordStatusId")
                         .HasColumnType("integer")
                         .HasColumnName("reccord_status_id");
@@ -974,6 +1026,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("uuid")
                         .HasColumnName("following_user_id")
                         .HasColumnOrder(2);
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<int>("RecordStatusId")
                         .HasColumnType("integer")
@@ -1063,6 +1119,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("bigint")
                         .HasColumnName("key_reset_password_expiration_date_unix")
                         .HasColumnOrder(9);
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<string>("Otp")
                         .IsRequired()
@@ -1165,7 +1225,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_file_version_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_file_version_record_status_reccord_status_id");
 
                     b.Navigation("Files");
 
@@ -1179,7 +1239,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_files_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_files_record_status_reccord_status_id");
 
                     b.Navigation("RecordStatus");
                 });
@@ -1226,7 +1286,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_hash_tags_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_hash_tags_record_status_reccord_status_id");
 
                     b.Navigation("RecordStatus");
                 });
@@ -1245,7 +1305,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_post_comments_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_post_comments_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1282,7 +1342,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_post_files_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_post_files_record_status_reccord_status_id");
 
                     b.Navigation("Files");
 
@@ -1312,7 +1372,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_post_hash_tags_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_post_hash_tags_record_status_reccord_status_id");
 
                     b.Navigation("HashTags");
 
@@ -1335,7 +1395,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_post_likes_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_post_likes_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1365,7 +1425,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_post_saves_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_post_saves_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1395,7 +1455,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_post_tags_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_post_tags_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1423,7 +1483,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_posts_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_posts_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1453,7 +1513,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_files_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_user_files_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1476,7 +1536,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_profile_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_user_profile_record_status_reccord_status_id");
 
                     b.HasOne("Social.Data.Model.User.Users", "Users")
                         .WithMany()
@@ -1511,7 +1571,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_relations_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_user_relations_record_status_reccord_status_id");
 
                     b.Navigation("FollowerUsers");
 
@@ -1527,7 +1587,7 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("RecordStatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_users_recordstatuses_reccord_status_id");
+                        .HasConstraintName("fk_users_record_status_reccord_status_id");
 
                     b.Navigation("RecordStatus");
                 });

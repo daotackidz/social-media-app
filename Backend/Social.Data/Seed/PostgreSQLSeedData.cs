@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Social.Data.Model.Base;
+using Social.Data.Seed.Models.Base;
+using Social.Data.Seed.RepositorySeed;
 
 namespace Social.Data.Seed
 {
@@ -17,13 +20,11 @@ namespace Social.Data.Seed
 
             #region Data
 
-            //var schema = SocialSeedingDbContext.CalcDefaultSchemaName(dbContext);
+            var schema = SocialSeedingDbContext.GetDefaultSchemaName(dbContext);
 
-            //PostgreSqlSeedObject<RuleSeed, Rule>.Seed(dbContext, adminSchema);
+            PostgreSqlSeedObject<RecordStatusSeed, RecordStatus>.Seed(dbContext, schema);
 
             #endregion Data
-
-
         }
     }
 }

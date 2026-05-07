@@ -9,6 +9,10 @@ namespace Social.Data.Model.Base
     [Index(nameof(CreatedByUserId), IsUnique = false)]
     public class BaseModel : object
     {
+        [Column("note")]
+        [Display(Name = "Ghi chú")]
+        public string? Note { get; set; }
+
         [Column("display_order")]
         [Display(Name = "Thứ tự hiện thị")]
         public int DisplayOrder { get; set; } = SocialConstantValue.DefaultSystemId;

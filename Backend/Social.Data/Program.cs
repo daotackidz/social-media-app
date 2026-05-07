@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Social.Common.Constants;
 using Social.Data;
 using Social.Data.Repository;
+using Social.Data.Seed;
 
 Console.WriteLine("Data Seeding Starting !");
 
@@ -28,7 +29,7 @@ IHostBuilder CreateHostBuilder(string[] strings)
                 throw new ArgumentNullException(nameof(connectionString));
             }
             services.AddDbContext<SocialDbContext>(options => options.UseNpgsql(connectionString));
-
+            services.AddDbContext<SocialSeedingDbContext>(options => options.UseNpgsql(connectionString));
             services.AddScoped<IDbInitializer, DbInitializer>();
         });
 }

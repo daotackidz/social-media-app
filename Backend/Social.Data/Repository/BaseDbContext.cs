@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Social.Common.Constants;
 using Social.Common.Functions;
 
@@ -17,8 +18,9 @@ namespace Social.Data.Repository
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder
-                .UseLowerCaseNamingConvention();
+         => optionsBuilder
+             .UseNpgsql(x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, GetDefaultSchemaName()))
+             .UseLowerCaseNamingConvention();
 
         public static string GetDefaultSchemaName(DbContext db)
         {
