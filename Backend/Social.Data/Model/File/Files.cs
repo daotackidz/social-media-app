@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Social.Data.Model.File
 {
     [Table("files")]
-    public class Files : BaseCatalog
+    public class Files : BaseRecordModel
     {
         [Key]
         [Column("id", Order = 0)]

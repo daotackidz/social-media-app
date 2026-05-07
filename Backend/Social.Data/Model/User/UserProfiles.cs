@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Social.Data.Model.User
 {
     [Table("user_profile")]
-    public class UserProfiles : BaseCatalog
+    public class UserProfiles : BaseRecordModel
     {
         [Key]
         [Column("id", Order = 0)]
@@ -32,7 +32,7 @@ namespace Social.Data.Model.User
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
         public string LastName { get; set; }
 
-        [Column("last_name", Order = 5)]
+        [Column("date_of_birth", Order = 5)]
         [Display(Name = "Ngày sinh")]
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
         public DateTime DateOfBirth { get; set; }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Social.Data.Model.File
 {
     [Table("file_version")]
-    public class FileVersion : BaseCatalog
+    public class FileVersion : BaseRecordModel
     {
         [Key]
         [Column("id", Order = 0)]

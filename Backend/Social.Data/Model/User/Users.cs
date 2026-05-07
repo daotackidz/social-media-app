@@ -11,15 +11,15 @@ namespace Social.Data.Model.User
     [Index(nameof(HashText), nameof(UserName), nameof(PassWord), IsUnique = false)]
     [Index(nameof(Email), IsUnique = false)]
     [Index(nameof(PhoneNumber), IsUnique = false)]
-    public class Users : BaseCatalog
+    public class Users : BaseRecordModel
     {
-        public class UserIdConst
+        public enum UserType
         {
-            public const int DefaultSystem = SocialConstantValue.DefaultSystemId;
-            public const int Guest = 1;
-            public const int Dev = 2;
-            public const int Admin = 3;
-            public const int User = 4;
+            DefaultSystem = SocialConstantValue.DefaultSystemId,
+            Guest = 1,
+            Dev = 2,
+            Admin = 3,
+            User = 4
         }
 
         [Key]
@@ -44,7 +44,7 @@ namespace Social.Data.Model.User
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
         public required string PassWord { get; set; } = SocialConstant.DefaultPassword;
 
-        [Column("salt_password", Order = 2)]
+        [Column("salt_password", Order = 3)]
         [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
         public string SaltPassWord { get; set; }
 
@@ -77,15 +77,19 @@ namespace Social.Data.Model.User
         [Display(Name = "Thời gian hết hiệu lực mã reset mật khẩu")]
         public long? KeyResetPassWordExpirationDateUnix { get; set; } = 0;
 
-        [Column("token", Order = 9)]
+        [Column("token", Order = 10)]
         [Display(Name = "Token", Prompt = "Token")]
         [StringLength(maximumLength: SocialConstantsLengths.Length500, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [MaxLength(SocialConstantsLengths.Length500, ErrorMessage = "{0} quá dài")]
         public string Token { get; set; }
 
-        [Column("token_expiration_date_unix", Order = 10)]
+        [Column("token_expiration_date_unix", Order = 11)]
         [Display(Name = "Thời gian hết hiệu lực token")]
         public long? TokenExpirationDateUnix { get; set; } = 0;
+
+        [Column("user_type")]
+        [Display(Name = "Loại tài khoản")]
+        public UserType Type { get; set; } = UserType.Guest;
 
         [Column("is_verified")]
         [Display(Name = "Tài khoản đã xác thực")]

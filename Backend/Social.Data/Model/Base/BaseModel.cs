@@ -6,14 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Social.Data.Model.Base
 {
-    [Index(nameof(CreatedByUserId), nameof(StatusId), IsUnique = false)]
-    public class BaseCatalog : object
+    [Index(nameof(CreatedByUserId), IsUnique = false)]
+    public class BaseModel : object
     {
-        [Column("status_id")]
-        [Display(Name = "Trạng thái bản ghi")]
-        [DefaultValue(SocialStatusConstant.Active)]
-        [ForeignKey(nameof(StatusId))]
-        public int StatusId { get; set; } = SocialStatusConstant.Active;
+        [Column("display_order")]
+        [Display(Name = "Thứ tự hiện thị")]
+        public int DisplayOrder { get; set; } = SocialConstantValue.DefaultSystemId;
 
         [Column("created_by_user_id")]
         [Display(Name = "Người tạo")]

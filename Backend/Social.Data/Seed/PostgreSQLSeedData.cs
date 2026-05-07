@@ -17,7 +17,7 @@ namespace Social.Data.Seed
 
             #region Data
 
-            var schema = SocialSeedingDbContext.CalcDefaultSchemaName(dbContext);
+            //var schema = SocialSeedingDbContext.CalcDefaultSchemaName(dbContext);
 
             //PostgreSqlSeedObject<RuleSeed, Rule>.Seed(dbContext, adminSchema);
 

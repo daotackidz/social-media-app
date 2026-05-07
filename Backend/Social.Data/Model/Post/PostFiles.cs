@@ -4,15 +4,15 @@ using Social.Data.Model.File;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Social.Data.Model.User
+namespace Social.Data.Model.Post
 {
-    [Table("user_files")]
-    public class UserFiles : BaseRecordModel
+    [Table("post_files")]
+    public class PostFiles : BaseRecordModel
     {
-        public enum UserFileType
+        public enum PostFileType
         {
-            Avatar = 1,
-            CoverImage = 2,
+            Image = 1,
+            Video = 2,
             Document = 3,
             Attachment = 4
         }
@@ -23,22 +23,22 @@ namespace Social.Data.Model.User
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
-        [Column("user_id", Order = 1)]
-        public Guid UserId { get; set; }
+        [Column("post_id", Order = 1)]
+        public Guid PostId { get; set; }
 
         [Column("file_id", Order = 2)]
         public Guid FileId { get; set; }
 
         [Column("file_type", Order = 3)]
-        public UserFileType FileType { get; set; }
+        public PostFileType FileType { get; set; }
 
         [Column("is_primary", Order = 4)]
         public bool IsPrimary { get; set; }
 
         #region Related Tables
 
-        [ForeignKey(nameof(UserId))]
-        public Users? Users { get; set; }
+        [ForeignKey(nameof(PostId))]
+        public Posts? Posts { get; set; }
 
         [ForeignKey(nameof(FileId))]
         public Files? Files { get; set; }
