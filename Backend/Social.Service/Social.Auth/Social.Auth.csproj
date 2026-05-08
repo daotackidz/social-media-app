@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+	  <ProjectReference Include="..\..\Social.Data\Social.Data.csproj" />
+	  <ProjectReference Include="..\Social.Email\Social.Email.csproj" />
+  </ItemGroup>
+
 </Project>
