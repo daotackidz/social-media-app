@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Social.Services/">
+    <Project Path="../Social.Service/Social.JwtService/Social.JwtServices.csproj" Id="d37728d8-6887-4910-ae52-caffa53336f1" />
+  </Folder>
+  <Project Path="../Social.Common/Social.Common.csproj" />
+  <Project Path="../Social.Data/Social.Data.csproj" />
+  <Project Path="Social.WebApi.csproj" />
+</Solution>

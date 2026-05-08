@@ -25,17 +25,17 @@ namespace Social.Data.Model.User
         [Column("first_name", Order = 3)]
         [Display(Name = "Họ")]
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [Column("last_name", Order = 4)]
         [Display(Name = "Tên")]
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Column("date_of_birth", Order = 5)]
         [Display(Name = "Ngày sinh")]
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [Column("gender", Order = 6)]
         [Display(Name = "Giới tính")]
@@ -44,7 +44,7 @@ namespace Social.Data.Model.User
         [Column("address")]
         [Display(Name = "Địa chỉ")]
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         #region Related Tables
 

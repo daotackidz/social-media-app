@@ -39,14 +39,14 @@ namespace Social.Data.Model.User
         [Display(Name = "Mật khẩu", Prompt = "Mật khẩu")]
         [Required(ErrorMessage = "{0} không được để trống")]
         [PasswordPropertyText]
-        [StringLength(maximumLength: SocialConstantsLengths.Length50, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
+        [StringLength(maximumLength: SocialConstantsLengths.Length200, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [DataType(DataType.Password)]
-        [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
+        [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
         public required string PassWord { get; set; } = SocialConstant.DefaultPassword;
 
         [Column("salt_password", Order = 3)]
         [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
-        public string SaltPassWord { get; set; }
+        public string? SaltPassWord { get; set; }
 
         [Column("user_locked", Order = 4)]
         [Display(Name = "Khóa tài khoản")]
@@ -66,12 +66,12 @@ namespace Social.Data.Model.User
         [Column("hash_text", Order = 7)]
         [StringLength(maximumLength: SocialConstantsLengths.Length100, MinimumLength = SocialConstantsLengths.Length0, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [MaxLength(SocialConstantsLengths.Length1000, ErrorMessage = "{0} quá dài")]
-        public string HashText { get; set; }
+        public string? HashText { get; set; }
 
         [Column("key_reset_password", Order = 8)]
         [Display(Name = "Mã reset mật khẩu")]
         [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
-        public string KeyResetPassWord { get; set; }
+        public string? KeyResetPassWord { get; set; }
 
         [Column("key_reset_password_expiration_date_unix", Order = 9)]
         [Display(Name = "Thời gian hết hiệu lực mã reset mật khẩu")]
@@ -81,7 +81,7 @@ namespace Social.Data.Model.User
         [Display(Name = "Token", Prompt = "Token")]
         [StringLength(maximumLength: SocialConstantsLengths.Length500, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [MaxLength(SocialConstantsLengths.Length500, ErrorMessage = "{0} quá dài")]
-        public string Token { get; set; }
+        public string? Token { get; set; }
 
         [Column("token_expiration_date_unix", Order = 11)]
         [Display(Name = "Thời gian hết hiệu lực token")]
@@ -114,7 +114,7 @@ namespace Social.Data.Model.User
         [Display(Name = "Otp", Prompt = "Otp")]
         [StringLength(maximumLength: SocialConstantsLengths.Length100, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [MaxLength(SocialConstantsLengths.Length500, ErrorMessage = "{0} quá dài")]
-        public string Otp { get; set; }
+        public string? Otp { get; set; }
 
         [Column("otp_expiration_date_unix")]
         public long? OtpExpirationDateUnix { get; set; } = 0;
