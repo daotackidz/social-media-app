@@ -3,10 +3,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Social.Common.Handlers;
 using Social.Data.Model.Base;
+using Social.Data.Model.Request.Login;
 using Social.Data.Model.Response.Login;
 using Social.Data.Repository;
 using Social.Service.Social.Jwt.Interface;
-using Social.WebApi.Models.Api.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,7 +24,7 @@ namespace Social.Service.Social.Jwt.Services
             _dbContext = dbContext;
         }
 
-        public async Task<LoginResponseModel?> Authenticate(LoginRequestModel request)
+        public async Task<LoginResponse?> Authenticate(LoginRequest request)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Social.Service.Social.Jwt.Services
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                 var accessToken = tokenHandler.WriteToken(securityToken);
 
-                return new LoginResponseModel
+                return new LoginResponse
                 {
                     AccessToken = accessToken,
                     UserName = request.UserName,

@@ -19,9 +19,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Social.Common\Social.Common.csproj" />
-    <ProjectReference Include="..\Social.Services\Social.JwtService\Social.JwtServices.csproj" />
-    <ProjectReference Include="..\Social.Service\Social.JwtService\Social.JwtServices.csproj" />
-    <ProjectReference Include="..\Socical.Services\Social.AuthServices\Social.AuthServices.csproj" />
+    <ProjectReference Include="..\Social.Data\Social.Data.csproj" />
+    <ProjectReference Include="..\Social.Repository\Social.Repository.Social.User\Social.Repository.Social.User.csproj" />
+    <ProjectReference Include="..\Social.Service\Social.Service.Social.Auth\Social.Service.Social.Auth.csproj" />
+    <ProjectReference Include="..\Social.Service\Social.Service.Social.Email\Social.Service.Social.Email.csproj" />
+    <ProjectReference Include="..\Social.Service\Social.Service.Social.Jwt\Social.Service.Social.Jwt.csproj" />
   </ItemGroup>
 
 </Project>

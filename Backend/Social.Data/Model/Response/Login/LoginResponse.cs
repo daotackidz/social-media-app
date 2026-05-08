@@ -1,6 +1,6 @@
 ﻿namespace Social.Data.Model.Response.Login
 {
-    public class LoginResponseModel
+    public class LoginResponse
     {
         public string? UserName { get; set; }
         public string AccessToken { get; set; }

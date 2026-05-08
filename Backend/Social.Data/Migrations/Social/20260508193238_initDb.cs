@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Social.Data.Migrations.Social
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class initDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -93,27 +93,60 @@ namespace Social.Data.Migrations.Social
                 });
 
             migrationBuilder.CreateTable(
+                name: "user_pending_registrations",
+                schema: "app_social",
+                columns: table => new
+                {
+                    full_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    date_of_birth = table.Column<DateTime>(type: "timestamp without time zone", maxLength: 50, nullable: true),
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    password_hash = table.Column<string>(type: "text", nullable: false),
+                    user_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    otp_code = table.Column<string>(type: "text", nullable: false),
+                    expires_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    is_verified = table.Column<bool>(type: "boolean", nullable: false),
+                    note = table.Column<string>(type: "text", nullable: true),
+                    display_order = table.Column<int>(type: "integer", nullable: false),
+                    created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    create_datetime = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    create_datetime_unix = table.Column<long>(type: "bigint", nullable: false),
+                    reccord_status_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_user_pending_registrations", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_user_pending_registrations_record_status_reccord_status_id",
+                        column: x => x.reccord_status_id,
+                        principalSchema: "app_social",
+                        principalTable: "record_status",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "users",
                 schema: "app_social",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    password = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    salt_password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    password_hash = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    salt_password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     user_locked = table.Column<bool>(type: "boolean", nullable: false),
                     phone_number_comfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    email_comfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    hash_text = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    key_reset_password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    email_verified = table.Column<bool>(type: "boolean", nullable: false),
+                    hash_text = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    key_reset_password = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     key_reset_password_expiration_date_unix = table.Column<long>(type: "bigint", nullable: true),
-                    token = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    token = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     token_expiration_date_unix = table.Column<long>(type: "bigint", nullable: true),
                     user_type = table.Column<int>(type: "integer", nullable: false),
                     is_verified = table.Column<bool>(type: "boolean", nullable: true),
                     email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone_number = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    otp = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    otp = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     otp_expiration_date_unix = table.Column<long>(type: "bigint", nullable: true),
                     note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
@@ -272,11 +305,11 @@ namespace Social.Data.Migrations.Social
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     full_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    date_of_birth = table.Column<DateTime>(type: "timestamp without time zone", maxLength: 50, nullable: false),
+                    first_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    last_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    date_of_birth = table.Column<DateTime>(type: "timestamp without time zone", maxLength: 50, nullable: true),
                     gender = table.Column<int>(type: "integer", nullable: false),
-                    address = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    address = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     note = table.Column<string>(type: "text", nullable: true),
                     display_order = table.Column<int>(type: "integer", nullable: false),
                     created_by_user_id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -912,6 +945,18 @@ namespace Social.Data.Migrations.Social
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_user_pending_registrations_created_by_user_id",
+                schema: "app_social",
+                table: "user_pending_registrations",
+                column: "created_by_user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_pending_registrations_reccord_status_id",
+                schema: "app_social",
+                table: "user_pending_registrations",
+                column: "reccord_status_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_user_profile_created_by_user_id",
                 schema: "app_social",
                 table: "user_profile",
@@ -966,10 +1011,10 @@ namespace Social.Data.Migrations.Social
                 column: "email");
 
             migrationBuilder.CreateIndex(
-                name: "ix_users_hash_text_user_name_password",
+                name: "ix_users_hash_text_user_name_password_hash",
                 schema: "app_social",
                 table: "users",
-                columns: new[] { "hash_text", "user_name", "password" });
+                columns: new[] { "hash_text", "user_name", "password_hash" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_users_phone_number",
@@ -1017,6 +1062,10 @@ namespace Social.Data.Migrations.Social
 
             migrationBuilder.DropTable(
                 name: "user_files",
+                schema: "app_social");
+
+            migrationBuilder.DropTable(
+                name: "user_pending_registrations",
                 schema: "app_social");
 
             migrationBuilder.DropTable(

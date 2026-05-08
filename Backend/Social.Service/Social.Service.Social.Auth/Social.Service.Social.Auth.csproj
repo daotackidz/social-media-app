@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <ProjectReference Include="..\..\Social.Data\Social.Data.csproj" />
+	  <ProjectReference Include="..\..\Social.Repository\Social.Repository.Social.User\Social.Repository.Social.User.csproj" />
+	  <ProjectReference Include="..\Social.Service.Social.Email\Social.Service.Social.Email.csproj" />
+  </ItemGroup>
+
+</Project>

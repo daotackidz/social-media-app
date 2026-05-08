@@ -29,7 +29,7 @@ namespace Social.Data.Model.User
         public Guid Id { get; set; }
 
         [Column("user_name", Order = 1)]
-        [Display(Name = "Tên đăng nhập", Prompt = "abc,...")]
+        [Display(Name = "Tên người dùng", Prompt = "abc,...")]
         [Required(ErrorMessage = "{0} không được để trống")]
         [StringLength(maximumLength: SocialConstantsLengths.Length100, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [MaxLength(SocialConstantsLengths.Length100, ErrorMessage = "{0} quá dài")]

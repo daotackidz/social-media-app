@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Social.Service.Social.Email.Models;
 using Social.WebApi.Infrastructure.Extensions;
 using Social.WebApi.Installers;
 using System.Text;
@@ -72,6 +73,12 @@ builder.Services
 builder.Services.AddAppDbContext(builder.Configuration);
 
 builder.Services.InstallerServicesInAssemply(builder.Configuration);
+
+// Settings
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+builder.Services.Configure<OtpSettings>(
+    builder.Configuration.GetSection("OtpSettings"));
 
 var app = builder.Build();
 

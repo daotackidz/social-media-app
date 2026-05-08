@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Social.Data.Model.Request.Login;
 using Social.Data.Model.Response.Login;
-using Social.JwtServices.Interface;
-using Social.WebApi.Models.Api.Login;
+using Social.Service.Social.Jwt.Interface;
 
 namespace Social.WebApi.Controllers
 {
@@ -13,8 +13,8 @@ namespace Social.WebApi.Controllers
         private readonly IJwtService _jwtService = jwtService;
 
         [AllowAnonymous]
-        [HttpPost]
-        public async Task<ActionResult<LoginResponseModel>> Login(LoginRequestModel request)
+        [HttpPost("login")]
+        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
         {
             var result = await _jwtService.Authenticate(request);
 

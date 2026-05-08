@@ -12,8 +12,8 @@ using Social.Data.Repository;
 namespace Social.Data.Migrations.Social
 {
     [DbContext(typeof(SocialDbContext))]
-    [Migration("20260507081145_InitialDb")]
-    partial class InitialDb
+    [Migration("20260508193238_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -905,6 +905,89 @@ namespace Social.Data.Migrations.Social
                     b.ToTable("user_files", "app_social");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.User.UserPendingRegistrations", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasMaxLength(50)
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_of_birth")
+                        .HasColumnOrder(5);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("full_name")
+                        .HasColumnOrder(2);
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_verified");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<string>("OtpCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("otp_code");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("user_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_pending_registrations");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_user_pending_registrations_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_user_pending_registrations_reccord_status_id");
+
+                    b.ToTable("user_pending_registrations", "app_social");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.UserProfiles", b =>
                 {
                     b.Property<Guid>("Id")
@@ -913,7 +996,6 @@ namespace Social.Data.Migrations.Social
                         .HasColumnOrder(0);
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("address");
@@ -930,7 +1012,7 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("bigint")
                         .HasColumnName("create_datetime_unix");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasMaxLength(50)
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("date_of_birth")
@@ -941,7 +1023,6 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("display_order");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("first_name")
@@ -960,7 +1041,6 @@ namespace Social.Data.Migrations.Social
                         .HasColumnOrder(6);
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("last_name")
@@ -1092,13 +1172,12 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("character varying(100)")
                         .HasColumnName("email");
 
-                    b.Property<bool>("EmailConfirmed")
+                    b.Property<bool>("EmailVerified")
                         .HasColumnType("boolean")
-                        .HasColumnName("email_comfirmed")
+                        .HasColumnName("email_verified")
                         .HasColumnOrder(6);
 
                     b.Property<string>("HashText")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("hash_text")
@@ -1109,7 +1188,6 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("is_verified");
 
                     b.Property<string>("KeyResetPassWord")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("key_reset_password")
@@ -1125,7 +1203,6 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("note");
 
                     b.Property<string>("Otp")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("otp");
@@ -1134,11 +1211,11 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("bigint")
                         .HasColumnName("otp_expiration_date_unix");
 
-                    b.Property<string>("PassWord")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("password")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("password_hash")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PhoneNumber")
@@ -1156,14 +1233,12 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("reccord_status_id");
 
                     b.Property<string>("SaltPassWord")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("salt_password")
                         .HasColumnOrder(3);
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("token")
@@ -1205,8 +1280,8 @@ namespace Social.Data.Migrations.Social
                     b.HasIndex("RecordStatusId")
                         .HasDatabaseName("ix_users_reccord_status_id");
 
-                    b.HasIndex("HashText", "UserName", "PassWord")
-                        .HasDatabaseName("ix_users_hash_text_user_name_password");
+                    b.HasIndex("HashText", "UserName", "PasswordHash")
+                        .HasDatabaseName("ix_users_hash_text_user_name_password_hash");
 
                     b.ToTable("users", "app_social");
                 });
@@ -1527,6 +1602,18 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("RecordStatus");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.User.UserPendingRegistrations", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_pending_registrations_record_status_reccord_status_id");
+
+                    b.Navigation("RecordStatus");
                 });
 
             modelBuilder.Entity("Social.Data.Model.User.UserProfiles", b =>

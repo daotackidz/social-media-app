@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Social.WebApi.Models.Api.Login
+namespace Social.Data.Model.Request.Login
 {
-    public class LoginRequestModel
+    public class LoginRequest
     {
-        [Display(Name = "Tên đăng nhập", Prompt = "abc,...")]
+        [Display(Name = "Tên người dùng", Prompt = "abc,...")]
         [Required(ErrorMessage = "{0} không được để trống")]
         [StringLength(maximumLength: SocialConstantsLengths.Length100, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [MaxLength(SocialConstantsLengths.Length100, ErrorMessage = "{0} quá dài")]
