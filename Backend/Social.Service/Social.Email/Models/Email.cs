@@ -1,4 +1,4 @@
-﻿namespace Social.Email.Models
+﻿namespace Social.Service.Social.Email.Models
 {
     public class EmailSettings
     {

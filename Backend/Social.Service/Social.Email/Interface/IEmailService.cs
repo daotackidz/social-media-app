@@ -1,4 +1,4 @@
-﻿namespace Social.Email.Interface
+﻿namespace Social.Service.Social.Email.Interface
 {
     public interface IEmailService
     {

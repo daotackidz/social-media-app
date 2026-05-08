@@ -1,4 +1,4 @@
-﻿namespace Social.Auth.Interface
+﻿namespace Social.Service.Social.Auth.Interface
 {
     public interface IAuthService
     {

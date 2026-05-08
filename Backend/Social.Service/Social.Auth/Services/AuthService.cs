@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Social.Auth.Interface;
 using Social.Common.Handlers;
 using Social.Data.Model.Base;
 using Social.Data.Model.User;
 using Social.Data.Repository;
 using System.Security.Cryptography;
-using Social.Email.Models;
-using Social.Email.Interface;
+using Social.Service.Social.Auth.Interface;
+using Social.Service.Social.Email.Interface;
+using Social.Service.Social.Email.Models;
 
-namespace Social.Auth.Services
+namespace Social.Service.Social.Auth.Services
 {
     public class AuthService : IAuthService
     {

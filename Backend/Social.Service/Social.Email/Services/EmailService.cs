@@ -3,10 +3,10 @@ using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Social.Email.Interface;
-using Social.Email.Models;
+using Social.Service.Social.Email.Interface;
+using Social.Service.Social.Email.Models;
 
-namespace Social.Email.Services
+namespace Social.Service.Social.Email.Services
 {
     public class EmailService : IEmailService
     {

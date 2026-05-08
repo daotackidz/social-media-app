@@ -5,13 +5,13 @@ using Social.Common.Handlers;
 using Social.Data.Model.Base;
 using Social.Data.Model.Response.Login;
 using Social.Data.Repository;
-using Social.Jwt.Interface;
+using Social.Service.Social.Jwt.Interface;
 using Social.WebApi.Models.Api.Login;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Social.Jwt.Services
+namespace Social.Service.Social.Jwt.Services
 {
     public class JwtService : IJwtService
     {
