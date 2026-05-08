@@ -20,6 +20,7 @@ namespace Social.Data.Repository
         }
 
         public DbSet<Users> Users { get; set; }
+        public DbSet<UserPendingRegistrations> UserPendingRegistrations { get; set; }
         public DbSet<UserProfiles> UserProfiles { get; set; }
         public DbSet<UserRelations> UserRelations { get; set; }
         public DbSet<UserFiles> UserFiles { get; set; }

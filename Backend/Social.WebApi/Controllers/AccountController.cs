@@ -7,7 +7,7 @@ using Social.WebApi.Models.Api.Login;
 namespace Social.WebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class AccountController(IJwtService jwtService) : ControllerBase
     {
         private readonly IJwtService _jwtService = jwtService;

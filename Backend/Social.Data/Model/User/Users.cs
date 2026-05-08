@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Social.Data.Model.User
 {
     [Table("users")]
-    [Index(nameof(HashText), nameof(UserName), nameof(PassWord), IsUnique = false)]
+    [Index(nameof(HashText), nameof(UserName), nameof(PasswordHash), IsUnique = false)]
     [Index(nameof(Email), IsUnique = false)]
     [Index(nameof(PhoneNumber), IsUnique = false)]
     public class Users : BaseRecordModel
@@ -35,14 +35,14 @@ namespace Social.Data.Model.User
         [MaxLength(SocialConstantsLengths.Length100, ErrorMessage = "{0} quá dài")]
         public required string UserName { get; set; }
 
-        [Column("password", Order = 2)]
+        [Column("password_hash", Order = 2)]
         [Display(Name = "Mật khẩu", Prompt = "Mật khẩu")]
         [Required(ErrorMessage = "{0} không được để trống")]
         [PasswordPropertyText]
         [StringLength(maximumLength: SocialConstantsLengths.Length200, MinimumLength = SocialConstantsLengths.Length2, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]
         [DataType(DataType.Password)]
         [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
-        public required string PassWord { get; set; } = SocialConstant.DefaultPassword;
+        public required string PasswordHash { get; set; } = SocialConstant.DefaultPassword;
 
         [Column("salt_password", Order = 3)]
         [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
@@ -58,10 +58,10 @@ namespace Social.Data.Model.User
         [ScaffoldColumn(false)]
         public bool PhoneNumberConfirm { get; set; } = false;
 
-        [Column("email_comfirmed", Order = 6)]
-        [Display(Name = "Đã comfirm email")]
+        [Column("email_verified", Order = 6)]
+        [Display(Name = "Đã xác thực email")]
         [ScaffoldColumn(false)]
-        public bool EmailConfirmed { get; set; } = false;
+        public bool EmailVerified { get; set; } = false;
 
         [Column("hash_text", Order = 7)]
         [StringLength(maximumLength: SocialConstantsLengths.Length100, MinimumLength = SocialConstantsLengths.Length0, ErrorMessage = "{0} cần có độ dài từ {2} đến {1} ký tự")]

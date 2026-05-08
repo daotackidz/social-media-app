@@ -18,7 +18,7 @@ namespace Social.Data.Seed.Models.User
                 {
                     Id = Guid.NewGuid(),
                     UserName = "Administrator",
-                    PassWord = PasswordHashHandler.HashPassWord("admin123"),
+                    PasswordHash = PasswordHashHandler.HashPassWord("admin123"),
                     SaltPassWord = salt,
                     Email = "admin@example.com"
                 }

@@ -1,6 +1,11 @@
 <Solution>
+  <Folder Name="/Social.Repository/">
+    <Project Path="../Social.Repository/Social.UserRepositories/Social.UserRepositories.csproj" Id="3f90e2e5-6916-4009-871a-c411401f89f4" />
+  </Folder>
   <Folder Name="/Social.Services/">
-    <Project Path="../Social.Service/Social.JwtService/Social.JwtServices.csproj" Id="d37728d8-6887-4910-ae52-caffa53336f1" />
+    <Project Path="../Social.Services/Social.EmailServices/Social.EmailServices.csproj" />
+    <Project Path="../Social.Services/Social.JwtServices/Social.JwtServices.csproj" />
+    <Project Path="../Socical.Services/Social.AuthServices/Social.AuthServices.csproj" Id="3b0e1a01-332a-4985-814a-a7a8c98625c4" />
   </Folder>
   <Project Path="../Social.Common/Social.Common.csproj" />
   <Project Path="../Social.Data/Social.Data.csproj" />

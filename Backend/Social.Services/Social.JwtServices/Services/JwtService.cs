@@ -38,7 +38,7 @@ namespace Social.JwtServices.Services
                     .FirstOrDefaultAsync(x => x.UserName == request.UserName
                                               && x.RecordStatusId == RecordStatus.Status.Active);
 
-                if (userAccount is null || !PasswordHashHandler.VerifyPassWord(request.Password, userAccount.PassWord))
+                if (userAccount is null || !PasswordHashHandler.VerifyPassWord(request.Password, userAccount.PasswordHash))
                 {
                     return null;
                 }
