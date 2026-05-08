@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Social.Common\Social.Common.csproj" />
-    <ProjectReference Include="..\Social.Services\Social.JwtServices\Social.JwtServices.csproj" />
     <ProjectReference Include="..\Social.Services\Social.JwtService\Social.JwtServices.csproj" />
     <ProjectReference Include="..\Social.Service\Social.JwtService\Social.JwtServices.csproj" />
     <ProjectReference Include="..\Socical.Services\Social.AuthServices\Social.AuthServices.csproj" />
