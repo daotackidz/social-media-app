@@ -1,39 +1,60 @@
 using Microsoft.AspNetCore.Mvc;
-using Social.Data.Model.Request.Login;
+using Social.Data.Model.Request.User;
 using Social.Service.Social.Auth.Interface;
 
-namespace Social.WebApi.Controllers
+[Route("api/auth")]
+public class AuthController : BaseApiController
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    private readonly IAuthService _authService;
+    public AuthController(IAuthService authService) => _authService = authService;
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        private readonly IAuthService _authService;
+        var (success, message, data) = await _authService.RegisterAsync(request);
 
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
+        return success
+            ? ApiCreated(data, message)
+            : ApiBadRequest(message);
+    }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
-        {
-            var (success, message) = await _authService.RegisterAsync(request);
-            return success ? Ok(new { message }) : BadRequest(new { message });
-        }
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        var (success, message, data) = await _authService.VerifyEmailAsync(request);
 
-        [HttpPost("verify-email")]
-        public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
-        {
-            var (success, message) = await _authService.VerifyEmailAsync(request.Email, request.OtpCode);
-            return success ? Ok(new { message }) : BadRequest(new { message });
-        }
+        return success
+            ? ApiOk(data, message)
+            : ApiBadRequest(message);
+    }
 
-        [HttpPost("resend-otp")]
-        public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request)
-        {
-            var (success, message) = await _authService.ResendOtpAsync(request.Email);
-            return success ? Ok(new { message }) : BadRequest(new { message });
-        }
+    [HttpPost("resend-otp")]
+    public async Task<IActionResult> ResendOtp([FromBody] ResendOtpRequest request)
+    {
+        var (success, message) = await _authService.ResendOtpAsync(request.Email);
+
+        return success
+            ? ApiOk<object>(null!, message)
+            : ApiBadRequest(message);
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    {
+        var (success, message, data) = await _authService.ForgotPasswordAsync(request);
+
+        return success
+            ? ApiOk(data, message)
+            : ApiBadRequest(message);
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+    {
+        var (success, message) = await _authService.ResetPasswordAsync(request);
+
+        return success
+            ? ApiOk<object>(null!, message)
+            : ApiBadRequest(message);
     }
 }

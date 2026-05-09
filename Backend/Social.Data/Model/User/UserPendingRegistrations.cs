@@ -8,6 +8,12 @@ namespace Social.Data.Model.User
     [Table("user_pending_registrations")]
     public class UserPendingRegistrations : BaseRecordModel
     {
+        public enum PendingOtpType
+        {
+            Register = 1,
+            ForgotPassword = 2
+        }
+
         [Key]
         [Column("id")]
         [ScaffoldColumn(false)]
@@ -27,6 +33,16 @@ namespace Social.Data.Model.User
         [MaxLength(SocialConstantsLengths.Length100, ErrorMessage = "{0} quá dài")]
         public string? UserName { get; set; }
 
+        [Column("date_of_birth")]
+        [Display(Name = "Ngày sinh")]
+        [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
+        public DateTime? DateOfBirth { get; set; }
+
+        [Column("full_name")]
+        [Display(Name = "Họ và tên", Prompt = "Họ và tên")]
+        [MaxLength(SocialConstantsLengths.Length100, ErrorMessage = "{0} quá dài")]
+        public string? FullName { get; set; }
+
         [Column("otp_code")]
         [Display(Name = "OtpCode")]
         public string OtpCode { get; set; } = string.Empty;
@@ -39,15 +55,9 @@ namespace Social.Data.Model.User
         [Display(Name = "IsVerified")]
         public bool IsVerified { get; set; }
 
-        [Column("date_of_birth", Order = 5)]
-        [Display(Name = "Ngày sinh")]
-        [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
-        public DateTime? DateOfBirth { get; set; }
-
-        [Column("full_name", Order = 2)]
-        [Display(Name = "Họ và tên", Prompt = "Họ và tên")]
-        [MaxLength(SocialConstantsLengths.Length100, ErrorMessage = "{0} quá dài")]
-        public string? FullName { get; set; }
+        [Column("type")]
+        [Display(Name = "Loại")]
+        public PendingOtpType Type { get; set; }
 
         #region Related Tables
 

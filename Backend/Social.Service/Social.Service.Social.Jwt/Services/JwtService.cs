@@ -3,8 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Social.Common.Handlers;
 using Social.Data.Model.Base;
-using Social.Data.Model.Request.Login;
-using Social.Data.Model.Response.Login;
+using Social.Data.Model.Request.User;
+using Social.Data.Model.Response.User;
 using Social.Data.Repository;
 using Social.Service.Social.Jwt.Interface;
 using System.IdentityModel.Tokens.Jwt;
@@ -28,14 +28,14 @@ namespace Social.Service.Social.Jwt.Services
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(request.UserName) || string.IsNullOrWhiteSpace(request.Password))
+                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
                 {
                     return null;
                 }
 
                 var userAccount = await _dbContext
                     .Users
-                    .FirstOrDefaultAsync(x => x.UserName == request.UserName
+                    .FirstOrDefaultAsync(x => x.Email == request.Email
                                               && x.RecordStatusId == RecordStatus.Status.Active);
 
                 if (userAccount is null || !PasswordHashHandler.VerifyPassWord(request.Password, userAccount.PasswordHash))
@@ -53,7 +53,7 @@ namespace Social.Service.Social.Jwt.Services
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                    new Claim(JwtRegisteredClaimNames.Name, request.UserName),
+                    new Claim(JwtRegisteredClaimNames.Email, request.Email),
                 }),
                     Expires = tokenExpiryTimeStamp,
                     Issuer = issuer,
@@ -68,7 +68,7 @@ namespace Social.Service.Social.Jwt.Services
                 return new LoginResponse
                 {
                     AccessToken = accessToken,
-                    UserName = request.UserName,
+                    Email = request.Email,
                     ExpiresIn = (int)tokenExpiryTimeStamp.Subtract(DateTime.UtcNow).TotalSeconds
                 };
             }

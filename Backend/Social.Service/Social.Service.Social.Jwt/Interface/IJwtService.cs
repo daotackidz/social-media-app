@@ -1,5 +1,5 @@
-﻿using Social.Data.Model.Request.Login;
-using Social.Data.Model.Response.Login;
+﻿using Social.Data.Model.Request.User;
+using Social.Data.Model.Response.User;
 
 namespace Social.Service.Social.Jwt.Interface
 {

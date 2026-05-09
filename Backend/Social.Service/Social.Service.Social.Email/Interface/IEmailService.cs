@@ -3,5 +3,7 @@
     public interface IEmailService
     {
         Task SendOtpEmailAsync(string toEmail, string otpCode);
+
+        Task SendForgotPasswordOtpAsync(string toEmail, string otpCode);
     }
 }

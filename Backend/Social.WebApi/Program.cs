@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using Social.Service.Social.Email.Models;
 using Social.WebApi.Infrastructure.Extensions;
 using Social.WebApi.Installers;
+using Social.WebApi.Middleware;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -95,6 +96,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthorization();
 
