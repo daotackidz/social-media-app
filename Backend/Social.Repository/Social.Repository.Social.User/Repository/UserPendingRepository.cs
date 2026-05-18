@@ -23,6 +23,7 @@ namespace Social.Repository.Social.User.Repository
         public async Task AddAsync(UserPendingRegistrations pending)
         {
             pending.Id = Guid.NewGuid();
+            pending.CreatedByUserId = pending.Id;
             await _db.UserPendingRegistrations.AddAsync(pending);
             await _db.SaveChangesAsync();
         }

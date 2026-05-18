@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.27.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\Social.Service\Social.Service.Social.Auth\Social.Service.Social.Auth.csproj" />
     <ProjectReference Include="..\Social.Service\Social.Service.Social.Email\Social.Service.Social.Email.csproj" />
     <ProjectReference Include="..\Social.Service\Social.Service.Social.Jwt\Social.Service.Social.Jwt.csproj" />
+    <ProjectReference Include="..\Social.Service\Social.Service.Social.File\Social.Service.Social.File.csproj" />
   </ItemGroup>
 
 </Project>

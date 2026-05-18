@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Azure.Storage.Blobs;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Social.Service.Social.Email.Models;
 using Social.WebApi.Infrastructure.Extensions;
 using Social.WebApi.Installers;
 using Social.WebApi.Middleware;
+using Social.WebApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,6 +50,14 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Social API",
         Version = "v1"
     });
+
+    options.MapType<Microsoft.AspNetCore.Http.IFormFile>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Format = "binary"
+    });
+
+    options.OperationFilter<Social.WebApi.Infrastructure.Filters.FormFileOperationFilter>();
 });
 
 builder.Services
@@ -72,6 +83,16 @@ builder.Services
     });
 
 builder.Services.AddAppDbContext(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.Configure<AzureStorageSettings>(
+    builder.Configuration.GetSection("AzureStorageSettings"));
+
+builder.Services.AddSingleton(provider =>
+{
+    var options = provider.GetRequiredService<IOptions<AzureStorageSettings>>().Value;
+    return new BlobServiceClient(options.ConnectionString);
+});
 
 builder.Services.InstallerServicesInAssemply(builder.Configuration);
 

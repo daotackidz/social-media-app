@@ -19,8 +19,9 @@ namespace Social.WebApi.Infrastructure.Extensions
                 throw new ArgumentNullException(nameof(connectionString));
             }
 
-            services.AddDbContext<SocialDbContext>(options =>
-                options.UseNpgsql(connectionString));
+            services.AddDbContext<SocialDbContext>((provider, options) =>
+                options.UseNpgsql(connectionString)
+                       .AddInterceptors(provider.GetRequiredService<Social.WebApi.Infrastructure.Services.AuditSaveChangesInterceptor>()));
 
             return services;
         }

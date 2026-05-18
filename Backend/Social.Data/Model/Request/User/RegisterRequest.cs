@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Social.Data.Model.Request.User
 {
@@ -7,7 +8,7 @@ namespace Social.Data.Model.Request.User
         [Required, MinLength(8)] string Password,
         [Required] string FullName,
         [Required] string Username,
-        [Required] DateTime DateOfBirth
+        [Required] DateTime? DateOfBirth
     );
 
     public record VerifyEmailRequest(
@@ -18,4 +19,15 @@ namespace Social.Data.Model.Request.User
     public record ResendOtpRequest(
         [Required, EmailAddress] string Email
     );
+
+    public class UpdateUserProfileRequest
+    {
+        public IFormFile? AvatarFile { get; set; }
+        public string? FullName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public ushort? Gender { get; set; }
+        public string? Address { get; set; }
+    }
 }

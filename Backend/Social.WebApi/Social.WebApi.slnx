@@ -5,6 +5,7 @@
   <Folder Name="/Social.Service/">
     <Project Path="../Social.Service/Social.Service.Social.Auth/Social.Service.Social.Auth.csproj" />
     <Project Path="../Social.Service/Social.Service.Social.Email/Social.Service.Social.Email.csproj" />
+    <Project Path="../Social.Service/Social.Service.Social.File/Social.Service.Social.File.csproj" />
     <Project Path="../Social.Service/Social.Service.Social.Jwt/Social.Service.Social.Jwt.csproj" />
   </Folder>
   <Project Path="../Social.Common/Social.Common.csproj" />

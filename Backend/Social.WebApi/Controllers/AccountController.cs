@@ -3,14 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using Social.Data.Model.Request.User;
 using Social.Data.Model.Response.User;
 using Social.Service.Social.Jwt.Interface;
+using Social.WebApi.Infrastructure.Services;
 
 namespace Social.WebApi.Controllers
 {
     [ApiController]
     [Route("api/account")]
-    public class AccountController(IJwtService jwtService) : ControllerBase
+    public class AccountController : BaseApiController
     {
-        private readonly IJwtService _jwtService = jwtService;
+        private readonly IJwtService _jwtService;
+
+        public AccountController(IJwtService jwtService, ICurrentUserService currentUserService) : base(currentUserService)
+        {
+            _jwtService = jwtService;
+        }
 
         [AllowAnonymous]
         [HttpPost("login")]

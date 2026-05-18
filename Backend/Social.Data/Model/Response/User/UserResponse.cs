@@ -7,5 +7,6 @@
         public string FullName { get; set; } = string.Empty;
         public DateTime? DateOfBirth { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string? AvatarUrl { get; set; }
     }
 }

@@ -53,8 +53,12 @@ namespace Social.Service.Social.Jwt.Services
                 {
                     Subject = new ClaimsIdentity(new[]
                     {
-                    new Claim(JwtRegisteredClaimNames.Email, request.Email),
-                }),
+                        new Claim(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
+                        new Claim("userId", userAccount.Id.ToString()),
+                        new Claim(ClaimTypes.Name, userAccount.UserName ?? userAccount.Email),
+                        new Claim("username", userAccount.UserName ?? userAccount.Email),
+                        new Claim(JwtRegisteredClaimNames.Email, request.Email),
+                    }),
                     Expires = tokenExpiryTimeStamp,
                     Issuer = issuer,
                     Audience = audience,

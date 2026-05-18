@@ -24,8 +24,8 @@ namespace Social.Data.Seed
 
             var schema = SocialSeedingDbContext.GetDefaultSchemaName(dbContext);
 
-            PostgreSqlSeedObject<RecordStatusSeed, RecordStatus>.Seed(dbContext, schema);
-            PostgreSqlSeedObject<UserSeed, Users>.Seed(dbContext, schema);
+            //PostgreSqlSeedObject<RecordStatusSeed, RecordStatus>.Seed(dbContext, schema);
+            //PostgreSqlSeedObject<UserSeed, Users>.Seed(dbContext, schema);
 
             #endregion Data
         }

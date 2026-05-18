@@ -53,7 +53,7 @@ namespace Social.Service.Social.Auth.Services
                 OtpCode = otp,
                 UserName = request.FullName ?? request.Email,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(_otpSettings.ExpiryMinutes),
-                Type = PendingOtpType.Register
+                Type = PendingOtpType.Register,
             };
 
             await _pendingRepository.AddAsync(pending);
@@ -85,16 +85,20 @@ namespace Social.Service.Social.Auth.Services
             var user = new Users
             {
                 Id = Guid.NewGuid(),
-                UserName = pending.UserName,
+                UserName = pending.UserName ?? pending.Email,
                 Email = email,
                 PasswordHash = pending.PasswordHash,
-                EmailVerified = true
+                EmailVerified = true,
             };
+
+            user.CreatedByUserId = user.Id; // Người tạo là chính họ
 
             var profile = new UserProfiles
             {
+                Id = Guid.NewGuid(),
                 FullName = pending.FullName ?? "",
-                DateOfBirth = pending.DateOfBirth
+                DateOfBirth = pending.DateOfBirth,
+                CreatedByUserId = user.Id,
             };
 
             await _userRepository.CreateUserAsync(user, profile);
