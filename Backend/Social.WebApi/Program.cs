@@ -85,13 +85,29 @@ builder.Services
 builder.Services.AddAppDbContext(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>(optional: true);
+}
+
 builder.Services.Configure<AzureStorageSettings>(
-    builder.Configuration.GetSection("AzureStorageSettings"));
+    builder.Configuration.GetSection(AzureStorageSettings.SectionName));
 
 builder.Services.AddSingleton(provider =>
 {
-    var options = provider.GetRequiredService<IOptions<AzureStorageSettings>>().Value;
-    return new BlobServiceClient(options.ConnectionString);
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var connectionString = configuration["AZURE_STORAGE_CONNECTION_STRING"]
+        ?? configuration[$"{AzureStorageSettings.SectionName}:ConnectionString"]
+        ?? string.Empty;
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new InvalidOperationException(
+            "Azure Storage connection string is not configured. " +
+            "Set AZURE_STORAGE_CONNECTION_STRING or use user secrets for AzureStorageSettings:ConnectionString.");
+    }
+
+    return new BlobServiceClient(connectionString);
 });
 
 builder.Services.InstallerServicesInAssemply(builder.Configuration);
