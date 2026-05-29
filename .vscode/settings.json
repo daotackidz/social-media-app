@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^powershell -NoLogo -NoProfile -Command \"Set-Location 'D:\\\\Project\\\\social-media-app\\\\Frontend\\\\WebFe'; Copy-Item -Path \\.\\\\src\\\\assets\\\\instagram-favicon\\.ico -Destination \\.\\\\src\\\\favicon\\.ico -Force\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

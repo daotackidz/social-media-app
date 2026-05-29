@@ -1,0 +1,76 @@
+.login-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, rgba(0, 110, 255, 0.11), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(255, 45, 85, 0.12), transparent 24%),
+    #fbfbfd;
+}
+
+.login-card {
+  width: min(420px, 100%);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  border: 1px solid var(--border-color);
+  background: var(--card-background);
+}
+
+.login-brand {
+  text-align: center;
+}
+
+.logo {
+  font-weight: 800;
+  letter-spacing: -0.05rem;
+  color: var(--primary-text);
+}
+
+.login-brand p {
+  color: var(--color-muted);
+  max-width: 320px;
+  line-height: 1.7;
+}
+
+.login-form {
+  display: grid;
+  gap: 1rem;
+}
+
+app-input,
+app-select,
+mat-form-field {
+  width: 100%;
+}
+
+.form-messages {
+  min-height: 2rem;
+}
+
+.success {
+  color: var(--color-success);
+}
+
+.error {
+  color: var(--color-error);
+}
+
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 3rem;
+}
+
+.login-footer {
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.login-footer a {
+  color: var(--blue-link);
+  font-weight: 700;
+  text-decoration: none;
+}

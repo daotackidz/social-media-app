@@ -1,0 +1,27 @@
+<div class="app-select-wrapper">
+  @if (label) {
+    <div class="field-label">{{ label }}</div>
+  }
+
+  <mat-form-field
+    appearance="outline"
+    subscriptSizing="dynamic"
+    [class]="'app-select-field ' + fieldClass"
+  >
+    <mat-label>{{ label }}</mat-label>
+
+    @if (prefixIcon) {
+      <mat-icon matPrefix>{{ prefixIcon }}</mat-icon>
+    }
+
+    <mat-select [formControl]="control">
+      @for (option of options; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+
+    @if (control.invalid && control.touched) {
+      <mat-error>{{ errorMessage }}</mat-error>
+    }
+  </mat-form-field>
+</div>

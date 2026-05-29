@@ -1,0 +1,47 @@
+<div class="app-input-wrapper">
+  @if (label) {
+    <div class="field-label text-lg font-semibold">
+      {{ label }}
+      @if (required) {
+        <span class="required-asterisk">*</span>
+      }
+    </div>
+  }
+
+  <mat-form-field
+    appearance="outline"
+    subscriptSizing="dynamic"
+    [class]="'app-input-field ' + fieldClass"
+  >
+    <mat-label>{{ label }}</mat-label>
+
+    @if (prefixIcon) {
+      <mat-icon matPrefix>{{ prefixIcon }}</mat-icon>
+    }
+
+    <input
+      matInput
+      [type]="inputType"
+      [formControl]="control"
+      [maxlength]="maxLength"
+      [required]="required"
+      [autocomplete]="autocomplete"
+    />
+
+    @if (showTogglePassword) {
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="togglePasswordVisibility()"
+        type="button"
+        [attr.aria-label]="'Toggle password visibility'"
+      >
+        <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+    }
+
+    @if (control.invalid && control.touched) {
+      <mat-error>{{ errorMessage }}</mat-error>
+    }
+  </mat-form-field>
+</div>

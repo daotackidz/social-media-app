@@ -1,0 +1,147 @@
+ .app-input-wrapper {
+  width: 100%;
+
+  .field-label {
+    margin-bottom: 6px;
+  }
+}
+
+::ng-deep {
+  .app-input-field {
+    width: 100%;
+    --mdc-outlined-text-field-container-shape: 16px;
+    --mdc-filled-text-field-container-shape: 16px;
+    --mdc-outlined-text-field-label-text-font: inherit;
+    --mdc-outlined-text-field-label-text-size: 0.875rem;
+    --mdc-outlined-text-field-label-text-weight: 400;
+    --mdc-outlined-text-field-label-text-tracking: 0;
+
+    .mat-mdc-input-element {
+      color: #1f2937 !important;
+    }
+
+    .mdc-text-field {
+      background-color: #f9fafb;
+      border-radius: 16px;
+      transition: all 0.2s ease;
+      min-height: 64px;
+    }
+
+    .mat-mdc-form-field-infix {
+      padding-top: 28px !important;
+      padding-bottom: 8px !important;
+    }
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #e5e7eb !important;
+      border-width: 1px;
+      transition: border-color 0.2s ease;
+    }
+
+    .mat-mdc-notch-piece.mdc-notched-outline__notch {
+      border-left: 0 !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+    }
+
+    // Restore top border — label floats inside field, not at border
+    .mdc-notched-outline--notched .mdc-notched-outline__notch {
+      border-top-style: solid !important;
+    }
+
+    .mdc-floating-label--float-above {
+      transform: translateY(-20px) scale(0.85) !important;
+    }
+
+    .mdc-notched-outline__leading {
+      border-radius: 16px 0 0 16px !important;
+    }
+
+    .mdc-notched-outline__trailing {
+      border-radius: 0 16px 16px 0 !important;
+    }
+
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #4338ca !important;
+        border-width: 2px;
+      }
+
+      .mat-mdc-form-field-focus-overlay {
+        background-color: rgba(67, 56, 202, 0.04) !important;
+        opacity: 1;
+      }
+
+    }
+
+    &.mat-form-field-invalid {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #b91c1c !important;
+      }
+
+    }
+
+    &.mat-form-field-disabled {
+      .mdc-text-field {
+        background-color: #f3f4f6;
+        opacity: 0.6;
+      }
+
+      .mat-mdc-input-element {
+        color: #9ca3af !important;
+      }
+    }
+
+    // Variant: filled
+    &.input-filled .mdc-text-field {
+      background: linear-gradient(135deg, #f3f1ff 0%, #e8e4ff 100%);
+    }
+
+    // Variant: success
+    &.input-success {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #0f766e !important;
+      }
+
+      &.mat-focused {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: #14b8a6 !important;
+        }
+
+      }
+    }
+  }
+
+  .mat-error {
+    color: #b91c1c !important;
+  }
+
+  .mat-mdc-form-field-icon-prefix {
+    color: #6b7280;
+    margin-right: 8px;
+  }
+
+  .mat-mdc-form-field-icon-suffix {
+    color: #6b7280;
+    margin-left: 8px;
+  }
+
+  .mat-mdc-form-field-error-wrapper {
+    display: none;
+  }
+
+  .required-asterisk {
+    color: #b91c1c;
+    margin-left: 2px;
+  }
+}

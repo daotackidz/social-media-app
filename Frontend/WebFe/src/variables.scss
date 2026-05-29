@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Optimistic:wght@400;600&display=swap');
+
+:root {
+  --radius: 16px;
+  --radius-card: 14px;
+  --card-padding: 2.2rem;
+  --card-max-width: 600px;
+  --card-background: #ffffff;
+  --surface-gradient: linear-gradient(180deg, #ffffff 0%, #f7f5ff 100%);
+  --border-color: rgba(99, 102, 241, 0.16);
+  --badge-background: rgba(67, 56, 202, 0.12);
+  --shadow-soft: 0 28px 70px rgba(15, 23, 42, 0.08);
+  --color-primary: #4338ca;
+  --color-muted: #4b5563;
+  --color-error: #b91c1c;
+  --color-success: #0f766e;
+  --background-white: #ffffff;
+  --spacing-xs: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.25rem;
+  --font-family: 'Optimistic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  // Typography
+  --body-font-size: 0.9375rem;
+  --body-line-height: 1.125rem;
+  --title-font-size: 1.5rem;
+  --title-line-height: 1.75rem;
+  --subtitle-font-size: 0.875rem;
+  --subtitle-line-height: 1.125rem;
+  --label-font-size: 0.75rem;
+  --label-line-height: 1rem;
+  --caption-font-size: 0.75rem;
+  --caption-line-height: 1rem;
+
+  // Primary colors
+  --primary-icon: #111112;
+  --primary-text: #111112;
+
+  // Base colors
+  --base-blue: #1877F2;
+  --base-cherry: #F3425F;
+  --base-grape: #9360F7;
+  --base-lemon: #F7B928;
+  --base-lime: #45BD62;
+  --base-pink: #FF66BF;
+  --base-seafoam: #54C7EC;
+  --base-teal: #2ABBA7;
+  --base-tomato: #FB724B;
+
+  // Badge backgrounds
+  --text-badge-info-background: #DBECFF;
+  --text-badge-success-background: #DAF0D4;
+  --text-badge-attention-background: #FAEBA4;
+  --text-badge-critical-background: #FEE4E6;
+
+  // Link colors
+  --blue-link: #0064E0;
+  --border-focused: #666A72;
+
+  // Updated color references
+  --color-text: var(--primary-text);
+}

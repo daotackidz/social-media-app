@@ -1,0 +1,294 @@
+// Material Input Customization
+// Apply this to styles.scss or component SCSS files
+
+::ng-deep {
+  // ===== Basic Form Field Styling =====
+  .mat-mdc-form-field {
+    width: 100%;
+
+    // Form field label styling
+    .mat-mdc-form-field-label {
+      color: #6b7280 !important;
+    }
+
+    // Input text styling
+    .mat-mdc-input-element {
+      color: #1f2937 !important;
+      font-size: 15px !important;
+      padding: 12px 16px !important;
+
+      &:autofill {
+        -webkit-autofill: none;
+        background-color: transparent !important;
+        background-image: none !important;
+        color: #1f2937 !important;
+      }
+    }
+
+    // Text field background
+    .mdc-text-field {
+      background-color: #f9fafb;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #f3f4f6;
+      }
+    }
+
+    // Notched outline (border)
+    .mdc-notched-outline {
+      --mdc-notched-outline-leading-width: 12px;
+
+      &__leading,
+      &__notch,
+      &__trailing {
+        border-color: #e5e7eb !important;
+        border-width: 1px;
+        transition: border-color 0.2s ease;
+      }
+
+      .mat-mdc-notch-piece.mdc-notched-outline__notch {
+        border-left: 0 !important;
+        min-width: 0 !important;
+        padding: 0 !important;
+      }
+    }
+
+    // Focus state
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #4338ca !important;
+        border-width: 2px;
+      }
+
+      .mat-mdc-form-field-focus-overlay {
+        background-color: rgba(67, 56, 202, 0.04) !important;
+        opacity: 1;
+      }
+
+      .mat-mdc-form-field-label {
+        color: #4338ca !important;
+      }
+    }
+
+    // Disabled state
+    &.mat-form-field-disabled {
+      .mdc-text-field {
+        background-color: #f3f4f6;
+        opacity: 0.6;
+      }
+
+      .mat-mdc-form-field-label {
+        color: #9ca3af !important;
+      }
+
+      .mat-mdc-input-element {
+        color: #9ca3af !important;
+      }
+    }
+
+    // Error/Invalid state
+    &.mat-form-field-invalid {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #b91c1c !important;
+        border-width: 1px;
+      }
+
+      &.mat-focused {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-width: 2px;
+        }
+      }
+
+      .mat-mdc-form-field-label {
+        color: #b91c1c !important;
+      }
+    }
+
+    // Subscript text
+    .mat-mdc-form-field-subscript-wrapper {
+      padding: 4px 0 0 0;
+    }
+  }
+
+  // Error message
+  .mat-error {
+    font-size: 12px !important;
+    color: #b91c1c !important;
+    font-weight: 500;
+  }
+
+  // Hint text
+  .mat-hint {
+    font-size: 12px !important;
+    color: #6b7280 !important;
+  }
+
+  // ===== Select Specific =====
+  .mat-mdc-select {
+    .mdc-select__anchor {
+      background-color: #f9fafb;
+      border-radius: 8px;
+    }
+  }
+
+  .mdc-select--filled .mdc-select__anchor {
+    background-color: #f9fafb;
+  }
+
+  // ===== Variant Classes =====
+
+  // Filled variant
+  .mat-mdc-form-field.input-filled {
+    .mdc-text-field {
+      background-color: #f3f1ff;
+      border-radius: 12px;
+    }
+
+    &.mat-focused {
+      .mdc-text-field {
+        background: linear-gradient(135deg, #f3f1ff 0%, #e8e4ff 100%);
+      }
+    }
+  }
+
+  // Dense variant (smaller)
+  .mat-mdc-form-field.input-dense {
+    .mat-mdc-input-element {
+      font-size: 13px !important;
+      padding: 8px 12px !important;
+    }
+
+    .mat-mdc-form-field-label {
+      font-size: 12px !important;
+    }
+
+    .mdc-text-field {
+      border-radius: 6px;
+    }
+  }
+
+  // Large variant
+  .mat-mdc-form-field.input-large {
+    .mat-mdc-input-element {
+      font-size: 17px !important;
+      padding: 16px 18px !important;
+    }
+
+    .mat-mdc-form-field-label {
+      font-size: 14px !important;
+    }
+
+    .mdc-text-field {
+      border-radius: 10px;
+    }
+  }
+
+  // Success variant
+  .mat-mdc-form-field.input-success {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #0f766e !important;
+    }
+
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #14b8a6 !important;
+        border-width: 2px;
+      }
+    }
+
+    .mat-mdc-form-field-label {
+      color: #0f766e !important;
+
+      &.mat-focused {
+        color: #14b8a6 !important;
+      }
+    }
+  }
+
+  // Dark mode
+  .dark-mode {
+    .mat-mdc-form-field {
+      .mat-mdc-form-field-label {
+        color: #d1d5db !important;
+      }
+
+      .mat-mdc-input-element {
+        color: #f3f4f6 !important;
+        caret-color: #60a5fa;
+
+        &::placeholder {
+          color: #9ca3af;
+        }
+      }
+
+      .mdc-text-field {
+        background-color: #1f2937;
+      }
+
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #374151 !important;
+      }
+
+      &.mat-focused {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: #60a5fa !important;
+        }
+
+        .mat-mdc-form-field-label {
+          color: #60a5fa !important;
+        }
+      }
+
+      &.mat-form-field-invalid {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: #ef4444 !important;
+        }
+
+        .mat-mdc-form-field-label {
+          color: #ef4444 !important;
+        }
+      }
+    }
+
+    .mat-error {
+      color: #ef4444 !important;
+    }
+
+    .mat-hint {
+      color: #9ca3af !important;
+    }
+  }
+
+  // ===== Prefix/Suffix Icons =====
+  .mat-mdc-form-field-icon-prefix,
+  .mat-mdc-form-field-icon-suffix {
+    color: #6b7280;
+
+    &.mat-form-field-invalid {
+      color: #b91c1c;
+    }
+  }
+
+  // ===== Focus Overlay =====
+  .mat-mdc-form-field-focus-overlay {
+    display: none; // Hoặc để hiển thị với custom color
+  }
+}
