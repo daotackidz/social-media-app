@@ -36,8 +36,8 @@ export class AppInputComponent {
   @Input() control!: FormControl;
   @Input() fieldClass: string = '';
   @Input() prefixIcon: string = '';
-  @Input() placeholder: string = '';
   @Input() required: boolean = false;
+  @Input() showTopLabel: boolean = true;
 
   showPassword = false;
 

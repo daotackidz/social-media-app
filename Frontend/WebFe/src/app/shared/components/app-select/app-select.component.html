@@ -1,20 +1,28 @@
 <div class="app-select-wrapper">
-  @if (label) {
-    <div class="field-label">{{ label }}</div>
+  @if (label && showTopLabel) {
+    <div class="field-label text-sm font-semibold">
+      {{ label }}
+      @if (required) {
+        <span class="required-asterisk">*</span>
+      }
+    </div>
   }
 
   <mat-form-field
     appearance="outline"
     subscriptSizing="dynamic"
     [class]="'app-select-field ' + fieldClass"
+    floatLabel="auto"
   >
-    <mat-label>{{ label }}</mat-label>
+    @if (label) {
+      <mat-label>{{ label }}</mat-label>
+    }
 
     @if (prefixIcon) {
       <mat-icon matPrefix>{{ prefixIcon }}</mat-icon>
     }
 
-    <mat-select [formControl]="control">
+    <mat-select [formControl]="control" [required]="required">
       @for (option of options; track option.value) {
         <mat-option [value]="option.value">{{ option.label }}</mat-option>
       }

@@ -2,8 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService, RegisterRequest } from '../../services/auth.service';
 import { AppInputComponent, AppSelectComponent, SelectOption } from '../../shared/components';
@@ -15,8 +13,6 @@ import { AppInputComponent, AppSelectComponent, SelectOption } from '../../share
     CommonModule,
     ReactiveFormsModule,
     RouterLink,
-    MatButtonModule,
-    MatProgressSpinnerModule,
     AppInputComponent,
     AppSelectComponent
   ],

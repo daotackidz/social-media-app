@@ -31,4 +31,6 @@ export class AppSelectComponent {
   @Input() control!: FormControl;
   @Input() fieldClass: string = '';
   @Input() prefixIcon: string = '';
+  @Input() required: boolean = false;
+  @Input() showTopLabel: boolean = false;
 }

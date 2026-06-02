@@ -1,52 +1,52 @@
 .app-select-wrapper {
   width: 100%;
+  font-family: var(--font-family);
 
   .field-label {
     margin-bottom: 6px;
-    color: #6b7280;
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.2;
+    font-family: var(--font-family);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
   }
 }
 
 ::ng-deep {
   .app-select-field {
     width: 100%;
-    --mdc-outlined-text-field-container-shape: 16px;
-    --mdc-filled-text-field-container-shape: 16px;
-    --mdc-outlined-text-field-label-text-font: inherit;
+    --mdc-outlined-text-field-container-shape: var(--form-control-radius);
+    --mdc-outlined-text-field-label-text-font: var(--font-family);
     --mdc-outlined-text-field-label-text-size: 0.875rem;
     --mdc-outlined-text-field-label-text-weight: 400;
     --mdc-outlined-text-field-label-text-tracking: 0;
 
     .mat-mdc-select {
-      color: #1f2937 !important;
-      font-size: 15px !important;
+      color: #111827 !important;
+      font-size: var(--form-control-font-size) !important;
+      font-family: var(--font-family) !important;
 
       .mdc-select__anchor {
-        background-color: #f9fafb;
-        border-radius: 16px;
+        background-color: #fff;
+        border-radius: var(--form-control-radius);
         padding: 0 16px;
       }
     }
 
     .mdc-text-field {
-      background-color: #f9fafb;
-      border-radius: 16px;
+      background-color: #fff;
+      border-radius: var(--form-control-radius);
       transition: all 0.2s ease;
-      min-height: 64px;
+      min-height: 60px;
     }
 
     .mat-mdc-form-field-infix {
-      padding-top: 28px !important;
+      padding-top: 24px !important;
       padding-bottom: 8px !important;
     }
 
     .mdc-notched-outline__leading,
     .mdc-notched-outline__notch,
     .mdc-notched-outline__trailing {
-      border-color: #e5e7eb !important;
+      border-color: #c5c9d1 !important;
       border-width: 1px;
       transition: border-color 0.2s ease;
     }
@@ -57,34 +57,57 @@
       padding: 0 !important;
     }
 
-    // Restore top border — label floats inside field, not at border
     .mdc-notched-outline--notched .mdc-notched-outline__notch {
       border-top-style: solid !important;
     }
 
     .mdc-floating-label--float-above {
-      transform: translateY(-20px) scale(0.85) !important;
+      transform: translateY(-22px) scale(0.8) !important;
+    }
+
+    .mdc-floating-label {
+      color: #6b7280 !important;
+      font-family: var(--font-family) !important;
+    }
+
+    .mat-mdc-select-placeholder {
+      color: #6b7280 !important;
+      font-size: var(--form-control-font-size) !important;
+    }
+
+    .mat-mdc-select-value-text {
+      color: #111827 !important;
+      font-weight: 500;
+      font-family: var(--font-family) !important;
+      font-size: var(--form-control-font-size) !important;
+    }
+
+    .mat-mdc-select-arrow {
+      color: #262626;
     }
 
     .mdc-notched-outline__leading {
-      border-radius: 16px 0 0 16px !important;
+      border-radius: var(--form-control-radius) 0 0 var(--form-control-radius) !important;
     }
 
     .mdc-notched-outline__trailing {
-      border-radius: 0 16px 16px 0 !important;
+      border-radius: 0 var(--form-control-radius) var(--form-control-radius) 0 !important;
     }
 
     &.mat-focused {
+      .mdc-text-field {
+        box-shadow: none;
+      }
+
       .mdc-notched-outline__leading,
       .mdc-notched-outline__notch,
       .mdc-notched-outline__trailing {
-        border-color: #4338ca !important;
-        border-width: 2px;
+        border-color: #c5c9d1 !important;
+        border-width: 1px;
       }
 
       .mat-mdc-form-field-focus-overlay {
-        background-color: rgba(67, 56, 202, 0.04) !important;
-        opacity: 1;
+        opacity: 0;
       }
     }
 
@@ -106,28 +129,6 @@
         color: #9ca3af !important;
       }
     }
-
-    // Variant: filled
-    &.input-filled .mdc-text-field {
-      background: linear-gradient(135deg, #f3f1ff 0%, #e8e4ff 100%);
-    }
-
-    // Variant: success
-    &.input-success {
-      .mdc-notched-outline__leading,
-      .mdc-notched-outline__notch,
-      .mdc-notched-outline__trailing {
-        border-color: #0f766e !important;
-      }
-
-      &.mat-focused {
-        .mdc-notched-outline__leading,
-        .mdc-notched-outline__notch,
-        .mdc-notched-outline__trailing {
-          border-color: #14b8a6 !important;
-        }
-      }
-    }
   }
 
   .mat-error {
@@ -141,16 +142,40 @@
     margin-right: 8px;
   }
 
-  // Select dropdown panel
+  .required-asterisk {
+    color: #b91c1c;
+    margin-left: 2px;
+  }
+
   .mat-mdc-select-panel {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+    padding: 4px 0 !important;
+    overflow: hidden;
+    background-color: #fff !important;
+
     .mat-mdc-option {
-      &:hover {
-        background-color: rgba(67, 56, 202, 0.08);
+      font-family: var(--font-family) !important;
+      font-size: var(--form-control-font-size) !important;
+      color: #111827;
+      min-height: 44px;
+
+      &:hover:not(.mdc-list-item--selected) {
+        background-color: #f4f4f4 !important;
       }
 
-      &.mat-selected {
-        background-color: rgba(67, 56, 202, 0.12);
-        color: #4338ca;
+      &.mdc-list-item--selected,
+      &.mat-mdc-option-active.mdc-list-item--selected {
+        background-color: #3d4146 !important;
+        color: #fff !important;
+
+        .mdc-list-item__primary-text {
+          color: #fff !important;
+        }
+
+        .mat-pseudo-checkbox {
+          display: none;
+        }
       }
     }
   }

@@ -1,47 +1,101 @@
-<section class="login-page">
-  <mat-card class="login-card">
-    <div class="login-brand">
-      <div class="logo text-2xl">Instagram</div>
-      <p class="text-sm">Đăng nhập để tiếp tục kết nối với bạn bè và chia sẻ khoảnh khắc.</p>
-    </div>
+<section class="min-h-dvh bg-white px-4 pb-4 sm:px-6 sm:pb-6">
+  <div class="mx-auto flex min-h-[calc(100dvh-2rem)] w-full max-w-[1280px] border border-zinc-200 bg-white">
+    <aside class="hidden w-[52%] flex-col justify-center gap-9 px-10 py-8 lg:flex xl:px-14" aria-hidden="true">
+      <img src="/assets/logoLoginLeft.png" alt="Instagram logo" class="h-[78px] w-[78px] object-contain" />
 
-    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form" novalidate>
-      <app-input
-        [control]="email!"
-        label="Email"
-        type="email"
-        autocomplete="email"
-        placeholder="Nhập email của bạn"
-        prefixIcon="email"
-        [errorMessage]="'Vui lòng nhập email hợp lệ'"
-      ></app-input>
+      <h2 class="text-3xl font-medium leading-[2] text-center">
+        Hãy xem các khoảnh khắc<br />
+        thường ngày của
+        <span class="bg-gradient-to-r from-red-500 via-pink-700 to-violet-700 bg-clip-text text-transparent">bạn
+          thân</span>
+        nhé.
+      </h2>
 
-      <app-input
-        [control]="password!"
-        label="Mật khẩu"
-        type="password"
-        autocomplete="current-password"
-        placeholder="Nhập mật khẩu"
-        prefixIcon="lock"
-        [errorMessage]="'Mật khẩu là bắt buộc (tối thiểu 6 ký tự)'"
-      ></app-input>
+      <div class="mx-auto w-full max-w-[330px]">
+        <img src="/assets/imageLoginLeft.png" alt="Instagram moments" class="block h-auto w-full" />
+      </div>
+    </aside>
 
-      <div class="form-messages">
-        <p class="success" *ngIf="success()">{{ success() }}</p>
-        <p class="error" *ngIf="error()">{{ error() }}</p>
+    <main
+      class="flex w-full flex-col justify-center p-5 lg:w-[48%] lg:border-l lg:border-zinc-300 lg:px-10 lg:py-9 xl:px-12">
+      <div class="mb-6 flex items-center gap-2">
+        <a class="mb-2 inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--primary-text)] transition hover:bg-black/5 hover:no-underline"
+          routerLink="/register" aria-label="Quay lại">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </a>
+        <h1 class="text-lg font-semibold">Đăng nhập vào Instagram</h1>
       </div>
 
-      <button mat-flat-button color="primary" class="submit-button" type="submit" [disabled]="isLoading()">
-        <mat-icon>login</mat-icon>
-        <span *ngIf="!isLoading()">Đăng nhập</span>
-        <span *ngIf="isLoading()">Đang xử lý...</span>
-        <mat-progress-spinner *ngIf="isLoading()" diameter="20" mode="indeterminate"></mat-progress-spinner>
-      </button>
-    </form>
+      <div *ngIf="error()" class="mb-4 flex items-start gap-3 rounded-2xl border border-zinc-200 bg-white px-6 py-4">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"
+          class="w-[20px] h-[20px] text-red-600 flex-shrink-0 mb-2">
+          <g clip-path="url(#_r_1n_)">
+            <path
+              d="M12 10.278c.483 0 .875.391.875.875v4.974a.875.875 0 0 1-1.75 0v-4.974c0-.484.392-.875.875-.875zM12 7.003c.833 0 1.25.4 1.25 1s-.417 1-1.25 1-1.25-.4-1.25-1 .417-1 1.25-1z">
+            </path>
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16z">
+            </path>
+          </g>
+          <defs>
+            <clipPath id="_r_1n_">
+              <path d="M0 0H24V24H0z"></path>
+            </clipPath>
+          </defs>
+        </svg>
+        <div class="flex-1 leading-6">
+          <span class="font-medium text-gray-800 mr-1">{{ error() }}</span>
+          <a href="javascript:void(0)" class="font-medium text-blue-600 hover:text-blue-700 hover:no-underline">Tìm tài
+            khoản của bạn và
+            đăng nhập.</a>
+        </div>
+      </div>
 
-    <div class="login-footer text-sm">
-      <span>Chưa có tài khoản?</span>
-      <a routerLink="/register">Đăng ký</a>
-    </div>
-  </mat-card>
+      <form [formGroup]="loginForm" (ngSubmit)="submit()" class="grid gap-4" novalidate>
+        <div class="w-full">
+          <app-input [control]="email" label="Số di động, tên người dùng hoặc email" [showTopLabel]="false" type="text"
+            autocomplete="username" [errorMessage]="'Vui lòng nhập tài khoản hợp lệ'"></app-input>
+        </div>
+
+        <div class="w-full">
+          <app-input [control]="password" label="Mật khẩu" [showTopLabel]="false" type="password"
+            autocomplete="current-password" [errorMessage]="'Mật khẩu phải có ít nhất 6 ký tự'"></app-input>
+        </div>
+        <button
+          class="mt-1 flex min-h-11 w-full items-center justify-center rounded-full border-0 text-base font-semibold text-white transition"
+          [ngClass]="isSubmitDisabled ? 'cursor-not-allowed bg-[#8ab4e6]/70' : 'cursor-pointer bg-[#1877f2] hover:bg-[#166fe5]'"
+          type="submit" [disabled]="isSubmitDisabled">
+          <span *ngIf="!isLoading()">Đăng nhập</span>
+          <span *ngIf="isLoading()" class="inline-flex items-center gap-2">
+            <span class="h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+          </span>
+        </button>
+
+        <a class="grid min-h-11 w-full place-items-center rounded-full bg-white text-base font-semibold text-zinc-900 no-underline transition hover:bg-zinc-100 hover:no-underline"
+          href="javascript:void(0)">
+          Quên mật khẩu?
+        </a>
+
+        <div class="mt-8 grid gap-3">
+          <button type="button"
+            class="flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-zinc-300 bg-white text-base font-semibold text-zinc-900 transition hover:bg-zinc-100">
+            <span class="text-blue-600 mb-1"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"
+                class="w-[20px] h-[20px] flex-shrink-0">
+                <path
+                  d="M22 12.037C22 6.494 17.523 2 12 2S2 6.494 2 12.037c0 4.707 3.229 8.656 7.584 9.741v-6.674H7.522v-3.067h2.062v-1.322c0-3.416 1.54-5 4.882-5 .634 0 1.727.125 2.174.25v2.78a12.807 12.807 0 0 0-1.155-.037c-1.64 0-2.273.623-2.273 2.244v1.085h3.266l-.56 3.067h-2.706V22C18.164 21.4 22 17.168 22 12.037z">
+                </path>
+              </svg></span>
+            <span>Đăng nhập bằng Facebook</span>
+          </button>
+          <a routerLink="/register"
+            class="grid min-h-11 w-full place-items-center rounded-full border border-blue-500 bg-transparent text-base font-semibold text-blue-700 no-underline transition hover:bg-zinc-100 hover:no-underline">
+            Tạo tài khoản mới
+          </a>
+        </div>
+      </form>
+    </main>
+  </div>
 </section>

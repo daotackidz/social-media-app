@@ -1,6 +1,6 @@
 <div class="app-input-wrapper">
-  @if (label) {
-    <div class="field-label text-lg font-semibold">
+  @if (label && showTopLabel) {
+    <div class="field-label font-semibold mb-2">
       {{ label }}
       @if (required) {
         <span class="required-asterisk">*</span>
@@ -13,7 +13,9 @@
     subscriptSizing="dynamic"
     [class]="'app-input-field ' + fieldClass"
   >
-    <mat-label>{{ label }}</mat-label>
+    @if (label) {
+      <mat-label>{{ label }}</mat-label>
+    }
 
     @if (prefixIcon) {
       <mat-icon matPrefix>{{ prefixIcon }}</mat-icon>

@@ -1,34 +1,37 @@
  .app-input-wrapper {
   width: 100%;
-
-  .field-label {
-    margin-bottom: 6px;
-  }
+  font-family: var(--font-family);
 }
 
 ::ng-deep {
   .app-input-field {
     width: 100%;
-    --mdc-outlined-text-field-container-shape: 16px;
-    --mdc-filled-text-field-container-shape: 16px;
-    --mdc-outlined-text-field-label-text-font: inherit;
+    --mdc-outlined-text-field-container-shape: var(--form-control-radius);
+    --mdc-filled-text-field-container-shape: var(--form-control-radius);
+    --mdc-outlined-text-field-label-text-font: var(--font-family);
     --mdc-outlined-text-field-label-text-size: 0.875rem;
     --mdc-outlined-text-field-label-text-weight: 400;
     --mdc-outlined-text-field-label-text-tracking: 0;
 
     .mat-mdc-input-element {
       color: #1f2937 !important;
+      font-family: var(--font-family) !important;
+      font-size: var(--form-control-font-size) !important;
+    }
+
+    .mdc-floating-label,
+    .mat-mdc-floating-label {
+      font-family: var(--font-family) !important;
     }
 
     .mdc-text-field {
       background-color: #f9fafb;
-      border-radius: 16px;
+      border-radius: var(--form-control-radius);
       transition: all 0.2s ease;
-      min-height: 64px;
     }
 
     .mat-mdc-form-field-infix {
-      padding-top: 28px !important;
+      padding-top: 24px !important;
       padding-bottom: 8px !important;
     }
 
@@ -52,15 +55,15 @@
     }
 
     .mdc-floating-label--float-above {
-      transform: translateY(-20px) scale(0.85) !important;
+      transform: translateY(-22px) scale(0.8) !important;
     }
 
     .mdc-notched-outline__leading {
-      border-radius: 16px 0 0 16px !important;
+      border-radius: var(--form-control-radius) 0 0 var(--form-control-radius) !important;
     }
 
     .mdc-notched-outline__trailing {
-      border-radius: 0 16px 16px 0 !important;
+      border-radius: 0 var(--form-control-radius) var(--form-control-radius) 0 !important;
     }
 
     &.mat-focused {
