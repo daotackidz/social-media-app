@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Social.Common.Constants;
 using Social.Data.Model.Request.User;
 using Social.Data.Model.Response.User;
 using Social.Service.Social.Jwt.Interface;
@@ -20,15 +21,16 @@ namespace Social.WebApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
             var result = await _jwtService.Authenticate(request);
 
             if (result is null)
             {
-                return Unauthorized();
+                return ApiUnauthorized("Email hoặc mật khẩu không đúng.", ErrorCode.INVALID_CREDENTIALS);
             }
-            return Ok(result);
+
+            return ApiOk(result, "Đăng nhập thành công.");
         }
     }
 }

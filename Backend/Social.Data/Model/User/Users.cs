@@ -11,6 +11,7 @@ namespace Social.Data.Model.User
     [Index(nameof(HashText), nameof(UserName), nameof(PasswordHash), IsUnique = false)]
     [Index(nameof(Email), IsUnique = false)]
     [Index(nameof(PhoneNumber), IsUnique = false)]
+    [Index(nameof(UserName), IsUnique = true)]
     public class Users : BaseRecordModel
     {
         public enum UserType

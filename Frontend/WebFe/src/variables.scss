@@ -21,11 +21,18 @@
   --spacing-xs: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.25rem;
-  --font-family: 'Optimistic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 
   // Typography
+  // line-height is intentionally tight (not Tailwind's default 1.5) so plain
+  // text sitting next to a fixed-size icon in a `flex items-center` row reads
+  // as vertically centered — a taller line-height leaves invisible padding
+  // above/below the glyphs that skews the optical center away from the box
+  // center. Don't widen this without re-checking icon+label rows sitewide
+  // (nav items, buttons, post headers...). Long-form paragraphs that want
+  // more breathing room should opt in locally with `leading-relaxed`/`leading-6`.
   --body-font-size: 1rem;
-  --body-line-height: 1.25;
+  --body-line-height: 1.2;
   --title-font-size: 1.5rem;
   --title-line-height: 1.2;
   --subtitle-font-size: 0.975rem;

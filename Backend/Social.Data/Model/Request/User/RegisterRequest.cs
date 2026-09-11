@@ -7,7 +7,7 @@ namespace Social.Data.Model.Request.User
         [Required, EmailAddress] string Email,
         [Required, MinLength(8)] string Password,
         [Required] string FullName,
-        [Required] string Username,
+        [Required, RegularExpression("^[a-zA-Z0-9._]{3,30}$", ErrorMessage = "Tên người dùng chỉ gồm chữ, số, dấu chấm và gạch dưới, từ 3-30 ký tự.")] string Username,
         [Required] DateTime? DateOfBirth
     );
 

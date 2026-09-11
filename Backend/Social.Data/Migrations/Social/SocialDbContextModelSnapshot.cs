@@ -902,6 +902,72 @@ namespace Social.Data.Migrations.Social
                     b.ToTable("user_files", "app_social");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.User.UserHighlights", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid?>("CoverFileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cover_file_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("title")
+                        .HasColumnOrder(2);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_highlights");
+
+                    b.HasIndex("CoverFileId")
+                        .HasDatabaseName("ix_user_highlights_cover_file_id");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_user_highlights_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_user_highlights_reccord_status_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_highlights_user_id");
+
+                    b.ToTable("user_highlights", "app_social");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.UserPendingRegistrations", b =>
                 {
                     b.Property<Guid>("Id")
@@ -999,6 +1065,11 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("character varying(50)")
                         .HasColumnName("address");
 
+                    b.Property<string>("Bio")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("bio");
+
                     b.Property<Guid>("CreatedByUserId")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by_user_id");
@@ -1057,6 +1128,11 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("uuid")
                         .HasColumnName("user_id")
                         .HasColumnOrder(1);
+
+                    b.Property<string>("WebsiteUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("website_url");
 
                     b.HasKey("Id")
                         .HasName("pk_user_profile");
@@ -1140,6 +1216,65 @@ namespace Social.Data.Migrations.Social
                         .HasDatabaseName("ix_user_relations_reccord_status_id");
 
                     b.ToTable("user_relations", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.User.UserSearchHistories", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("TargetUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_user_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_search_histories");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_user_search_histories_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_user_search_histories_reccord_status_id");
+
+                    b.HasIndex("TargetUserId")
+                        .HasDatabaseName("ix_user_search_histories_target_user_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_search_histories_user_id");
+
+                    b.ToTable("user_search_histories", "app_social");
                 });
 
             modelBuilder.Entity("Social.Data.Model.User.Users", b =>
@@ -1279,6 +1414,10 @@ namespace Social.Data.Migrations.Social
                     b.HasIndex("RecordStatusId")
                         .HasDatabaseName("ix_users_reccord_status_id");
 
+                    b.HasIndex("UserName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_user_name");
+
                     b.HasIndex("HashText", "UserName", "PasswordHash")
                         .HasDatabaseName("ix_users_hash_text_user_name_password_hash");
 
@@ -1405,7 +1544,7 @@ namespace Social.Data.Migrations.Social
                         .HasConstraintName("fk_post_files_files_file_id");
 
                     b.HasOne("Social.Data.Model.Post.Posts", "Posts")
-                        .WithMany()
+                        .WithMany("PostFiles")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
@@ -1603,6 +1742,34 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.User.UserHighlights", b =>
+                {
+                    b.HasOne("Social.Data.Model.File.Files", "CoverFile")
+                        .WithMany()
+                        .HasForeignKey("CoverFileId")
+                        .HasConstraintName("fk_user_highlights_files_cover_file_id");
+
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_highlights_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_highlights_users_user_id");
+
+                    b.Navigation("CoverFile");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.UserPendingRegistrations", b =>
                 {
                     b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
@@ -1666,6 +1833,36 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("RecordStatus");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.User.UserSearchHistories", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_search_histories_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "TargetUsers")
+                        .WithMany()
+                        .HasForeignKey("TargetUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_search_histories_users_target_user_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_search_histories_users_user_id");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("TargetUsers");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.Users", b =>
                 {
                     b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
@@ -1676,6 +1873,11 @@ namespace Social.Data.Migrations.Social
                         .HasConstraintName("fk_users_record_status_reccord_status_id");
 
                     b.Navigation("RecordStatus");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Post.Posts", b =>
+                {
+                    b.Navigation("PostFiles");
                 });
 #pragma warning restore 612, 618
         }

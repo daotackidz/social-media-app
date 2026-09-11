@@ -1,24 +1,26 @@
 <footer class="w-full bg-white px-3 pb-7 pt-[18px] text-center text-xs leading-[1.35] text-[var(--color-muted)]" aria-label="Footer">
   <div class="mx-auto flex max-w-[1240px] flex-wrap justify-center gap-x-4 gap-y-2" aria-label="Footer links">
     <a class="text-[var(--color-muted)]" href="javascript:void(0)">Meta</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Giới thiệu</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.about' | translate }}</a>
     <a class="text-[var(--color-muted)]" href="javascript:void(0)">Blog</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Việc làm</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Trợ giúp</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">API</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Quyền riêng tư</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Điều khoản</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Vị trí</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Phổ biến</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.jobs' | translate }}</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.help' | translate }}</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.api' | translate }}</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.privacy' | translate }}</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.terms' | translate }}</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.locations' | translate }}</a>
     <a class="text-[var(--color-muted)]" href="javascript:void(0)">Instagram Lite</a>
     <a class="text-[var(--color-muted)]" href="javascript:void(0)">Meta AI</a>
     <a class="text-[var(--color-muted)]" href="javascript:void(0)">Threads</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Tải thông tin người liên hệ lên & người không phải người dùng</a>
-    <a class="text-[var(--color-muted)]" href="javascript:void(0)">Meta đã xác minh</a>
+    <a class="text-[var(--color-muted)]" href="javascript:void(0)">{{ 'footer.metaVerified' | translate }}</a>
   </div>
 
   <div class="mt-[18px] flex items-center justify-center gap-5">
-    <a class="inline-flex items-center gap-1 text-[var(--color-muted)]" href="javascript:void(0)">Tiếng Việt <span aria-hidden="true">▼</span></a>
-    <span>© 2026 Instagram from Meta</span>
+    <span class="inline-flex items-center gap-2 text-[var(--color-muted)]">
+      <a routerLink="/vn" class="underline-offset-2 hover:underline" [class.font-semibold]="languageService.lang() === 'vi'">Tiếng Việt</a>
+      ·
+      <a routerLink="/en" class="underline-offset-2 hover:underline" [class.font-semibold]="languageService.lang() === 'en'">English</a>
+    </span>
+    <span>{{ 'footer.copyright' | translate }}</span>
   </div>
 </footer>

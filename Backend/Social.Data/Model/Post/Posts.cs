@@ -68,6 +68,8 @@ namespace Social.Data.Model.Post
         [ForeignKey(nameof(OriginalPostId))]
         public Posts? OriginalPost { get; set; }
 
+        public ICollection<PostFiles>? PostFiles { get; set; }
+
         #endregion
     }
 }

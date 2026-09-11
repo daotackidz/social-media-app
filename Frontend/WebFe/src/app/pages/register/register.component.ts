@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
+import { apiErrorOf } from '../../core/api';
 import { AuthService, RegisterRequest } from '../../services/auth.service';
 import { AppInputComponent, AppSelectComponent, SelectOption } from '../../shared/components';
 
@@ -22,6 +23,7 @@ import { AppInputComponent, AppSelectComponent, SelectOption } from '../../share
 export class RegisterComponent {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   isLoading = signal(false);
   error = signal('');
@@ -98,9 +100,16 @@ export class RegisterComponent {
     this.authService.register(payload).subscribe({
       next: (response) => {
         this.success.set(response.message || 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực.');
+        this.router.navigate(['/verify-otp'], {
+          queryParams: {
+            email: payload.email,
+            expiresIn: response.data?.otpExpiresInSeconds
+          }
+        });
       },
-      error: () => {
-        this.error.set('Đăng ký thất bại. Vui lòng kiểm tra lại thông tin và thử lại.');
+      error: (err) => {
+        const apiError = apiErrorOf(err);
+        this.error.set(apiError?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin và thử lại.');
       },
       complete: () => this.isLoading.set(false)
     });

@@ -2,6 +2,7 @@
 using Social.Data.Model.User;
 using Social.Data.Repository;
 using Social.Repository.Social.User.Interface;
+using static Social.Data.Model.Base.RecordStatus;
 using static Social.Data.Model.User.UserPendingRegistrations;
 
 namespace Social.Repository.Social.User.Repository
@@ -16,7 +17,8 @@ namespace Social.Repository.Social.User.Repository
             => await _db.UserPendingRegistrations
                 .Where(p => p.Email == email
                          && p.Type == type
-                         && !p.IsVerified)
+                         && !p.IsVerified
+                         && p.RecordStatusId == Status.Active)
                 .OrderByDescending(p => p.CreatedDateUnix)
                 .FirstOrDefaultAsync();
 
@@ -37,12 +39,17 @@ namespace Social.Repository.Social.User.Repository
         public async Task DeleteOldAsync(string email, PendingOtpType type)
         {
             var old = await _db.UserPendingRegistrations
-                .Where(p => p.Email == email && p.Type == type && !p.IsVerified)
+                .Where(p => p.Email == email && p.Type == type && !p.IsVerified && p.RecordStatusId == Status.Active)
                 .ToListAsync();
 
             if (old.Count != 0)
             {
-                _db.UserPendingRegistrations.RemoveRange(old);
+                foreach (var pending in old)
+                {
+                    pending.RecordStatusId = Status.Deleted;
+                }
+
+                _db.UserPendingRegistrations.UpdateRange(old);
                 await _db.SaveChangesAsync();
             }
         }

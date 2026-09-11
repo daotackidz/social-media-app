@@ -24,6 +24,8 @@ namespace Social.Data.Repository
         public DbSet<UserProfiles> UserProfiles { get; set; }
         public DbSet<UserRelations> UserRelations { get; set; }
         public DbSet<UserFiles> UserFiles { get; set; }
+        public DbSet<UserHighlights> UserHighlights { get; set; }
+        public DbSet<UserSearchHistories> UserSearchHistories { get; set; }
         public DbSet<Posts> Posts { get; set; }
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<PostComments> PostComments { get; set; }

@@ -46,7 +46,7 @@
 
     <header class="mb-3">
       <h1 class="text-2xl font-semibold">Bắt đầu trên Instagram</h1>
-      <p class="text-base">Đăng ký để xem ảnh và video từ bạn bè.</p>
+      <p>Đăng ký để xem ảnh và video từ bạn bè.</p>
     </header>
 
     <form [formGroup]="registerForm" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
@@ -71,7 +71,7 @@
       <div class="flex w-full flex-col gap-1.5">
         <label class="inline-flex items-center gap-1 font-semibold">
           Ngày sinh
-          <div class="mb-1" aria-label="Thông tin ngày sinh">
+          <div aria-label="Thông tin ngày sinh">
             <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" class="h-6 w-6">
               <path
                 d="M12 22a10 10 0 1 1 10-10 10.011 10.011 0 0 1-10 10zm0-18.5a8.5 8.5 0 1 0 8.5 8.5A8.51 8.51 0 0 0 12 3.5z">
@@ -108,7 +108,7 @@
           errorMessage="Tên người dùng là bắt buộc (tối thiểu 3 ký tự)"></app-input>
       </div>
 
-      <div class="space-y-3 text-base">
+      <div class="space-y-3">
         <p>
           Mọi người dùng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn lên
           Instagram.
@@ -142,7 +142,7 @@
       }
 
       <button type="submit"
-        class="flex min-h-11 w-full items-center justify-center rounded-full border-0 text-base font-semibold text-white transition"
+        class="flex min-h-11 w-full items-center justify-center rounded-full border-0 font-semibold text-white transition"
         [ngClass]="isLoading() ? 'cursor-not-allowed bg-[var(--base-blue)]/70' : 'cursor-pointer bg-[var(--base-blue)] hover:bg-[#166fe5]'"
         [disabled]="isLoading()">
         @if (!isLoading()) {
@@ -157,7 +157,7 @@
 
     <div class="pt-3">
       <a routerLink="/login"
-        class="grid min-h-11 w-full place-items-center rounded-full border border-zinc-300 bg-white text-base font-semibold text-zinc-900 no-underline transition hover:bg-zinc-100 hover:no-underline">
+        class="grid min-h-11 w-full place-items-center rounded-full border border-zinc-300 bg-white font-semibold text-zinc-900 no-underline transition hover:bg-zinc-100 hover:no-underline">
         Tôi có tài khoản rồi
       </a>
     </div>

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Social.Common.Constants;
 using Social.Data.Model.Response.Base;
 using Social.WebApi.Infrastructure.Services;
 
@@ -35,27 +36,39 @@ public class BaseApiController : ControllerBase
             StatusCode = 201
         });
 
-    protected IActionResult ApiBadRequest(string message)
+    protected IActionResult ApiBadRequest(string message, ErrorCode errorCode = ErrorCode.VALIDATION_ERROR)
         => StatusCode(400, new ApiResponse<object>
         {
             Success = false,
             Message = message,
-            StatusCode = 400
+            StatusCode = 400,
+            ErrorCode = errorCode
         });
 
-    protected IActionResult ApiNotFound(string message)
+    protected IActionResult ApiUnauthorized(string message = "Bạn cần đăng nhập để thực hiện thao tác này.", ErrorCode errorCode = ErrorCode.UNAUTHORIZED)
+        => StatusCode(401, new ApiResponse<object>
+        {
+            Success = false,
+            Message = message,
+            StatusCode = 401,
+            ErrorCode = errorCode
+        });
+
+    protected IActionResult ApiNotFound(string message, ErrorCode errorCode = ErrorCode.USER_NOT_FOUND)
         => StatusCode(404, new ApiResponse<object>
         {
             Success = false,
             Message = message,
-            StatusCode = 404
+            StatusCode = 404,
+            ErrorCode = errorCode
         });
 
-    protected IActionResult ApiConflict(string message)
+    protected IActionResult ApiConflict(string message, ErrorCode errorCode = ErrorCode.EMAIL_EXISTS)
         => StatusCode(409, new ApiResponse<object>
         {
             Success = false,
             Message = message,
-            StatusCode = 409
+            StatusCode = 409,
+            ErrorCode = errorCode
         });
 }

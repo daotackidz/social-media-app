@@ -33,9 +33,15 @@ namespace Social.Service.Social.Jwt.Services
                     return null;
                 }
 
+                // Đăng ký chuẩn hoá email về chữ thường + trim trước khi lưu (AuthService.RegisterAsync),
+                // nên so khớp lúc đăng nhập cũng phải chuẩn hoá y hệt — nếu không, sai hoa/thường hoặc
+                // khoảng trắng thừa (rất dễ gặp do gõ tay/autofill) sẽ khiến đăng nhập luôn thất bại dù
+                // đúng mật khẩu.
+                var normalizedEmail = request.Email.Trim().ToLowerInvariant();
+
                 var userAccount = await _dbContext
                     .Users
-                    .FirstOrDefaultAsync(x => x.Email == request.Email
+                    .FirstOrDefaultAsync(x => x.Email == normalizedEmail
                                               && x.RecordStatusId == RecordStatus.Status.Active);
 
                 if (userAccount is null || !PasswordHashHandler.VerifyPassWord(request.Password, userAccount.PasswordHash))
@@ -57,7 +63,7 @@ namespace Social.Service.Social.Jwt.Services
                         new Claim("userId", userAccount.Id.ToString()),
                         new Claim(ClaimTypes.Name, userAccount.UserName ?? userAccount.Email),
                         new Claim("username", userAccount.UserName ?? userAccount.Email),
-                        new Claim(JwtRegisteredClaimNames.Email, request.Email),
+                        new Claim(JwtRegisteredClaimNames.Email, userAccount.Email),
                     }),
                     Expires = tokenExpiryTimeStamp,
                     Issuer = issuer,
@@ -72,7 +78,8 @@ namespace Social.Service.Social.Jwt.Services
                 return new LoginResponse
                 {
                     AccessToken = accessToken,
-                    Email = request.Email,
+                    Email = userAccount.Email,
+                    Username = userAccount.UserName,
                     ExpiresIn = (int)tokenExpiryTimeStamp.Subtract(DateTime.UtcNow).TotalSeconds
                 };
             }

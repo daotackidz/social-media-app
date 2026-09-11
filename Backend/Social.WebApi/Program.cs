@@ -3,16 +3,65 @@ using Microsoft.IdentityModel.Tokens;
 using Azure.Storage.Blobs;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using Social.Common.Constants;
+using Social.Data.Model.Response.Base;
 using Social.Service.Social.Email.Models;
 using Social.WebApi.Infrastructure.Extensions;
 using Social.WebApi.Installers;
 using Social.WebApi.Middleware;
 using Social.WebApi.Models;
+using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Enums (ErrorCode included) serialize as their member name, e.g.
+        // "EMAIL_EXISTS", instead of a raw number the frontend would have to
+        // memorize positionally.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+// ExceptionMiddleware and the JwtBearerEvents handlers below write JSON via
+// HttpResponse.WriteAsJsonAsync, which goes through this (separate from MVC's
+// AddJsonOptions above) — register the same enum converter here too, or
+// ErrorCode would serialize as a raw number on exactly the responses meant to
+// demonstrate the standardized envelope.
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
+
+// Every model-validation failure ([Required]/[EmailAddress]/... on a request
+// DTO) goes through this instead of ASP.NET's default ValidationProblemDetails,
+// so 400s look exactly like every other ApiResponse<T> the API returns.
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var message = string.Join(
+            " ",
+            context.ModelState.Values
+                .SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .Where(m => !string.IsNullOrWhiteSpace(m)));
+
+        return new Microsoft.AspNetCore.Mvc.ObjectResult(new ApiResponse<object>
+        {
+            Success = false,
+            Message = string.IsNullOrWhiteSpace(message) ? "Dữ liệu gửi lên không hợp lệ." : message,
+            StatusCode = 400,
+            ErrorCode = ErrorCode.VALIDATION_ERROR
+        })
+        {
+            StatusCode = 400
+        };
+    };
+});
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -80,6 +129,39 @@ builder.Services
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true
         };
+
+        // [Authorize] rejects a missing/invalid/expired token before any
+        // controller action runs, so without these handlers it writes an
+        // empty 401/403 body instead of the ApiResponse<T> envelope every
+        // other error on the API uses.
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+                context.Response.StatusCode = 401;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Bạn cần đăng nhập để thực hiện thao tác này.",
+                    StatusCode = 401,
+                    ErrorCode = ErrorCode.UNAUTHORIZED
+                });
+            },
+            OnForbidden = async context =>
+            {
+                context.Response.StatusCode = 403;
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsJsonAsync(new ApiResponse<object>
+                {
+                    Success = false,
+                    Message = "Bạn không có quyền thực hiện thao tác này.",
+                    StatusCode = 403,
+                    ErrorCode = ErrorCode.UNAUTHORIZED
+                });
+            }
+        };
     });
 
 builder.Services.AddAppDbContext(builder.Configuration);
@@ -120,6 +202,11 @@ builder.Services.Configure<OtpSettings>(
 
 var app = builder.Build();
 
+// Registered first so it wraps every other middleware and can turn any
+// unhandled exception (from auth, routing, controllers, ...) into the same
+// ApiResponse<T> envelope the rest of the API returns.
+app.UseMiddleware<ExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -133,8 +220,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthorization();
 

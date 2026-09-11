@@ -1,0 +1,20 @@
+<div class="flex min-h-dvh w-full justify-center bg-[#fafafa]">
+  <app-sidebar-nav class="sticky top-0 h-dvh flex-shrink-0" [currentUsername]="currentUser().username" [avatarUrl]="currentUser().avatarUrl" />
+
+  <div class="flex w-full max-w-[1013px] items-start gap-6 px-6 py-6">
+    <main class="mx-auto flex w-full max-w-[630px] flex-col gap-4">
+      <app-stories-bar [stories]="stories()" />
+
+      @for (post of posts(); track post.id; let i = $index) {
+        <app-feed-post [post]="post" />
+        @if (showInlineSuggestionsAfter(i)) {
+          <app-suggestions-inline [suggestions]="inlineSuggestions()" />
+        }
+      }
+    </main>
+
+    <app-suggestions-panel class="sticky top-6 hidden lg:flex"
+      [currentUser]="currentUser()"
+      [suggestions]="panelSuggestions()" />
+  </div>
+</div>

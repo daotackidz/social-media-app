@@ -1,4 +1,10 @@
-﻿using Social.Repository.Social.User.Interface;
+﻿using Social.Repository.Social.Post.Interface;
+using Social.Repository.Social.Post.Repository;
+using Social.Repository.Social.Relation.Interface;
+using Social.Repository.Social.Relation.Repository;
+using Social.Repository.Social.Search.Interface;
+using Social.Repository.Social.Search.Repository;
+using Social.Repository.Social.User.Interface;
 using Social.Repository.Social.User.Repository;
 
 namespace Social.WebApi.Installers
@@ -9,6 +15,9 @@ namespace Social.WebApi.Installers
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserPendingRepository, UserPendingRepository>();
+            services.AddScoped<IUserRelationRepository, UserRelationRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
         }
     }
 }

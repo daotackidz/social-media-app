@@ -1,4 +1,5 @@
-﻿using Social.Data.Model.Response.Base;
+﻿using Social.Common.Constants;
+using Social.Data.Model.Response.Base;
 
 namespace Social.WebApi.Middleware
 {
@@ -29,7 +30,8 @@ namespace Social.WebApi.Middleware
                     {
                         Success = false,
                         Message = "Lỗi hệ thống, vui lòng thử lại.",
-                        StatusCode = 500
+                        StatusCode = 500,
+                        ErrorCode = ErrorCode.INTERNAL_ERROR
                     };
                 await context.Response.WriteAsJsonAsync(response);
             }

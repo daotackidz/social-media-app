@@ -1,0 +1,225 @@
+<div class="flex h-[85vh] max-h-[900px] min-h-[420px] w-[85vw] max-w-[1500px] min-w-[320px] flex-col overflow-hidden rounded-xl bg-white shadow-xl">
+  <!-- Header -->
+  <header class="flex flex-shrink-0 items-center justify-between border-b border-[#dbdbdb] px-3 py-[9px]">
+    @if (step() === 'compose') {
+    <button type="button" (click)="goBack()" aria-label="Quay lại" [disabled]="submitting()"
+      class="rounded-full p-1 text-[#262626] hover:bg-[#fafafa] disabled:opacity-40">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7" />
+      </svg>
+    </button>
+    } @else {
+    <span class="w-7"></span>
+    }
+
+    <h2 class="text-base font-semibold text-[#262626]">{{ 'create.title' | translate }}</h2>
+
+    @if (step() === 'compose') {
+    <button type="button" (click)="share()" [disabled]="!files().length || submitting()"
+      class="text-sm font-semibold text-[#0095f6] disabled:opacity-40">
+      {{ (submitting() ? 'create.sharing' : 'create.share') | translate }}
+    </button>
+    } @else {
+    <button type="button" (click)="close()" aria-label="Đóng" [disabled]="submitting()"
+      class="rounded-full p-1 text-[#262626] hover:bg-[#fafafa] disabled:opacity-40">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+      </svg>
+    </button>
+    }
+  </header>
+
+  <input #fileInput type="file" accept="image/*,video/*" multiple class="hidden" (change)="onFileInputChange($event)" />
+
+  @if (step() === 'picker') {
+  <!-- Drag & drop / select -->
+  <div class="flex flex-1 flex-col items-center justify-center gap-6 px-10 py-24"
+    [style.background]="dragActive() ? '#fafafa' : null"
+    (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event)">
+    <div class="flex items-center gap-1 text-[#262626]">
+      <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+        <rect x="2" y="5" width="15" height="15" rx="2" />
+        <circle cx="7.5" cy="10.5" r="1.5" />
+        <path d="M2 17l4.5-4.5a2 2 0 0 1 2.8 0L13 16" />
+      </svg>
+      <svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="currentColor" stroke-width="1.3" class="-ml-4" aria-hidden="true">
+        <rect x="4" y="4" width="16" height="16" rx="3" />
+        <path d="M10 9l6 3-6 3z" fill="currentColor" stroke="none" />
+      </svg>
+    </div>
+
+    <p class="text-xl font-normal text-[#262626]">{{ 'create.dragHint' | translate }}</p>
+
+    @if (error()) {
+    <p class="text-sm text-[#ed4956]">{{ error() | translate }}</p>
+    }
+
+    <button type="button" (click)="fileInput.click()"
+      class="rounded-lg bg-[#0095f6] px-4 py-[7px] text-sm font-semibold text-white hover:bg-[#1877f2]">
+      {{ 'create.selectFromComputer' | translate }}
+    </button>
+  </div>
+  } @else {
+  <!-- Media + post details -->
+  <div class="flex min-h-0 flex-1 flex-col sm:flex-row">
+    <!-- Media preview -->
+    <div class="relative flex min-h-[280px] flex-1 items-center justify-center overflow-hidden bg-black">
+      @if (activeFile(); as current) {
+        @if (current.isVideo) {
+        <video [src]="current.previewUrl" class="max-h-full max-w-full" controls></video>
+        } @else {
+        <img [src]="current.previewUrl" alt="" class="max-h-full max-w-full object-contain" />
+        }
+
+        <button type="button" (click)="removeActiveFile()" [disabled]="submitting()" aria-label="Xoá"
+          class="absolute right-2 top-2 rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80 disabled:opacity-40">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      }
+
+      @if (files().length > 1) {
+      <button type="button" (click)="prevFile()" aria-label="Ảnh trước"
+        class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-[#262626] shadow hover:bg-white">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7" />
+        </svg>
+      </button>
+      <button type="button" (click)="nextFile()" aria-label="Ảnh sau"
+        class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-1.5 text-[#262626] shadow hover:bg-white">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      <div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
+        @for (item of files(); track item.previewUrl; let i = $index) {
+        <button type="button" (click)="activeIndex.set(i)" [attr.aria-label]="'Ảnh ' + (i + 1)"
+          [style.background]="i === activeIndex() ? '#0095f6' : 'rgba(255,255,255,0.6)'"
+          class="h-1.5 w-1.5 rounded-full"></button>
+        }
+      </div>
+      }
+
+      <button type="button" (click)="fileInput.click()" [disabled]="submitting()"
+        class="absolute bottom-3 right-3 rounded-lg bg-black/60 px-3 py-1.5 text-xs font-semibold text-white hover:bg-black/80 disabled:opacity-40">
+        {{ 'create.addMore' | translate }}
+      </button>
+    </div>
+
+    <!-- Post details -->
+    <div class="flex w-full flex-shrink-0 flex-col overflow-y-auto border-t border-[#dbdbdb] sm:w-[340px] sm:border-l sm:border-t-0">
+      <div class="flex items-center gap-3 px-4 pt-4">
+        @if (authService.currentAvatarUrl()) {
+        <img [src]="authService.currentAvatarUrl()" alt="" class="h-7 w-7 flex-shrink-0 rounded-full object-cover" />
+        } @else {
+        <span class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[#405de6] text-xs font-semibold text-white">
+          {{ (authService.currentUsername() || '?').charAt(0).toUpperCase() }}
+        </span>
+        }
+        <span class="text-sm font-semibold text-[#262626]">{{ authService.currentUsername() }}</span>
+      </div>
+
+      <div class="flex flex-1 flex-col px-4 pb-1 pt-3">
+        <textarea rows="4" [value]="caption()" (input)="onCaptionInput($event)" [attr.maxlength]="captionMaxLength"
+          [placeholder]="'create.captionPlaceholder' | translate" [disabled]="submitting()"
+          class="min-h-[100px] flex-1 resize-none border-0 text-sm text-[#262626] placeholder:text-[#8e8e8e] focus:outline-none focus:ring-0"></textarea>
+        <div class="flex items-center justify-between pt-2">
+          <img src="/assets/icons/post-emoji.svg" alt="" class="h-[18px] w-[18px]" aria-hidden="true" />
+          <span class="text-xs text-[#8e8e8e]">{{ captionCounter() }}</span>
+        </div>
+      </div>
+
+      @if (error()) {
+      <p class="px-4 pb-2 text-sm text-[#ed4956]">{{ error() | translate }}</p>
+      }
+
+      <div class="flex flex-col border-t border-[#dbdbdb]">
+        <button type="button" disabled
+          class="flex items-center justify-between px-4 py-3 text-left text-sm text-[#262626] disabled:cursor-default">
+          <span class="flex items-center gap-3">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M12 21s-6-5.686-6-10a6 6 0 1 1 12 0c0 4.314-6 10-6 10z" />
+              <circle cx="12" cy="11" r="2" />
+            </svg>
+            {{ 'create.addLocation' | translate }}
+          </span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <button type="button" disabled
+          class="flex items-center justify-between border-t border-[#dbdbdb] px-4 py-3 text-left text-sm text-[#262626] disabled:cursor-default">
+          <span class="flex items-center gap-3">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <circle cx="9" cy="8" r="3.5" />
+              <path stroke-linecap="round" d="M2.5 19c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M17 8h4M19 6v4" />
+            </svg>
+            {{ 'create.addCollaborators' | translate }}
+          </span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+
+        <div class="flex items-center justify-between gap-3 border-t border-[#dbdbdb] px-4 py-3">
+          <div class="flex flex-col gap-0.5 pr-2">
+            <span class="text-sm text-[#262626]">{{ 'create.aiLabel' | translate }}</span>
+            <span class="text-xs leading-4 text-[#8e8e8e]">{{ 'create.aiLabelHint' | translate }}</span>
+          </div>
+          <button type="button" role="switch" [attr.aria-checked]="aiLabel()" (click)="aiLabel.set(!aiLabel())"
+            [style.background]="aiLabel() ? '#0095f6' : '#dbdbdb'"
+            class="relative box-content h-6 w-11 flex-shrink-0 rounded-full border-0 p-0 outline-none transition-colors">
+            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"
+              [style.transform]="aiLabel() ? 'translateX(20px)' : 'translateX(0)'"></span>
+          </button>
+        </div>
+
+        <div class="border-t border-[#dbdbdb]">
+          <button type="button" (click)="toggleShareTo()" [attr.aria-expanded]="shareToExpanded()"
+            class="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-[#262626] hover:bg-[#fafafa]">
+            {{ 'create.shareTo' | translate }}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+              [style.transform]="shareToExpanded() ? 'rotate(180deg)' : 'rotate(0)'" class="transition-transform">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          @if (shareToExpanded()) {
+          <p class="px-4 pb-3 text-xs text-[#8e8e8e]">{{ 'create.shareToHint' | translate }}</p>
+          }
+        </div>
+
+        <div class="border-t border-[#dbdbdb]">
+          <button type="button" (click)="toggleAccessibility()" [attr.aria-expanded]="accessibilityExpanded()"
+            class="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-[#262626] hover:bg-[#fafafa]">
+            {{ 'create.accessibility' | translate }}
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"
+              [style.transform]="accessibilityExpanded() ? 'rotate(180deg)' : 'rotate(0)'" class="transition-transform">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          @if (accessibilityExpanded()) {
+          <div class="flex flex-col gap-3 px-4 pb-4">
+            <p class="text-xs leading-4 text-[#8e8e8e]">{{ 'create.altTextHint' | translate }}</p>
+            @if (activeFile(); as current) {
+            <div class="flex items-center gap-3">
+              @if (current.isVideo) {
+              <video [src]="current.previewUrl" class="h-14 w-14 flex-shrink-0 rounded object-cover" muted></video>
+              } @else {
+              <img [src]="current.previewUrl" alt="" class="h-14 w-14 flex-shrink-0 rounded object-cover" />
+              }
+              <input type="text" [value]="currentAltText()" (input)="onAltTextInput($event)"
+                [placeholder]="'create.altTextPlaceholder' | translate" [disabled]="submitting()"
+                class="min-w-0 flex-1 rounded border border-[#dbdbdb] px-3 py-2 text-sm text-[#262626] placeholder:text-[#8e8e8e] focus:border-[#8e8e8e] focus:outline-none" />
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

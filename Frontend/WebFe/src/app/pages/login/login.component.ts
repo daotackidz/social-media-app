@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
+import { apiErrorOf } from '../../core/api';
 import { AuthService, LoginRequest } from '../../services/auth.service';
 import { AppInputComponent } from '../../shared/components';
 
@@ -22,6 +23,7 @@ import { AppInputComponent } from '../../shared/components';
 export class LoginComponent {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   isLoading = signal(false);
   error = signal('');
@@ -50,11 +52,13 @@ export class LoginComponent {
     this.authService.login(payload).pipe(
       finalize(() => this.isLoading.set(false))
     ).subscribe({
-      next: () => {
-        this.success.set('Đăng nhập thành công, đang chuyển hướng...');
+      next: (response) => {
+        this.success.set(response.message || 'Đăng nhập thành công, đang chuyển hướng...');
+        this.router.navigateByUrl('/home');
       },
-      error: () => {
-        this.error.set('Đăng nhập thất bại. Kiểm tra email và mật khẩu.');
+      error: (err) => {
+        const apiError = apiErrorOf(err);
+        this.error.set(apiError?.message || 'Đăng nhập thất bại. Kiểm tra email và mật khẩu.');
       }
     });
   }

@@ -21,9 +21,15 @@ html {
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
+      // Material generates its own component-scoped font-family rules from
+      // these tokens (higher specificity than the plain `inherit` reset on
+      // native <button>/<input>), so pointing them at the same --font-family
+      // var keeps Material controls (mat-icon-button, mat-select, ...)
+      // visually consistent with the rest of the page instead of silently
+      // falling back to the system font.
       typography: (
-        plain-family: -apple-system,
-        brand-family: -apple-system,
+        plain-family: var(--font-family),
+        brand-family: var(--font-family),
         bold-weight: 600,
         medium-weight: 600,
         regular-weight: 400,
@@ -53,6 +59,18 @@ a {
   &:hover {
     text-decoration: underline;
   }
+}
+
+// The create-post dialog (CreatePostModalComponent) draws its own card
+// (rounded white surface + shadow) sized responsively via Tailwind classes,
+// so MatDialog's default surface chrome is stripped here instead of pinning
+// a width/height on the panel itself.
+.create-post-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 0;
+  border-radius: 0.75rem;
+  box-shadow: none;
+  background: transparent;
+  overflow: visible;
 }
 
 /* You can add global styles to this file, and also import other style files */

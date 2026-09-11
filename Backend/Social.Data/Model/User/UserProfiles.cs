@@ -46,6 +46,16 @@ namespace Social.Data.Model.User
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
         public string? Address { get; set; }
 
+        [Column("bio")]
+        [Display(Name = "Tiểu sử")]
+        [MaxLength(SocialConstantsLengths.Length500, ErrorMessage = "{0} quá dài")]
+        public string? Bio { get; set; }
+
+        [Column("website_url")]
+        [Display(Name = "Website")]
+        [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
+        public string? WebsiteUrl { get; set; }
+
         #region Related Tables
 
         [ForeignKey(nameof(UserId))]

@@ -1,6 +1,7 @@
 using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Social.Common.Constants;
 using Social.Data.Model.File;
 using Social.Data.Model.Request.User;
 using Social.Data.Model.Response.User;
@@ -36,20 +37,20 @@ namespace Social.WebApi.Controllers
             {
                 if (!IsCurrentUserAuthenticated)
                 {
-                    return Unauthorized();
+                    return ApiUnauthorized();
                 }
 
                 var email = CurrentUserEmail;
 
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    return Unauthorized();
+                    return ApiUnauthorized();
                 }
 
                 var user = await _userRepository.GetByEmailAsync(email);
                 if (user is null)
                 {
-                    return ApiNotFound("Không tìm thấy tài khoản.");
+                    return ApiNotFound("Không tìm thấy tài khoản.", ErrorCode.USER_NOT_FOUND);
                 }
 
                 var profile = await _userRepository.GetProfileByUserIdAsync(user.Id);

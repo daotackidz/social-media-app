@@ -1,6 +1,7 @@
 using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Social.Common.Constants;
 using Social.Data.Model.Request.File;
 using Social.Service.Social.File.Interface;
 using Social.WebApi.Infrastructure.Services;
@@ -25,19 +26,18 @@ namespace Social.WebApi.Controllers
         {
             try
             {
-
                 if (request.File == null || request.File.Length == 0)
                 {
-                    return BadRequest(new { message = "File is required." });
+                    return ApiBadRequest("File là bắt buộc.", ErrorCode.FILE_REQUIRED);
                 }
 
                 if (string.IsNullOrWhiteSpace(request.ContainerName))
                 {
-                    return BadRequest(new { message = "Container name is required." });
+                    return ApiBadRequest("Tên container là bắt buộc.", ErrorCode.CONTAINER_REQUIRED);
                 }
 
                 var url = await _fileService.UploadFileAsync(request.File, request.ContainerName);
-                return Ok(new { url });
+                return ApiOk(new { url }, "Tải file lên thành công.");
             }
             catch (RequestFailedException ex)
             {
@@ -52,16 +52,16 @@ namespace Social.WebApi.Controllers
         {
             if (string.IsNullOrWhiteSpace(containerName) || string.IsNullOrWhiteSpace(fileName))
             {
-                return BadRequest(new { message = "Container name and file name are required." });
+                return ApiBadRequest("Tên container và tên file là bắt buộc.", ErrorCode.CONTAINER_REQUIRED);
             }
 
             var deleted = await _fileService.DeleteFileAsync(containerName, fileName);
             if (!deleted)
             {
-                return NotFound(new { message = "File not found or already deleted." });
+                return ApiNotFound("Không tìm thấy file hoặc đã bị xoá.", ErrorCode.FILE_NOT_FOUND);
             }
 
-            return Ok(new { message = "File deleted successfully." });
+            return ApiOk<object>(null!, "Xoá file thành công.");
         }
     }
 }

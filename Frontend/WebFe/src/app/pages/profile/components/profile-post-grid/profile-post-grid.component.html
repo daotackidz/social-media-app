@@ -1,0 +1,86 @@
+<div>
+  <!-- Tabs -->
+  <div class="flex justify-center gap-11 border-t border-[#dbdbdb]" role="tablist">
+    @for (tab of tabs; track tab.id) {
+    <button type="button" role="tab" [attr.aria-selected]="activeTab === tab.id" (click)="selectTab(tab.id)"
+      [class]="activeTab === tab.id
+        ? 'flex items-center gap-1.5 border-t border-[#262626] px-1 py-4 text-xs font-semibold tracking-wide text-[#262626]'
+        : 'flex items-center gap-1.5 border-t border-transparent px-1 py-4 text-xs font-semibold tracking-wide text-[#8e8e8e] hover:text-[#262626]'">
+      @switch (tab.id) {
+        @case ('posts') {
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+        }
+        @case ('reels') {
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M8 3l3 6M15 3l3 6" />
+        </svg>
+        }
+        @case ('tagged') {
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0-6 6c0 5 6 12 6 12s6-7 6-12a6 6 0 0 0-6-6z" /><circle cx="12" cy="9" r="2" />
+        </svg>
+        }
+      }
+      {{ tab.labelKey | translate }}
+    </button>
+    }
+  </div>
+
+  <!-- Grid -->
+  @if (posts.length) {
+  <div class="grid grid-cols-3 gap-1">
+    @for (post of posts; track post.id) {
+    <div class="group relative aspect-square overflow-hidden"
+      [style.background]="post.coverUrl ? null : 'linear-gradient(135deg,' + post.avatarColor + '33,' + post.avatarColor + '11)'">
+      @if (post.coverUrl) {
+      <img [src]="post.coverUrl" alt="" class="absolute inset-0 h-full w-full object-cover" />
+      } @else {
+      <svg class="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 text-[#26262622]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+      </svg>
+      }
+
+      @if (post.type === 'carousel') {
+      <svg class="absolute right-2 top-2 h-[18px] w-[18px] text-white drop-shadow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M4 8a2 2 0 0 1 2-2h1V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+      </svg>
+      }
+      @if (post.type === 'video') {
+      <svg class="absolute right-2 top-2 h-[18px] w-[18px] text-white drop-shadow" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M14.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9.5l5-5V8zM4 20V5h10.5v14z M4 20l6-4-6-4" />
+      </svg>
+      }
+
+      <div class="absolute inset-0 flex items-center justify-center gap-6 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+        <span class="flex items-center gap-1.5 text-sm font-semibold text-white">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="white" aria-hidden="true">
+            <path d="M12 21s-6.716-4.35-9.33-8.34C1.02 10.2 1.4 6.63 4.2 4.8c2.24-1.46 4.9-.9 6.4 1.03l1.4 1.8 1.4-1.8c1.5-1.93 4.16-2.49 6.4-1.03 2.8 1.83 3.18 5.4 1.53 7.86C18.716 16.65 12 21 12 21z" />
+          </svg>
+          {{ formatCount(post.likeCount) }}
+        </span>
+        <span class="flex items-center gap-1.5 text-sm font-semibold text-white">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="white" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.66 1.4 5.03 3.6 6.63V22l3.6-2.16c.9.19 1.84.29 2.8.29 5.52 0 10-3.94 10-8.83S17.52 2 12 2z" />
+          </svg>
+          {{ formatCount(post.commentCount) }}
+        </span>
+      </div>
+    </div>
+    }
+  </div>
+  } @else {
+  <div class="flex flex-col items-center gap-3 py-24 text-center">
+    <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#262626]">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
+      </svg>
+    </div>
+    <p class="text-2xl font-light text-[#262626]">{{ 'profile.noPosts' | translate }}</p>
+    <p class="text-sm text-[#8e8e8e]">{{ 'profile.noPostsHint' | translate }}</p>
+  </div>
+  }
+</div>
