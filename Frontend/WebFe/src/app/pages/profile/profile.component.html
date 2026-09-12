@@ -2,9 +2,26 @@
   <app-sidebar-nav class="sticky top-0 h-dvh flex-shrink-0" [currentUsername]="currentUsername()" [avatarUrl]="currentAvatarUrl()" />
 
   <div class="flex w-full max-w-[935px] flex-col">
-    @if (profile(); as p) {
+    @if (loading()) {
+    <main class="flex flex-1 flex-col items-center justify-center gap-3 py-24">
+      <span class="h-8 w-8 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+      <p class="text-sm text-[#8e8e8e]">{{ 'profile.loading' | translate }}</p>
+    </main>
+    } @else if (loadError()) {
+    <main class="flex flex-1 items-center justify-center py-24">
+      <p class="text-sm text-[#8e8e8e]">{{ 'profile.loadError' | translate }}</p>
+    </main>
+    } @else if (profile(); as p) {
     <main class="flex-1 px-5 py-8 sm:px-10">
       <app-profile-header [profile]="p" />
+
+      @if (p.isCurrentUser && pendingRequestsCount() > 0) {
+      <a routerLink="/accounts/follow-requests"
+        class="mt-6 flex items-center justify-between rounded-xl border border-[#dbdbdb] bg-[#fafafa] px-4 py-3 text-sm text-[#262626] no-underline hover:bg-[#f0f0f0] hover:no-underline">
+        <span>{{ 'profile.pendingRequests' | translate: { count: pendingRequestsCount() } }}</span>
+        <span class="font-semibold text-[#0095f6]">{{ 'profile.viewRequests' | translate }}</span>
+      </a>
+      }
 
       @if (highlights().length || p.isCurrentUser) {
       <app-profile-highlights class="mt-8 block" [highlights]="highlights()" [isCurrentUser]="p.isCurrentUser" />
@@ -12,7 +29,8 @@
 
       <hr class="my-8 border-t border-[#dbdbdb]" />
 
-      <app-profile-post-grid [posts]="posts()" [activeTab]="activeTab()" (tabChange)="onTabChange($event)" />
+      <app-profile-post-grid [posts]="posts()" [activeTab]="activeTab()" [loading]="postsLoading()"
+        [isPrivateLocked]="p.isPrivate && !p.isCurrentUser && !p.isFollowing" (tabChange)="onTabChange($event)" />
     </main>
     }
 

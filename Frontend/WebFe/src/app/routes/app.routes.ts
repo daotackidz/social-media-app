@@ -8,7 +8,7 @@ import { guestGuard } from '../guards/guest.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'register',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
@@ -27,6 +27,21 @@ export const routes: Routes = [
     loadComponent: () => import('../pages/verify-otp/verify-otp.component').then((m) => m.VerifyOtpComponent)
   },
   {
+    path: 'forgot-password',
+    canActivate: [guestGuard],
+    loadComponent: () => import('../pages/forgot-password/forgot-password.component').then((m) => m.ForgotPasswordComponent)
+  },
+  {
+    path: 'forgot-password/verify',
+    canActivate: [guestGuard],
+    loadComponent: () => import('../pages/forgot-password/forgot-password-otp.component').then((m) => m.ForgotPasswordOtpComponent)
+  },
+  {
+    path: 'reset-password',
+    canActivate: [guestGuard],
+    loadComponent: () => import('../pages/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent)
+  },
+  {
     path: 'home',
     canActivate: [authGuard],
     loadComponent: () => import('../pages/home/home.component').then((m) => m.HomeComponent)
@@ -35,6 +50,16 @@ export const routes: Routes = [
     path: 'profile/:username',
     canActivate: [authGuard],
     loadComponent: () => import('../pages/profile/profile.component').then((m) => m.ProfileComponent)
+  },
+  {
+    path: 'accounts/edit',
+    canActivate: [authGuard],
+    loadComponent: () => import('../pages/edit-profile/edit-profile.component').then((m) => m.EditProfileComponent)
+  },
+  {
+    path: 'accounts/follow-requests',
+    canActivate: [authGuard],
+    loadComponent: () => import('../pages/follow-requests/follow-requests.component').then((m) => m.FollowRequestsComponent)
   },
   {
     path: 'vn',

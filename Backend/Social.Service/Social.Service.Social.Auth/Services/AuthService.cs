@@ -187,6 +187,21 @@ namespace Social.Service.Social.Auth.Services
             }, null);
         }
 
+        public async Task<(bool Success, string Message, ErrorCode? Code)> VerifyForgotPasswordOtpAsync(VerifyForgotPasswordOtpRequest request)
+        {
+            var email = request.Email.ToLowerInvariant().Trim();
+
+            var pending = await _pendingRepository.GetLatestAsync(email, PendingOtpType.ForgotPassword);
+
+            if (pending is null || DateTime.UtcNow > pending.ExpiresAt)
+                return (false, "Mã xác nhận đã hết hạn hoặc không tồn tại.", ErrorCode.OTP_EXPIRED);
+
+            if (pending.OtpCode != request.OtpCode.Trim())
+                return (false, "Mã xác nhận không đúng.", ErrorCode.OTP_INVALID);
+
+            return (true, "Xác thực mã thành công.", null);
+        }
+
         public async Task<(bool Success, string Message, ErrorCode? Code)> ResetPasswordAsync(ResetPasswordRequest request)
         {
             var email = request.Email.ToLowerInvariant().Trim();

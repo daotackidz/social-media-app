@@ -56,6 +56,10 @@ namespace Social.Data.Model.User
         [MaxLength(SocialConstantsLengths.Length200, ErrorMessage = "{0} quá dài")]
         public string? WebsiteUrl { get; set; }
 
+        [Column("is_private")]
+        [Display(Name = "Tài khoản riêng tư")]
+        public bool IsPrivate { get; set; }
+
         #region Related Tables
 
         [ForeignKey(nameof(UserId))]

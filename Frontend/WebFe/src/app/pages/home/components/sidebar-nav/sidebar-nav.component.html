@@ -3,45 +3,50 @@
 <div class="h-full flex-shrink-0" [style.width.px]="collapsedWidth" aria-hidden="true"></div>
 
 <nav (mouseenter)="onRailEnter()" (mouseleave)="onRailLeave()" [style.width.px]="railWidth()"
-  class="fixed left-0 top-0 z-40 flex h-dvh flex-col gap-1 overflow-hidden border-r border-[#dbdbdb] bg-white px-3 pb-6 pt-10 transition-[width] duration-150 ease-out"
+  [style.z-index]="expanded() ? 999 : 40" [style.background-color]="'#ffffff'"
+  class="fixed left-0 top-0 flex h-dvh flex-col gap-1 overflow-hidden bg-white px-3 pb-6 pt-10 transition-[width] duration-300 ease-in-out"
   aria-label="Instagram">
-  <a routerLink="/home" class="mb-8 flex items-center px-3" [class.justify-center]="!expanded()" aria-label="Instagram">
-    @if (expanded()) {
-    <img src="/instagram-logo.png" alt="Instagram" class="h-[29px] w-auto" />
-    } @else {
-    <img src="/icon-192.png" alt="Instagram" class="h-7 w-7 rounded-md" />
-    }
+  <a routerLink="/home" class="mb-8 flex items-center px-3" aria-label="Instagram">
+    <img src="/icon-192.png" alt="Instagram" class="h-7 w-7 flex-shrink-0 rounded-md" />
   </a>
 
   <a routerLink="/home"
-    class="flex items-center gap-4 whitespace-nowrap rounded-[24px] px-3 py-3 text-[15px] font-bold text-[#262626] transition hover:bg-[#fafafa]"
-    [class.justify-center]="!expanded()">
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-[15px] font-bold text-[#262626] transition hover:bg-[#efefef]">
     <img src="/assets/icons/nav-home.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-    @if (expanded()) { <span>{{ 'nav.home' | translate }}</span> }
+    <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.home' | translate }}</span>
   </a>
-
-  <button type="button" (click)="toggleSearch($event)"
-    class="flex items-center gap-4 whitespace-nowrap rounded-[24px] px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#fafafa]"
-    [class.justify-center]="!expanded()" [class.font-bold]="searchOpen()">
-    <img src="/assets/icons/nav-search.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-    @if (expanded()) { <span>{{ 'nav.search' | translate }}</span> }
-  </button>
 
   @for (item of staticItems; track item.labelKey) {
   <button type="button"
-    class="flex items-center gap-4 whitespace-nowrap rounded-[24px] px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#fafafa]"
-    [class.justify-center]="!expanded()">
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
     <img [src]="item.icon" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-    @if (expanded()) { <span>{{ item.labelKey | translate }}</span> }
+    <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ item.labelKey | translate }}</span>
   </button>
   }
 
+  <button type="button" (click)="toggleSearch($event)"
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]"
+    [class.font-bold]="searchOpen()">
+    <img src="/assets/icons/nav-search.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+    <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.search' | translate }}</span>
+  </button>
+
+  <button type="button"
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
+    <span class="relative flex-shrink-0">
+      <img src="/assets/icons/nav-notifications.svg" alt="" class="h-6 w-6" aria-hidden="true" />
+      @if (hasUnreadNotifications) {
+      <span class="absolute -right-[5px] -top-[2px] h-3 w-3 rounded-full border-2 border-white bg-[#ff3040]" aria-hidden="true"></span>
+      }
+    </span>
+    <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.notifications' | translate }}</span>
+  </button>
+
   <div class="relative">
     <button type="button" (click)="toggleCreateMenu(); $event.stopPropagation()"
-      class="flex w-full items-center gap-4 whitespace-nowrap rounded-[24px] px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#fafafa]"
-      [class.justify-center]="!expanded()">
+      class="flex w-full items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
       <img src="/assets/icons/nav-create.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-      @if (expanded()) { <span>{{ 'nav.create' | translate }}</span> }
+      <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.create' | translate }}</span>
     </button>
 
     @if (createMenuOpen()) {
@@ -68,24 +73,29 @@
   </div>
 
   <a [routerLink]="['/profile', currentUsername]"
-    class="flex items-center gap-4 whitespace-nowrap rounded-[24px] px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#fafafa]"
-    [class.justify-center]="!expanded()">
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
     @if (avatarUrl) {
-    <img [src]="avatarUrl" alt="" class="h-6 w-6 flex-shrink-0 rounded-full object-cover" />
+    <img [src]="avatarUrl" alt="" class="h-6 w-6 flex-shrink-0 rounded-full border border-black/10 object-cover" />
     } @else {
     <span
-      class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-white"
+      class="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-[10px] font-semibold text-white"
       [style.background]="'#405de6'">{{ avatarInitial }}</span>
     }
-    @if (expanded()) { <span>{{ 'nav.profile' | translate }}</span> }
+    <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.profile' | translate }}</span>
   </a>
 
-  <button type="button"
-    class="mt-auto flex items-center gap-4 whitespace-nowrap rounded-[24px] px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#fafafa]"
-    [class.justify-center]="!expanded()">
-    <img src="/assets/icons/nav-more.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-    @if (expanded()) { <span>{{ 'nav.more' | translate }}</span> }
-  </button>
+  <div class="mt-auto flex flex-col gap-1">
+    <button type="button"
+      class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
+      <img src="/assets/icons/nav-settings.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+      <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.settings' | translate }}</span>
+    </button>
+    <button type="button"
+      class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
+      <img src="/assets/icons/nav-meta.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+      <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.meta' | translate }}</span>
+    </button>
+  </div>
 </nav>
 
 @if (searchOpen()) {

@@ -54,6 +54,16 @@ public class AuthController : BaseApiController
             : ApiBadRequest(message, code ?? ErrorCode.VALIDATION_ERROR);
     }
 
+    [HttpPost("verify-forgot-password-otp")]
+    public async Task<IActionResult> VerifyForgotPasswordOtp([FromBody] VerifyForgotPasswordOtpRequest request)
+    {
+        var (success, message, code) = await _authService.VerifyForgotPasswordOtpAsync(request);
+
+        return success
+            ? ApiOk<object>(null!, message)
+            : ApiBadRequest(message, code ?? ErrorCode.VALIDATION_ERROR);
+    }
+
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
     {

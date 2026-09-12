@@ -29,5 +29,10 @@ namespace Social.Data.Model.Request.User
         public DateTime? DateOfBirth { get; set; }
         public ushort? Gender { get; set; }
         public string? Address { get; set; }
+        public string? Bio { get; set; }
+        public string? WebsiteUrl { get; set; }
+
+        /// <summary>Khi có giá trị, bật/tắt chế độ tài khoản riêng tư (yêu cầu duyệt follow).</summary>
+        public bool? IsPrivate { get; set; }
     }
 }

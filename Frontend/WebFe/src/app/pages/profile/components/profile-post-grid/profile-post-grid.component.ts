@@ -19,6 +19,9 @@ interface TabDef {
 export class ProfilePostGridComponent {
   @Input() posts: ProfilePost[] = [];
   @Input() activeTab: ProfileTab = 'posts';
+  @Input() loading = false;
+  /** True when this is someone else's private account we don't (yet) follow — posts are hidden, so show a locked placard instead of "no posts". */
+  @Input() isPrivateLocked = false;
   @Output() readonly tabChange = new EventEmitter<ProfileTab>();
 
   private readonly languageService = inject(LanguageService);

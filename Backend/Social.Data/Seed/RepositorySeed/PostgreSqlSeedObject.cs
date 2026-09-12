@@ -36,16 +36,20 @@ namespace Social.Data.Seed.RepositorySeed
                         .SelectMany(g => g)
                         .ToList();
 
+                    // Dùng AddRange/UpdateRange + SaveChanges thay vì BulkInsert/BulkUpdate của
+                    // Z.EntityFramework.Extensions — thư viện đó cần license trả phí (bản trial
+                    // đã hết hạn), trong khi dữ liệu seed chỉ vài chục dòng nên không cần bulk thật.
                     if (dataAddOrUpdate.Adds.Count != 0)
                     {
                         dataAddOrUpdate.Adds = dataAddOrUpdate.Adds.Where(x => x != null).ToList();
-                        context.BulkInsert<TObjectMappingDatabase>(dataAddOrUpdate.Adds);
+                        context.Set<TObjectMappingDatabase>().AddRange(dataAddOrUpdate.Adds);
                     }
                     if (dataAddOrUpdate.Updates.Any())
                     {
                         dataAddOrUpdate.Updates = dataAddOrUpdate.Updates.Where(x => x != null).ToList();
-                        context.BulkUpdate<TObjectMappingDatabase>(dataAddOrUpdate.Updates);
+                        context.Set<TObjectMappingDatabase>().UpdateRange(dataAddOrUpdate.Updates);
                     }
+                    context.SaveChanges();
                 }
                 catch (Exception exception)
                 {

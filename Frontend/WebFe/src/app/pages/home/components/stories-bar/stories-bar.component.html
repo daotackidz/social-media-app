@@ -1,18 +1,18 @@
-<div class="flex gap-4 overflow-x-auto rounded-lg border border-[#dbdbdb] bg-white py-4 pl-4" role="list" aria-label="Stories">
-  @for (story of stories; track story.id) {
-  <div class="flex w-16 flex-shrink-0 flex-col items-center gap-2" role="listitem">
-    <div class="relative flex h-14 w-14 items-center justify-center rounded-full p-[3px]"
-      [class.bg-[#dbdbdb]]="story.viewed"
+<div class="flex gap-4 overflow-x-auto border-b border-[#dbdfe4] bg-white px-2 py-4" role="list" aria-label="Stories">
+  @for (story of stories; track story.userId) {
+  <div class="flex w-[74px] flex-shrink-0 flex-col items-center gap-2" role="listitem">
+    <div class="relative flex h-[74px] w-[74px] items-center justify-center rounded-full p-[3px]"
+      [class.bg-[#dbdfe4]]="story.viewed"
       [style.background-image]="story.viewed ? null : 'url(/assets/icons/story-ring.png)'"
       [style.background-size]="'cover'">
       @if (story.avatarUrl) {
-      <img [src]="story.avatarUrl" alt="" class="h-full w-full rounded-full border-2 border-white object-cover" />
+      <img [src]="story.avatarUrl" alt="" loading="lazy" class="h-full w-full rounded-full border-2 border-white object-cover" />
       } @else {
-      <span class="flex h-full w-full items-center justify-center rounded-full border-2 border-white text-sm font-semibold text-white"
+      <span class="flex h-full w-full items-center justify-center rounded-full border-2 border-white text-base font-semibold text-white"
         [style.background]="story.avatarColor">{{ story.avatarInitial }}</span>
       }
     </div>
-    <span class="max-w-full truncate text-center text-xs text-[#262626]">{{ story.username }}</span>
+    <span class="max-w-full truncate text-center text-xs text-[#0c1014]">{{ story.username }}</span>
   </div>
   }
 </div>

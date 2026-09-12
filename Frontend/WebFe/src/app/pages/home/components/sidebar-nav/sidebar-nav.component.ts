@@ -42,13 +42,14 @@ export class SidebarNavComponent {
   readonly railWidth = computed(() => (this.expanded() ? RAIL_EXPANDED_WIDTH : RAIL_COLLAPSED_WIDTH));
   readonly collapsedWidth = RAIL_COLLAPSED_WIDTH;
 
-  /** Items with no page built yet — rendered as inert (no navigation). */
+  /** Items with no page built yet — rendered as inert (no navigation). Order matches the Figma rail. */
   readonly staticItems: NavItem[] = [
-    { icon: '/assets/icons/nav-explore.svg', labelKey: 'nav.explore' },
     { icon: '/assets/icons/nav-reels.svg', labelKey: 'nav.reels' },
-    { icon: '/assets/icons/nav-messages.svg', labelKey: 'nav.messages' },
-    { icon: '/assets/icons/nav-notifications.svg', labelKey: 'nav.notifications' }
+    { icon: '/assets/icons/nav-messages.svg', labelKey: 'nav.messages' }
   ];
+
+  /** Fixture flag — no notifications backend yet, so the unread dot is just switched on for the demo. */
+  readonly hasUnreadNotifications = true;
 
   get avatarInitial(): string {
     return (this.currentUsername || '?').charAt(0).toUpperCase();

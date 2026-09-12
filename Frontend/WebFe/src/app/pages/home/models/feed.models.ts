@@ -1,16 +1,11 @@
 export interface StoryItem {
-  id: string;
+  userId: string;
   username: string;
   /** Real photo, when the API has one — falls back to avatarColor/avatarInitial when absent. */
   avatarUrl?: string;
   avatarColor: string;
   avatarInitial: string;
   viewed: boolean;
-}
-
-export interface PostComment {
-  username: string;
-  text: string;
 }
 
 export interface FeedPost {
@@ -20,14 +15,23 @@ export interface FeedPost {
   avatarUrl?: string;
   avatarColor: string;
   avatarInitial: string;
-  postedAgoMinutes: number;
-  likes: number;
+  /** Every image attached to the post, in display order — empty when the API has none yet (falls back to a plain avatarColor tile). */
+  imageUrls: string[];
   caption: string;
-  commentsCount: number;
-  comments: PostComment[];
+  likeCount: number;
+  commentCount: number;
+  /** ISO datetime string from the API. */
+  createdDate: string;
 }
 
-export type SuggestionReason = 'followsYou' | 'followedBy';
+/** One page of an infinite-scroll list — mirrors Backend's PagedResponse<T>. */
+export interface FeedPage<T> {
+  items: T[];
+  hasMore: boolean;
+}
+
+/** "new" = no follow-graph signal yet (fallback filler), just a plain "Suggested for you" caption. */
+export type SuggestionReason = 'followsYou' | 'followedBy' | 'new';
 
 export interface SuggestedUser {
   id: string;

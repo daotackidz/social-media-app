@@ -35,6 +35,10 @@ namespace Social.Data.Model.Post
         [Column("is_primary", Order = 4)]
         public bool IsPrimary { get; set; }
 
+        [Column("alt_text")]
+        [Display(Name = "Mô tả thay thế")]
+        public string? AltText { get; set; }
+
         #region Related Tables
 
         [ForeignKey(nameof(PostId))]

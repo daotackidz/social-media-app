@@ -142,6 +142,16 @@ namespace Social.Repository.Social.User.Repository
                 .ToDictionaryAsync(g => g.Key, g => g.First());
         }
 
+        public async Task<Dictionary<Guid, Users>> GetUsersByIdsAsync(IEnumerable<Guid> userIds)
+        {
+            var ids = userIds.Distinct().ToList();
+            if (ids.Count == 0) return new Dictionary<Guid, Users>();
+
+            return await _db.Users
+                .Where(u => ids.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u);
+        }
+
         public async Task<Dictionary<Guid, string>> GetPrimaryAvatarUrlsByUserIdsAsync(IEnumerable<Guid> userIds)
         {
             var ids = userIds.Distinct().ToList();

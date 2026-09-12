@@ -11,21 +11,12 @@ namespace Social.Data.Seed
     {
         public static void Seed(DbContext dbContext)
         {
-            #region SCRIPTS
-
-            if (System.Diagnostics.Debugger.IsAttached == false)
-            {
-                System.Diagnostics.Debugger.Launch();
-            }
-
-            #endregion SCRIPTS
-
             #region Data
 
             var schema = SocialSeedingDbContext.GetDefaultSchemaName(dbContext);
 
-            //PostgreSqlSeedObject<RecordStatusSeed, RecordStatus>.Seed(dbContext, schema);
-            //PostgreSqlSeedObject<UserSeed, Users>.Seed(dbContext, schema);
+            PostgreSqlSeedObject<RecordStatusSeed, RecordStatus>.Seed(dbContext, schema);
+            PostgreSqlSeedObject<UserSeed, Users>.Seed(dbContext, schema);
 
             #endregion Data
         }

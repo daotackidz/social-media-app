@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { FooterComponent } from '../../shared/layout/footer/footer.component';
 import { AuthService } from '../../services/auth.service';
 import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
@@ -14,6 +15,8 @@ import { SidebarNavComponent } from '../home/components/sidebar-nav/sidebar-nav.
   selector: 'app-profile',
   standalone: true,
   imports: [
+    TranslatePipe,
+    RouterLink,
     SidebarNavComponent,
     FooterComponent,
     ProfileHeaderComponent,
@@ -32,6 +35,14 @@ export class ProfileComponent {
   readonly highlights = signal<ProfileHighlight[]>([]);
   readonly posts = signal<ProfilePost[]>([]);
   readonly activeTab = signal<ProfileTab>('posts');
+  /** Only fetched/shown when viewing one's own profile — see the banner in profile.component.html. */
+  readonly pendingRequestsCount = signal(0);
+
+  /** Covers the profile header fetch — the part everything else on the page depends on. */
+  readonly loading = signal(true);
+  readonly loadError = signal(false);
+  /** Covers just the post grid, so switching tabs doesn't block the whole page. */
+  readonly postsLoading = signal(false);
 
   /** For the sidebar's own avatar/link — falls back to the email prefix for a
    *  session logged in before the backend started returning a real username. */
@@ -52,9 +63,31 @@ export class ProfileComponent {
       const username = params.get('username') || this.currentUsername();
       this.viewedUsername = username;
       this.activeTab.set('posts');
+      this.loading.set(true);
+      this.loadError.set(false);
+      this.profile.set(null);
 
-      this.profileService.getProfile(username).subscribe((p) => this.profile.set(p));
-      this.profileService.getHighlights(username).subscribe((h) => this.highlights.set(h));
+      this.profileService.getProfile(username).subscribe({
+        next: (p) => {
+          this.profile.set(p);
+          this.loading.set(false);
+          this.pendingRequestsCount.set(0);
+          if (p.isCurrentUser) {
+            this.profileService.getFollowRequests().subscribe({
+              next: (requests) => this.pendingRequestsCount.set(requests.length),
+              error: () => this.pendingRequestsCount.set(0)
+            });
+          }
+        },
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set(true);
+        }
+      });
+      this.profileService.getHighlights(username).subscribe({
+        next: (h) => this.highlights.set(h),
+        error: () => this.highlights.set([])
+      });
       this.loadPosts('posts');
     });
   }
@@ -65,6 +98,16 @@ export class ProfileComponent {
   }
 
   private loadPosts(tab: ProfileTab): void {
-    this.profileService.getPosts(this.viewedUsername, tab).subscribe((p) => this.posts.set(p));
+    this.postsLoading.set(true);
+    this.profileService.getPosts(this.viewedUsername, tab).subscribe({
+      next: (p) => {
+        this.posts.set(p);
+        this.postsLoading.set(false);
+      },
+      error: () => {
+        this.posts.set([]);
+        this.postsLoading.set(false);
+      }
+    });
   }
 }

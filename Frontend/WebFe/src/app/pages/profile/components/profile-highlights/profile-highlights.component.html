@@ -14,7 +14,7 @@
   @for (highlight of highlights; track highlight.id) {
   <div class="flex w-20 flex-shrink-0 flex-col items-center gap-2" role="listitem">
     @if (highlight.coverUrl) {
-    <img [src]="highlight.coverUrl" alt="" class="h-16 w-16 rounded-full border border-[#dbdbdb] object-cover" />
+    <img [src]="highlight.coverUrl" alt="" loading="lazy" class="h-16 w-16 rounded-full border border-[#dbdbdb] object-cover" />
     } @else {
     <span class="flex h-16 w-16 items-center justify-center rounded-full border border-[#dbdbdb] text-lg font-semibold text-white"
       [style.background]="highlight.avatarColor">{{ highlight.avatarInitial }}</span>

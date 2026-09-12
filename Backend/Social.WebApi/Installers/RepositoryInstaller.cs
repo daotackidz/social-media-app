@@ -4,6 +4,8 @@ using Social.Repository.Social.Relation.Interface;
 using Social.Repository.Social.Relation.Repository;
 using Social.Repository.Social.Search.Interface;
 using Social.Repository.Social.Search.Repository;
+using Social.Repository.Social.Story.Interface;
+using Social.Repository.Social.Story.Repository;
 using Social.Repository.Social.User.Interface;
 using Social.Repository.Social.User.Repository;
 
@@ -18,6 +20,7 @@ namespace Social.WebApi.Installers
             services.AddScoped<IUserRelationRepository, UserRelationRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
+            services.AddScoped<IStoryRepository, StoryRepository>();
         }
     }
 }

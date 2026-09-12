@@ -1,6 +1,10 @@
 <Solution>
   <Folder Name="/Social.Repository/">
     <Project Path="../Social.Repository/Social.Repository.Social.User/Social.Repository.Social.User.csproj" />
+    <Project Path="../Social.Repository/Social.Repository.Social.Post/Social.Repository.Social.Post.csproj" />
+    <Project Path="../Social.Repository/Social.Repository.Social.Relation/Social.Repository.Social.Relation.csproj" />
+    <Project Path="../Social.Repository/Social.Repository.Social.Search/Social.Repository.Social.Search.csproj" />
+    <Project Path="../Social.Repository/Social.Repository.Social.Story/Social.Repository.Social.Story.csproj" />
   </Folder>
   <Folder Name="/Social.Service/">
     <Project Path="../Social.Service/Social.Service.Social.Auth/Social.Service.Social.Auth.csproj" />

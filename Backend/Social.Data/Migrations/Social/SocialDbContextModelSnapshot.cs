@@ -433,6 +433,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("id")
                         .HasColumnOrder(0);
 
+                    b.Property<string>("AltText")
+                        .HasColumnType("text")
+                        .HasColumnName("alt_text");
+
                     b.Property<Guid>("CreatedByUserId")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by_user_id");
@@ -778,6 +782,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("integer")
                         .HasColumnName("display_order");
 
+                    b.Property<bool>("IsAiGenerated")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_ai_generated");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_delete");
@@ -831,6 +839,129 @@ namespace Social.Data.Migrations.Social
                         .HasDatabaseName("ix_posts_user_id");
 
                     b.ToTable("posts", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.Stories", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<DateTime>("ExpiresDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("expires_date")
+                        .HasColumnOrder(3);
+
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("file_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("Id")
+                        .HasName("pk_stories");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_stories_created_by_user_id");
+
+                    b.HasIndex("FileId")
+                        .HasDatabaseName("ix_stories_file_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_stories_reccord_status_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_stories_user_id");
+
+                    b.ToTable("stories", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.StoryViews", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("story_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<Guid>("ViewerUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("viewer_user_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id")
+                        .HasName("pk_story_views");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_story_views_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_story_views_reccord_status_id");
+
+                    b.HasIndex("StoryId")
+                        .HasDatabaseName("ix_story_views_story_id");
+
+                    b.HasIndex("ViewerUserId")
+                        .HasDatabaseName("ix_story_views_viewer_user_id");
+
+                    b.ToTable("story_views", "app_social");
                 });
 
             modelBuilder.Entity("Social.Data.Model.User.UserFiles", b =>
@@ -1109,6 +1240,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("integer")
                         .HasColumnName("gender")
                         .HasColumnOrder(6);
+
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_private");
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
@@ -1712,6 +1847,66 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.Story.Stories", b =>
+                {
+                    b.HasOne("Social.Data.Model.File.Files", "Files")
+                        .WithMany()
+                        .HasForeignKey("FileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_stories_files_file_id");
+
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_stories_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_stories_users_user_id");
+
+                    b.Navigation("Files");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.StoryViews", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_views_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.Story.Stories", "Stories")
+                        .WithMany("StoryViews")
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_views_stories_story_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Viewer")
+                        .WithMany()
+                        .HasForeignKey("ViewerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_views_users_viewer_user_id");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Stories");
+
+                    b.Navigation("Viewer");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.UserFiles", b =>
                 {
                     b.HasOne("Social.Data.Model.File.Files", "Files")
@@ -1878,6 +2073,11 @@ namespace Social.Data.Migrations.Social
             modelBuilder.Entity("Social.Data.Model.Post.Posts", b =>
                 {
                     b.Navigation("PostFiles");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.Stories", b =>
+                {
+                    b.Navigation("StoryViews");
                 });
 #pragma warning restore 612, 618
         }

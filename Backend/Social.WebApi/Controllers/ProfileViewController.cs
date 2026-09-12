@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Social.Common.Constants;
 using Social.Data.Model.Post;
 using Social.Data.Model.Response.Profile;
+using Social.Data.Model.User;
 using Social.Repository.Social.Post.Interface;
 using Social.Repository.Social.Relation.Interface;
 using Social.Repository.Social.User.Interface;
@@ -55,8 +56,11 @@ namespace Social.WebApi.Controllers
             var followersCount = await _relationRepository.CountFollowersAsync(user.Id);
             var followingCount = await _relationRepository.CountFollowingAsync(user.Id);
 
-            var isFollowing = !isCurrentUser && CurrentUserId.HasValue
-                && await _relationRepository.IsFollowingAsync(CurrentUserId.Value, user.Id);
+            var relationStatus = !isCurrentUser && CurrentUserId.HasValue
+                ? await _relationRepository.GetRelationStatusAsync(CurrentUserId.Value, user.Id)
+                : null;
+            var isFollowing = relationStatus == UserRelations.UserRelationStatus.Accepted;
+            var isRequested = relationStatus == UserRelations.UserRelationStatus.Pending;
 
             var followedByUsername = await _relationRepository.GetFollowedByUsernameAsync(CurrentUserId, user.Id);
 
@@ -71,6 +75,8 @@ namespace Social.WebApi.Controllers
                 Verified = user.IsVerified ?? false,
                 IsCurrentUser = isCurrentUser,
                 IsFollowing = isFollowing,
+                IsRequested = isRequested,
+                IsPrivate = profile?.IsPrivate ?? false,
                 FollowedByUsername = followedByUsername,
                 PostsCount = postsCount,
                 FollowersCount = followersCount,
@@ -106,6 +112,22 @@ namespace Social.WebApi.Controllers
                 return ApiNotFound("Không tìm thấy người dùng.", ErrorCode.USERNAME_NOT_FOUND);
             }
 
+            var isCurrentUser = CurrentUserId == user.Id;
+            if (!isCurrentUser)
+            {
+                var profile = await _userRepository.GetProfileByUserIdAsync(user.Id);
+                if (profile?.IsPrivate == true)
+                {
+                    var isFollowing = CurrentUserId.HasValue
+                        && await _relationRepository.IsFollowingAsync(CurrentUserId.Value, user.Id);
+                    if (!isFollowing)
+                    {
+                        // Riêng tư và người xem chưa được duyệt follow — không lộ bài viết.
+                        return ApiOk(new List<ProfilePostResponse>());
+                    }
+                }
+            }
+
             var posts = tab.Equals("tagged", StringComparison.OrdinalIgnoreCase)
                 ? await _postRepository.GetTaggedByUserIdAsync(user.Id, 0, PageSize)
                 : await _postRepository.GetByUserIdAsync(user.Id, 0, PageSize);
@@ -132,10 +154,21 @@ namespace Social.WebApi.Controllers
                 return ApiNotFound("Không tìm thấy người dùng.", ErrorCode.USERNAME_NOT_FOUND);
             }
 
-            await _relationRepository.FollowAsync(CurrentUserId.Value, user.Id);
+            if (user.Id == CurrentUserId.Value)
+            {
+                return ApiBadRequest("Không thể tự theo dõi chính mình.", ErrorCode.VALIDATION_ERROR);
+            }
+
+            var profile = await _userRepository.GetProfileByUserIdAsync(user.Id);
+            var requiresApproval = profile?.IsPrivate ?? false;
+
+            var status = await _relationRepository.FollowAsync(CurrentUserId.Value, user.Id, requiresApproval);
+            var isFollowing = status == UserRelations.UserRelationStatus.Accepted;
+            var isRequested = status == UserRelations.UserRelationStatus.Pending;
             var followersCount = await _relationRepository.CountFollowersAsync(user.Id);
 
-            return ApiOk(new { isFollowing = true, followersCount }, "Đã theo dõi.");
+            var message = isRequested ? "Đã gửi yêu cầu theo dõi." : "Đã theo dõi.";
+            return ApiOk(new { isFollowing, isRequested, followersCount }, message);
         }
 
         [HttpPost("{username}/unfollow")]
@@ -152,7 +185,67 @@ namespace Social.WebApi.Controllers
             await _relationRepository.UnfollowAsync(CurrentUserId.Value, user.Id);
             var followersCount = await _relationRepository.CountFollowersAsync(user.Id);
 
-            return ApiOk(new { isFollowing = false, followersCount }, "Đã bỏ theo dõi.");
+            return ApiOk(new { isFollowing = false, isRequested = false, followersCount }, "Đã bỏ theo dõi.");
+        }
+
+        /// <summary>Follow requests waiting on the signed-in user's approval (their account is private).</summary>
+        [HttpGet("follow-requests")]
+        public async Task<IActionResult> GetFollowRequests()
+        {
+            if (!CurrentUserId.HasValue) return ApiUnauthorized();
+
+            var requests = await _relationRepository.GetPendingFollowRequestsAsync(CurrentUserId.Value);
+            var followerIds = requests.Select(r => r.FollowerUserId).ToList();
+
+            var usersById = await _userRepository.GetUsersByIdsAsync(followerIds);
+            var profilesById = await _userRepository.GetProfilesByUserIdsAsync(followerIds);
+            var avatars = await _userRepository.GetPrimaryAvatarUrlsByUserIdsAsync(followerIds);
+
+            var items = requests.Select(r =>
+            {
+                usersById.TryGetValue(r.FollowerUserId, out var user);
+                profilesById.TryGetValue(r.FollowerUserId, out var profile);
+
+                return new FollowRequestResponse
+                {
+                    RelationId = r.RelationId,
+                    UserId = r.FollowerUserId,
+                    Username = user?.UserName ?? string.Empty,
+                    FullName = profile?.FullName,
+                    AvatarUrl = avatars.TryGetValue(r.FollowerUserId, out var avatarUrl) ? avatarUrl : null
+                };
+            }).ToList();
+
+            return ApiOk(items);
+        }
+
+        [HttpPost("follow-requests/{relationId:guid}/approve")]
+        public async Task<IActionResult> ApproveFollowRequest(Guid relationId)
+        {
+            if (!CurrentUserId.HasValue) return ApiUnauthorized();
+
+            var followerId = await _relationRepository.ApproveFollowRequestAsync(relationId, CurrentUserId.Value);
+            if (followerId is null)
+            {
+                return ApiNotFound("Không tìm thấy yêu cầu theo dõi.", ErrorCode.VALIDATION_ERROR);
+            }
+
+            var followersCount = await _relationRepository.CountFollowersAsync(CurrentUserId.Value);
+            return ApiOk(new { followersCount }, "Đã chấp nhận yêu cầu theo dõi.");
+        }
+
+        [HttpPost("follow-requests/{relationId:guid}/reject")]
+        public async Task<IActionResult> RejectFollowRequest(Guid relationId)
+        {
+            if (!CurrentUserId.HasValue) return ApiUnauthorized();
+
+            var success = await _relationRepository.RejectFollowRequestAsync(relationId, CurrentUserId.Value);
+            if (!success)
+            {
+                return ApiNotFound("Không tìm thấy yêu cầu theo dõi.", ErrorCode.VALIDATION_ERROR);
+            }
+
+            return ApiOk<object>(null!, "Đã từ chối yêu cầu theo dõi.");
         }
 
         #region Private helpers
@@ -177,7 +270,8 @@ namespace Social.WebApi.Controllers
                 Type = type,
                 CoverUrl = cover?.Files?.StoragePath,
                 LikeCount = post.LikeCount,
-                CommentCount = post.CommentCount
+                CommentCount = post.CommentCount,
+                IsAiGenerated = post.IsAiGenerated
             };
         }
 

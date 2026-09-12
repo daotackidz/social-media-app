@@ -2,10 +2,11 @@ import { Component, computed, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { FooterComponent } from './shared/layout';
+import { AppSplashComponent } from './core/splash/app-splash.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FooterComponent],
+  imports: [RouterOutlet, FooterComponent, AppSplashComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })

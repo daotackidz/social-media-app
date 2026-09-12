@@ -6,6 +6,11 @@ namespace Social.Data.Model.Request.User
         [Required, EmailAddress] string Email
     );
 
+    public record VerifyForgotPasswordOtpRequest(
+        [Required, EmailAddress] string Email,
+        [Required] string OtpCode
+    );
+
     public record ResetPasswordRequest(
         [Required, EmailAddress] string Email,
         [Required] string OtpCode,

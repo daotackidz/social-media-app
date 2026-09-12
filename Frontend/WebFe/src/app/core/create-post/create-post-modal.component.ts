@@ -1,5 +1,6 @@
-import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, ElementRef, HostListener, inject, OnDestroy, signal, viewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 import { LanguageService } from '../i18n/language.service';
@@ -35,15 +36,43 @@ export class CreatePostModalComponent implements OnDestroy {
   readonly error = signal('');
   readonly dragActive = signal(false);
 
-  /** Visual-only for now — the backend has no field for it yet. */
+  /** Whether the post is labeled as containing AI-generated content ("AI info"). */
   readonly aiLabel = signal(false);
   readonly shareToExpanded = signal(false);
   readonly accessibilityExpanded = signal(false);
 
-  /** Alt text per file index — visual-only, keyed by index since the backend has no field for it yet. */
+  /** Alt text per file index, sent to the backend keyed by each file's position. */
   readonly altTexts = signal<Record<number, string>>({});
 
   readonly captionMaxLength = 2200;
+
+  readonly emojiPickerOpen = signal(false);
+  readonly commonEmojis = [
+    '😂', '😮', '😞', '😡', '👏', '🔥', '🎉', '💯',
+    '❤️', '🤣', '🤗', '🤔', '☺️', '😊',
+    '😍', '😘', '😭', '😅', '😁', '😉', '🙌', '🙏',
+    '👍', '👎', '👋', '💪', '✨', '🎂', '😎', '🥳',
+    '😢', '😱', '🤩', '🤯', '🙄', '😴', '🤤', '🤢',
+    '💔', '💕', '⭐', '✅', '🌸', '🍀', '☀️', '🌙'
+  ];
+  private readonly captionInput = viewChild<ElementRef<HTMLTextAreaElement>>('captionInput');
+  private readonly emojiPicker = viewChild<ElementRef<HTMLElement>>('emojiPicker');
+
+  /** Set while a discard-confirmation is up, remembering what to do if the user confirms. */
+  readonly discardIntent = signal<'close' | 'back' | null>(null);
+  private readonly closeSub: Subscription;
+
+  constructor() {
+    // Editing a post is easy to lose by mis-clicking the backdrop or hitting Esc, so
+    // route both through the same confirmation as the back button instead of closing outright.
+    this.dialogRef.disableClose = true;
+    this.closeSub = this.dialogRef.backdropClick().subscribe(() => this.requestClose());
+    this.closeSub.add(
+      this.dialogRef.keydownEvents().subscribe((event) => {
+        if (event.key === 'Escape') this.requestClose();
+      })
+    );
+  }
 
   readonly activeFile = computed(() => this.files()[this.activeIndex()] ?? null);
 
@@ -87,6 +116,36 @@ export class CreatePostModalComponent implements OnDestroy {
     this.altTexts.update((prev) => ({ ...prev, [index]: value }));
   }
 
+  toggleEmojiPicker(): void {
+    this.emojiPickerOpen.update((v) => !v);
+  }
+
+  addEmoji(emoji: string): void {
+    const textarea = this.captionInput()?.nativeElement;
+    const start = textarea?.selectionStart ?? this.caption().length;
+    const end = textarea?.selectionEnd ?? this.caption().length;
+    const value = this.caption();
+    const next = value.slice(0, start) + emoji + value.slice(end);
+    this.caption.set(next);
+    this.emojiPickerOpen.set(false);
+
+    if (textarea) {
+      queueMicrotask(() => {
+        const cursor = start + emoji.length;
+        textarea.focus();
+        textarea.setSelectionRange(cursor, cursor);
+      });
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.emojiPickerOpen()) return;
+    const target = event.target as Node;
+    if (this.emojiPicker()?.nativeElement.contains(target)) return;
+    this.emojiPickerOpen.set(false);
+  }
+
   toggleShareTo(): void {
     this.shareToExpanded.update((v) => !v);
   }
@@ -121,13 +180,29 @@ export class CreatePostModalComponent implements OnDestroy {
   }
 
   /** No crop/adjust step exists yet, so "back" just restarts the picker. */
-  goBack(): void {
-    if (this.submitting()) return;
+  private goBack(): void {
     for (const f of this.files()) URL.revokeObjectURL(f.previewUrl);
     this.files.set([]);
     this.activeIndex.set(0);
     this.error.set('');
     this.step.set('picker');
+  }
+
+  /** Editing has started (there's media and/or a caption to lose), so confirm first. */
+  onBackClick(): void {
+    if (this.submitting()) return;
+    this.discardIntent.set('back');
+  }
+
+  confirmDiscard(): void {
+    const intent = this.discardIntent();
+    this.discardIntent.set(null);
+    if (intent === 'back') this.goBack();
+    else if (intent === 'close') this.dialogRef.close();
+  }
+
+  cancelDiscard(): void {
+    this.discardIntent.set(null);
   }
 
   share(): void {
@@ -137,7 +212,7 @@ export class CreatePostModalComponent implements OnDestroy {
     this.setSubmitting(true);
     this.error.set('');
 
-    this.createPostService.createPost(selected.map((s) => s.file), this.caption()).subscribe({
+    this.createPostService.createPost(selected.map((s) => s.file), this.caption(), this.aiLabel(), this.altTexts()).subscribe({
       next: () => {
         this.setSubmitting(false);
         this.dialogRef.close();
@@ -154,10 +229,18 @@ export class CreatePostModalComponent implements OnDestroy {
     this.dialogRef.close();
   }
 
+  /** Backdrop click / Esc while composing: confirm before discarding, like the back button. */
+  private requestClose(): void {
+    if (this.submitting()) return;
+    if (this.step() === 'compose') {
+      this.discardIntent.set('close');
+    } else {
+      this.dialogRef.close();
+    }
+  }
+
   private setSubmitting(value: boolean): void {
     this.submitting.set(value);
-    // Keep the backdrop/Esc from closing the dialog mid-upload.
-    this.dialogRef.disableClose = value;
   }
 
   private addFiles(fileList: FileList | null): void {
@@ -184,6 +267,7 @@ export class CreatePostModalComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.closeSub.unsubscribe();
     for (const f of this.files()) URL.revokeObjectURL(f.previewUrl);
   }
 }

@@ -1,15 +1,15 @@
 @if (visible.length) {
-<section class="flex flex-col gap-3 border-b border-[#dbdbdb] bg-white py-5">
+<section class="flex flex-col gap-3 border-b border-[#dbdfe4] bg-white py-5">
   <div class="flex items-center justify-between px-1 text-sm">
-    <span class="font-semibold text-[#8e8e8e]">{{ 'home.suggestions' | translate }}</span>
+    <span class="font-semibold text-[#6a717a]">{{ 'home.suggestions' | translate }}</span>
     <button type="button" class="font-semibold text-[#0095f6]">{{ 'home.seeAll' | translate }}</button>
   </div>
 
   <div class="flex gap-3 overflow-x-auto px-1 pb-1">
     @for (user of visible; track user.id) {
-    <div class="relative w-[174px] flex-shrink-0 rounded border border-[#dbdbdb] p-0">
+    <div class="relative w-[174px] flex-shrink-0 rounded border border-[#dbdfe4] p-0">
       <button type="button" (click)="dismiss(user.id)" [attr.aria-label]="'Bỏ qua ' + (user.fullName || user.username)"
-        class="absolute right-2 top-2 rounded-full p-0.5 text-[#8e8e8e] hover:bg-[#fafafa]">
+        class="absolute right-2 top-2 rounded-full p-0.5 text-[#6a717a] hover:bg-[#f3f5f7]">
         <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
           <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 4l16 16M20 4L4 20" />
         </svg>
@@ -17,26 +17,28 @@
 
       <div class="flex flex-col items-center gap-3 px-5 pb-5 pt-6">
         @if (user.avatarUrl) {
-        <img [src]="user.avatarUrl" alt="" class="h-[54px] w-[54px] rounded-full object-cover" />
+        <img [src]="user.avatarUrl" alt="" loading="lazy" class="h-[54px] w-[54px] rounded-full object-cover" />
         } @else {
         <span class="flex h-[54px] w-[54px] items-center justify-center rounded-full text-lg font-semibold text-white"
           [style.background]="user.avatarColor">{{ (user.fullName || user.username).charAt(0).toUpperCase() }}</span>
         }
 
         <div class="flex flex-col items-center gap-0.5 text-center">
-          <span class="text-sm text-[#262626]">{{ user.fullName || user.username }}</span>
-          <span class="text-xs text-[#8e8e8e]">
+          <span class="text-sm text-[#0c1014]">{{ user.fullName || user.username }}</span>
+          <span class="text-xs text-[#6a717a]">
             @if (user.reason === 'followsYou') {
               {{ 'home.followsYou' | translate }}
-            } @else {
+            } @else if (user.reason === 'followedBy') {
               {{ 'home.followedBy' | translate: { name: user.reasonName || '' } }}
+            } @else {
+              {{ 'home.newSuggestion' | translate }}
             }
           </span>
         </div>
 
         <button type="button" (click)="toggleFollow(user.id)"
           class="w-full rounded-lg py-1.5 text-sm font-semibold transition"
-          [ngClass]="isFollowed(user.id) ? 'bg-[#efefef] text-[#262626]' : 'bg-[#0095f6] text-white'">
+          [ngClass]="isFollowed(user.id) ? 'bg-[#efefef] text-[#0c1014]' : 'bg-[#0095f6] text-white'">
           {{ (isFollowed(user.id) ? 'home.following' : 'home.follow') | translate }}
         </button>
       </div>

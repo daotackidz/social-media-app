@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, map } from 'rxjs';
+import { Observable, Subject, map, tap } from 'rxjs';
 
 import { ApiResponse } from '../api';
 
@@ -28,6 +28,12 @@ export class CreatePostService {
   private readonly http = inject(HttpClient);
   private readonly dialog = inject(MatDialog);
 
+  /** Emits every time a post is successfully created, so any open page (Home's
+   *  feed, a profile grid, ...) can refresh itself without the modal needing
+   *  to know who's listening. */
+  private readonly postCreatedSource = new Subject<CreatedPost>();
+  readonly postCreated$ = this.postCreatedSource.asObservable();
+
   async open(): Promise<void> {
     // Lazy-imported so the dialog's code isn't in the initial bundle for
     // pages that never open it.
@@ -41,20 +47,23 @@ export class CreatePostService {
     });
   }
 
-  createPost(files: File[], caption: string): Observable<CreatedPost> {
+  createPost(files: File[], caption: string, isAiGenerated: boolean, altTexts: Record<number, string>): Observable<CreatedPost> {
     const formData = new FormData();
     if (caption.trim()) {
       formData.append('Caption', caption.trim());
     }
-    for (const file of files) {
+    formData.append('IsAiGenerated', String(isAiGenerated));
+    files.forEach((file, index) => {
       formData.append('Files', file, file.name);
-    }
+      formData.append('AltTexts', altTexts[index]?.trim() ?? '');
+    });
 
     return this.http.post<ApiResponse<CreatePostApiResponse>>('/api/posts', formData).pipe(
       map((res) => {
         const data = res.data!;
         return { id: data.id, type: data.type, coverUrl: data.coverUrl ?? undefined };
-      })
+      }),
+      tap((created) => this.postCreatedSource.next(created))
     );
   }
 }

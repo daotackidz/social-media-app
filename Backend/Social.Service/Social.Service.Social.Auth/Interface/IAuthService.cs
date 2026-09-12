@@ -10,6 +10,7 @@ namespace Social.Service.Social.Auth.Interface
         Task<(bool Success, string Message, UserResponse? Data, ErrorCode? Code)> VerifyEmailAsync(VerifyEmailRequest request);
         Task<(bool Success, string Message, ErrorCode? Code)> ResendOtpAsync(string email);
         Task<(bool Success, string Message, ForgotPasswordResponse? Data, ErrorCode? Code)> ForgotPasswordAsync(ForgotPasswordRequest request);
+        Task<(bool Success, string Message, ErrorCode? Code)> VerifyForgotPasswordOtpAsync(VerifyForgotPasswordOtpRequest request);
         Task<(bool Success, string Message, ErrorCode? Code)> ResetPasswordAsync(ResetPasswordRequest request);
     }
 }

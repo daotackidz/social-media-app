@@ -30,13 +30,27 @@
   </div>
 
   <!-- Grid -->
-  @if (posts.length) {
+  @if (loading) {
+  <div class="flex items-center justify-center py-24">
+    <span class="h-8 w-8 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+  </div>
+  } @else if (isPrivateLocked) {
+  <div class="flex flex-col items-center gap-3 py-24 text-center">
+    <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#262626]">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
+      </svg>
+    </div>
+    <p class="text-2xl font-light text-[#262626]">{{ 'profile.privateTitle' | translate }}</p>
+    <p class="text-sm text-[#8e8e8e]">{{ 'profile.privateHint' | translate }}</p>
+  </div>
+  } @else if (posts.length) {
   <div class="grid grid-cols-3 gap-1">
     @for (post of posts; track post.id) {
     <div class="group relative aspect-square overflow-hidden"
       [style.background]="post.coverUrl ? null : 'linear-gradient(135deg,' + post.avatarColor + '33,' + post.avatarColor + '11)'">
       @if (post.coverUrl) {
-      <img [src]="post.coverUrl" alt="" class="absolute inset-0 h-full w-full object-cover" />
+      <img [src]="post.coverUrl" alt="" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
       } @else {
       <svg class="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 text-[#26262622]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />

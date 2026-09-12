@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 
 import { ApiResponse } from '../../../core/api';
 import { avatarColorFor, avatarInitialFor } from '../utils/avatar-color';
-import { FollowResult, ProfileHighlight, ProfilePost, ProfileTab, UserProfileSummary } from '../models/profile.models';
+import { FollowRequestItem, FollowResult, ProfileHighlight, ProfilePost, ProfileTab, UserProfileSummary } from '../models/profile.models';
 
 interface ProfileApiResponse {
   id: string;
@@ -16,10 +16,26 @@ interface ProfileApiResponse {
   verified: boolean;
   isCurrentUser: boolean;
   isFollowing: boolean;
+  isRequested: boolean;
+  isPrivate: boolean;
   followedByUsername?: string | null;
   postsCount: number;
   followersCount: number;
   followingCount: number;
+}
+
+interface FollowResultApiResponse {
+  isFollowing: boolean;
+  isRequested: boolean;
+  followersCount: number;
+}
+
+interface FollowRequestApiResponse {
+  relationId: string;
+  userId: string;
+  username: string;
+  fullName?: string | null;
+  avatarUrl?: string | null;
 }
 
 interface ProfileHighlightApiResponse {
@@ -67,14 +83,33 @@ export class ProfileService {
   }
 
   follow(username: string): Observable<FollowResult> {
-    return this.http.post<ApiResponse<FollowResult>>(`${this.baseUrl}/${username}/follow`, {}).pipe(
+    return this.http.post<ApiResponse<FollowResultApiResponse>>(`${this.baseUrl}/${username}/follow`, {}).pipe(
       map((res) => res.data!)
     );
   }
 
   unfollow(username: string): Observable<FollowResult> {
-    return this.http.post<ApiResponse<FollowResult>>(`${this.baseUrl}/${username}/unfollow`, {}).pipe(
+    return this.http.post<ApiResponse<FollowResultApiResponse>>(`${this.baseUrl}/${username}/unfollow`, {}).pipe(
       map((res) => res.data!)
+    );
+  }
+
+  /** Incoming follow requests waiting on the signed-in user's approval (their own account is private). */
+  getFollowRequests(): Observable<FollowRequestItem[]> {
+    return this.http.get<ApiResponse<FollowRequestApiResponse[]>>(`${this.baseUrl}/follow-requests`).pipe(
+      map((res) => (res.data ?? []).map((r) => this.toFollowRequest(r)))
+    );
+  }
+
+  approveFollowRequest(relationId: string): Observable<{ followersCount: number }> {
+    return this.http.post<ApiResponse<{ followersCount: number }>>(`${this.baseUrl}/follow-requests/${relationId}/approve`, {}).pipe(
+      map((res) => res.data!)
+    );
+  }
+
+  rejectFollowRequest(relationId: string): Observable<void> {
+    return this.http.post<ApiResponse<null>>(`${this.baseUrl}/follow-requests/${relationId}/reject`, {}).pipe(
+      map(() => undefined)
     );
   }
 
@@ -90,12 +125,26 @@ export class ProfileService {
       verified: data.verified,
       isCurrentUser: data.isCurrentUser,
       isFollowing: data.isFollowing,
+      isRequested: data.isRequested,
+      isPrivate: data.isPrivate,
       followedByUsername: data.followedByUsername ?? undefined,
       stats: {
         postsCount: data.postsCount,
         followersCount: data.followersCount,
         followingCount: data.followingCount
       }
+    };
+  }
+
+  private toFollowRequest(data: FollowRequestApiResponse): FollowRequestItem {
+    return {
+      relationId: data.relationId,
+      userId: data.userId,
+      username: data.username,
+      fullName: data.fullName ?? undefined,
+      avatarUrl: data.avatarUrl ?? undefined,
+      avatarColor: avatarColorFor(data.username),
+      avatarInitial: avatarInitialFor(data.fullName || data.username)
     };
   }
 

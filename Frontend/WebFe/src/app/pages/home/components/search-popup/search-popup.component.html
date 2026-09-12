@@ -67,7 +67,7 @@
 
 <ng-template #avatar let-user>
   @if (user.avatarUrl) {
-  <img [src]="user.avatarUrl" alt="" class="h-11 w-11 flex-shrink-0 rounded-full object-cover" />
+  <img [src]="user.avatarUrl" alt="" loading="lazy" class="h-11 w-11 flex-shrink-0 rounded-full object-cover" />
   } @else {
   <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#405de6] text-sm font-semibold text-white">
     {{ (user.fullName || user.username).charAt(0).toUpperCase() }}
@@ -80,10 +80,11 @@
     <span class="flex items-center gap-1 truncate text-sm font-semibold text-[#262626]">
       {{ user.username }}
       @if (user.verified) {
-      <svg viewBox="0 0 24 24" width="12" height="12" aria-label="Đã xác minh" class="flex-shrink-0 text-[#0095f6]">
-        <path fill="currentColor"
-          d="M12 2l2.4 1.2 2.6-.6 1.6 2.2 2.6.9.1 2.7 1.9 1.9-1 2.5 1 2.5-1.9 1.9-.1 2.7-2.6.9-1.6 2.2-2.6-.6L12 22l-2.4-1.2-2.6.6-1.6-2.2-2.6-.9-.1-2.7L.8 13.7l1-2.5-1-2.5 1.9-1.9.1-2.7 2.6-.9 1.6-2.2 2.6.6z" />
-        <path fill="white" d="M10.6 15.4L7.5 12.3l1.1-1.1 2 2 4.8-4.8 1.1 1.1z" />
+      <svg aria-label="Đã xác minh" class="flex-shrink-0" fill="rgb(0, 149, 246)" height="12" role="img" viewBox="0 0 40 40" width="12">
+        <title>Đã xác minh</title>
+        <path
+          d="M19.998 3.094 14.638 0l-2.972 5.15H5.432v6.354L0 14.64 3.094 20 0 25.359l5.432 3.137v5.905h5.975L14.638 40l5.36-3.094L25.358 40l3.232-5.6h6.162v-6.01L40 25.359 36.905 20 40 14.641l-5.248-3.03v-6.46h-6.419L25.358 0l-5.36 3.094Zm7.415 11.225 2.254 2.287-11.43 11.5-6.835-6.93 2.244-2.258 4.587 4.581 9.18-9.18Z"
+          fill-rule="evenodd" />
       </svg>
       }
     </span>

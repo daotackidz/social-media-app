@@ -3,6 +3,7 @@ using Social.Data.Model.Base;
 using Social.Data.Model.File;
 using Social.Data.Model.Notification;
 using Social.Data.Model.Post;
+using Social.Data.Model.Story;
 using Social.Data.Model.User;
 
 namespace Social.Data.Repository
@@ -35,6 +36,8 @@ namespace Social.Data.Repository
         public DbSet<PostSaves> PostSaves { get; set; }
         public DbSet<PostTags> PostTags { get; set; }
         public DbSet<Notifications> Notifications { get; set; }
+        public DbSet<Stories> Stories { get; set; }
+        public DbSet<StoryViews> StoryViews { get; set; }
         public DbSet<Files> Files { get; set; }
         public DbSet<FileVersion> FileVersions { get; set; }
         public DbSet<RecordStatus> RecordStatuses { get; set; }

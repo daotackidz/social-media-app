@@ -1,0 +1,137 @@
+<div class="flex min-h-dvh w-full justify-center bg-white">
+  <app-sidebar-nav class="sticky top-0 h-dvh flex-shrink-0" [currentUsername]="sidebarUsername()" [avatarUrl]="sidebarAvatarUrl()" />
+
+  <div class="flex w-full max-w-[935px] flex-col">
+    <main class="mx-auto w-full max-w-[540px] flex-1 px-5 py-10 sm:px-0">
+      <div class="mb-8 flex items-center gap-3">
+        <a [routerLink]="['/profile', sidebarUsername()]" aria-label="Quay lại trang cá nhân"
+          class="rounded-full p-1 text-[#262626] hover:bg-[#fafafa]">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7" />
+          </svg>
+        </a>
+        <h1 class="text-xl font-semibold text-[#262626]">{{ 'editProfile.title' | translate }}</h1>
+      </div>
+
+      @if (loading()) {
+      <div class="flex flex-col items-center gap-3 py-16">
+        <span class="h-8 w-8 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+        <p class="text-sm text-[#8e8e8e]">{{ 'editProfile.loading' | translate }}</p>
+      </div>
+      } @else {
+      <form (ngSubmit)="save()" class="flex flex-col gap-6">
+        <!-- Avatar -->
+        <div class="flex items-center gap-4 rounded-xl bg-[#fafafa] p-4">
+          @if (avatarPreviewUrl(); as preview) {
+          <img [src]="preview" alt="" class="h-14 w-14 flex-shrink-0 rounded-full object-cover" />
+          } @else if (avatarUrl()) {
+          <img [src]="avatarUrl()" alt="" loading="lazy" class="h-14 w-14 flex-shrink-0 rounded-full object-cover" />
+          } @else {
+          <span class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full text-lg font-semibold text-white"
+            [style.background]="avatarColor()">{{ avatarInitial() }}</span>
+          }
+
+          <div class="min-w-0 flex-1">
+            <p class="truncate font-semibold text-[#262626]">{{ username() }}</p>
+            <p class="truncate text-sm text-[#8e8e8e]">{{ fullName() || username() }}</p>
+          </div>
+
+          <button type="button" (click)="avatarInput.click()" class="flex-shrink-0 text-sm font-semibold text-[#0095f6] hover:text-[#1877f2]">
+            {{ 'editProfile.changePhoto' | translate }}
+          </button>
+          <input #avatarInput type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
+        </div>
+
+        <!-- Full name -->
+        <label class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-[#262626]">{{ 'editProfile.fullName' | translate }}</span>
+          <input type="text" [value]="fullName()" (input)="onFullNameInput($event)" maxlength="100"
+            class="rounded-lg border border-[#dbdbdb] px-3 py-2 text-sm text-[#262626] focus:border-[#8e8e8e] focus:outline-none" />
+        </label>
+
+        <!-- Bio -->
+        <label class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-[#262626]">{{ 'editProfile.bio' | translate }}</span>
+          <textarea rows="3" [value]="bio()" (input)="onBioInput($event)" [attr.maxlength]="bioMaxLength"
+            class="resize-none rounded-lg border border-[#dbdbdb] px-3 py-2 text-sm text-[#262626] focus:border-[#8e8e8e] focus:outline-none"></textarea>
+          <span class="self-end text-xs text-[#8e8e8e]">{{ bio().length }}/{{ bioMaxLength }}</span>
+        </label>
+
+        <!-- Gender -->
+        <label class="flex flex-col gap-2">
+          <span class="text-sm font-semibold text-[#262626]">{{ 'editProfile.gender' | translate }}</span>
+          <select [value]="gender()" (change)="onGenderChange($event)"
+            class="rounded-lg border border-[#dbdbdb] bg-white px-3 py-2 text-sm text-[#262626] focus:border-[#8e8e8e] focus:outline-none">
+            <option [value]="0">{{ 'editProfile.genderUnspecified' | translate }}</option>
+            <option [value]="1">{{ 'editProfile.genderMale' | translate }}</option>
+            <option [value]="2">{{ 'editProfile.genderFemale' | translate }}</option>
+            <option [value]="3">{{ 'editProfile.genderOther' | translate }}</option>
+          </select>
+        </label>
+
+        <!-- Date of birth — same day/month/year selects as the register page -->
+        <div class="flex w-full flex-col gap-1.5">
+          <label class="inline-flex items-center gap-1 font-semibold text-[#262626]">
+            {{ 'editProfile.dateOfBirth' | translate }}
+            <span aria-label="Thông tin ngày sinh">
+              <svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true" class="h-5 w-5">
+                <path d="M12 22a10 10 0 1 1 10-10 10.011 10.011 0 0 1-10 10zm0-18.5a8.5 8.5 0 1 0 8.5 8.5A8.51 8.51 0 0 0 12 3.5z" />
+                <circle cx="12" cy="16" r="1" />
+                <path d="M12 14a.75.75 0 0 1-.75-.75v-1a.75.75 0 0 1 .75-.75 1.5 1.5 0 1 0-1.5-1.5.75.75 0 0 1-1.5 0 3 3 0 1 1 3.75 2.9v.345A.75.75 0 0 1 12 14z" />
+              </svg>
+            </span>
+          </label>
+          <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <app-select [control]="day" label="Ngày" [options]="dayOptions" errorMessage="Vui lòng chọn ngày"></app-select>
+            <app-select [control]="month" label="Tháng" [options]="monthOptions" errorMessage="Vui lòng chọn tháng"></app-select>
+            <app-select [control]="year" label="Năm" [options]="yearOptions" errorMessage="Vui lòng chọn năm"></app-select>
+          </div>
+          @if (dobPartial()) {
+          <p class="text-sm text-[#ed4956]">Vui lòng chọn đầy đủ ngày, tháng và năm sinh hoặc không chọn cả ba.</p>
+          }
+        </div>
+
+        <!-- Private account -->
+        <div class="flex items-center justify-between gap-3 rounded-xl bg-[#fafafa] px-4 py-3">
+          <div class="flex flex-col gap-0.5 pr-2">
+            <span class="text-sm font-semibold text-[#262626]">{{ 'editProfile.privateAccount' | translate }}</span>
+            <span class="text-xs leading-4 text-[#8e8e8e]">{{ 'editProfile.privateAccountHint' | translate }}</span>
+          </div>
+          <button type="button" role="switch" [attr.aria-checked]="isPrivate()" (click)="toggleIsPrivate()"
+            [style.background]="isPrivate() ? '#0095f6' : '#dbdbdb'"
+            class="relative box-content h-6 w-11 flex-shrink-0 rounded-full border-0 p-0 outline-none transition-colors">
+            <span class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform"
+              [style.transform]="isPrivate() ? 'translateX(20px)' : 'translateX(0)'"></span>
+          </button>
+        </div>
+
+        @if (error()) {
+        <p class="text-sm text-[#ed4956]">{{ error() | translate }}</p>
+        }
+        @if (successMessage()) {
+        <p class="text-sm text-[#00a400]">{{ successMessage() | translate }}</p>
+        }
+
+        <button type="submit" [disabled]="saving()"
+          class="flex items-center gap-2 self-start rounded-lg bg-[#0095f6] px-6 py-2 text-sm font-semibold text-white hover:bg-[#1877f2] disabled:opacity-60">
+          @if (saving()) {
+          <span class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"></span>
+          }
+          {{ (saving() ? 'editProfile.saving' : 'editProfile.save') | translate }}
+        </button>
+      </form>
+      }
+    </main>
+
+    <app-footer />
+  </div>
+
+  @if (saving()) {
+  <!-- Full-page overlay: covers the whole viewport (not just this form) while the
+       save request is in flight, so it's unmistakable something is happening. -->
+  <div class="fixed inset-0 z-[2000] flex flex-col items-center justify-center gap-3 bg-white/80 backdrop-blur-sm">
+    <span class="h-9 w-9 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+    <p class="text-sm text-[#8e8e8e]">{{ 'editProfile.saving' | translate }}</p>
+  </div>
+  }
+</div>

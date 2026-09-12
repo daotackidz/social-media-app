@@ -66,6 +66,7 @@ namespace Social.WebApi.Controllers
                 Caption = request.Caption?.Trim() ?? string.Empty,
                 Content = request.Caption?.Trim() ?? string.Empty,
                 Privacy = PostEntity.PostPrivacy.Public,
+                IsAiGenerated = request.IsAiGenerated,
                 CreatedByUserId = userId
             };
 
@@ -96,6 +97,8 @@ namespace Social.WebApi.Controllers
                 };
                 await _userRepository.AddFileAsync(fileMeta);
 
+                var altText = i < request.AltTexts.Count ? request.AltTexts[i]?.Trim() : null;
+
                 postFiles.Add(new PostFileEntity
                 {
                     Id = Guid.NewGuid(),
@@ -103,6 +106,7 @@ namespace Social.WebApi.Controllers
                     FileId = fileMeta.Id,
                     FileType = isVideo ? PostFileEntity.PostFileType.Video : PostFileEntity.PostFileType.Image,
                     IsPrimary = i == 0,
+                    AltText = string.IsNullOrWhiteSpace(altText) ? null : altText,
                     CreatedByUserId = userId
                 });
             }
@@ -119,7 +123,8 @@ namespace Social.WebApi.Controllers
                 Type = type,
                 CoverUrl = coverUrl,
                 LikeCount = 0,
-                CommentCount = 0
+                CommentCount = 0,
+                IsAiGenerated = post.IsAiGenerated
             }, "Đăng bài viết thành công.");
         }
     }

@@ -28,6 +28,47 @@ namespace Social.WebApi.Controllers
             _fileService = fileService;
         }
 
+        /// <summary>Current user's own editable profile fields, for the "edit profile" form.</summary>
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMyProfile()
+        {
+            if (!IsCurrentUserAuthenticated)
+            {
+                return ApiUnauthorized();
+            }
+
+            var email = CurrentUserEmail;
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return ApiUnauthorized();
+            }
+
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user is null)
+            {
+                return ApiNotFound("Không tìm thấy tài khoản.", ErrorCode.USER_NOT_FOUND);
+            }
+
+            var profile = await _userRepository.GetProfileByUserIdAsync(user.Id);
+            var avatar = await _userRepository.GetPrimaryAvatarAsync(user.Id);
+
+            return ApiOk(new UserResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Username = user.UserName,
+                FullName = profile?.FullName ?? user.UserName,
+                Bio = profile?.Bio,
+                WebsiteUrl = profile?.WebsiteUrl,
+                Gender = profile?.Gender,
+                DateOfBirth = profile?.DateOfBirth,
+                CreatedDate = user.CreatedDate,
+                AvatarUrl = avatar?.Files?.StoragePath,
+                IsPrivate = profile?.IsPrivate ?? false
+            });
+        }
+
         [HttpPut("update-profile")]
         [Authorize]
         [Consumes("multipart/form-data")]
@@ -96,6 +137,21 @@ namespace Social.WebApi.Controllers
                     profile.Gender = request.Gender.Value;
                 }
 
+                if (!string.IsNullOrWhiteSpace(request.Bio))
+                {
+                    profile.Bio = request.Bio.Trim();
+                }
+
+                if (!string.IsNullOrWhiteSpace(request.WebsiteUrl))
+                {
+                    profile.WebsiteUrl = request.WebsiteUrl.Trim();
+                }
+
+                if (request.IsPrivate.HasValue)
+                {
+                    profile.IsPrivate = request.IsPrivate.Value;
+                }
+
                 await _userRepository.UpdateProfileAsync(profile);
 
                 string? avatarUrl;
@@ -140,10 +196,15 @@ namespace Social.WebApi.Controllers
                 {
                     Id = user.Id,
                     Email = user.Email,
+                    Username = user.UserName,
                     FullName = profile.FullName,
+                    Bio = profile.Bio,
+                    WebsiteUrl = profile.WebsiteUrl,
+                    Gender = profile.Gender,
                     DateOfBirth = profile.DateOfBirth,
                     CreatedDate = user.CreatedDate,
-                    AvatarUrl = avatarUrl
+                    AvatarUrl = avatarUrl,
+                    IsPrivate = profile.IsPrivate
                 }, "Cập nhật hồ sơ thành công.");
             }
 

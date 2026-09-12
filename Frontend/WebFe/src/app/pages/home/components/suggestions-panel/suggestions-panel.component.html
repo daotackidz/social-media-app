@@ -2,16 +2,16 @@
   <!-- Current user -->
   <div class="flex items-center gap-3 px-1">
     @if (currentUser.avatarUrl) {
-    <img [src]="currentUser.avatarUrl" alt="" class="h-14 w-14 flex-shrink-0 rounded-full object-cover" />
+    <img [src]="currentUser.avatarUrl" alt="" loading="lazy" class="h-11 w-11 flex-shrink-0 rounded-full border border-black/10 object-cover" />
     } @else {
-    <span class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full text-lg font-semibold text-white"
+    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-base font-semibold text-white"
       [style.background]="currentUser.avatarColor">{{ (currentUser.fullName || currentUser.username || '?').charAt(0).toUpperCase() }}</span>
     }
-    <div class="flex flex-1 flex-col">
-      <span class="font-semibold text-[#262626]">{{ currentUser.username }}</span>
-      <span class="text-[#8e8e8e]">{{ currentUser.fullName }}</span>
+    <div class="flex flex-1 flex-col overflow-hidden">
+      <span class="truncate font-semibold text-[#0c1014]">{{ currentUser.username }}</span>
+      <span class="truncate text-[#6a717a]">{{ currentUser.fullName }}</span>
     </div>
-    <button type="button" (click)="switchAccount()" class="text-xs font-semibold text-[#0095f6]">
+    <button type="button" (click)="switchAccount()" class="flex-shrink-0 text-xs font-semibold text-[#0095f6]">
       {{ 'home.switch' | translate }}
     </button>
   </div>
@@ -20,31 +20,33 @@
   @if (suggestions.length) {
   <div class="flex flex-col gap-4 px-1">
     <div class="flex items-center justify-between">
-      <span class="font-semibold text-[#8e8e8e]">{{ 'home.suggestions' | translate }}</span>
-      <button type="button" class="text-xs font-semibold text-[#262626]">{{ 'home.seeAll' | translate }}</button>
+      <span class="font-semibold text-[#6a717a]">{{ 'home.suggestions' | translate }}</span>
+      <button type="button" class="text-xs font-semibold text-[#0c1014]">{{ 'home.seeAll' | translate }}</button>
     </div>
 
     @for (user of suggestions; track user.id) {
     <div class="flex items-center gap-3">
       @if (user.avatarUrl) {
-      <img [src]="user.avatarUrl" alt="" class="h-8 w-8 flex-shrink-0 rounded-full object-cover" />
+      <img [src]="user.avatarUrl" alt="" loading="lazy" class="h-11 w-11 flex-shrink-0 rounded-full border border-black/10 object-cover" />
       } @else {
-      <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+      <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-sm font-semibold text-white"
         [style.background]="user.avatarColor">{{ (user.fullName || user.username).charAt(0).toUpperCase() }}</span>
       }
       <div class="flex flex-1 flex-col overflow-hidden">
-        <span class="truncate font-semibold text-[#262626]">{{ user.username }}</span>
-        <span class="truncate text-xs text-[#8e8e8e]">
+        <span class="truncate font-semibold text-[#0c1014]">{{ user.username }}</span>
+        <span class="truncate text-xs text-[#6a717a]">
           @if (user.reason === 'followsYou') {
             {{ 'home.followsYou' | translate }}
-          } @else {
+          } @else if (user.reason === 'followedBy') {
             {{ 'home.followedBy' | translate: { name: user.reasonName || '' } }}
+          } @else {
+            {{ 'home.newSuggestion' | translate }}
           }
         </span>
       </div>
       <button type="button" (click)="toggleFollow(user.id)"
         class="flex-shrink-0 text-xs font-semibold"
-        [ngClass]="isFollowed(user.id) ? 'text-[#262626]' : 'text-[#0095f6]'">
+        [ngClass]="isFollowed(user.id) ? 'text-[#0c1014]' : 'text-[#0095f6]'">
         {{ (isFollowed(user.id) ? 'home.following' : 'home.follow') | translate }}
       </button>
     </div>

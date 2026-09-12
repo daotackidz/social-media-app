@@ -43,6 +43,18 @@ export interface LoginResponse {
   expiresIn?: number;
 }
 
+export interface ForgotPasswordResponse {
+  email: string;
+  otpExpiresInSeconds: number;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  otpCode: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 const ACCESS_TOKEN_KEY = 'access_token';
 const CURRENT_EMAIL_KEY = 'current_email';
 const CURRENT_USERNAME_KEY = 'current_username';
@@ -77,6 +89,18 @@ export class AuthService {
 
   resendOtp(email: string): Observable<ApiResponse<null>> {
     return this.http.post<ApiResponse<null>>(`${this.authBaseUrl}/resend-otp`, { email });
+  }
+
+  forgotPassword(email: string): Observable<ApiResponse<ForgotPasswordResponse>> {
+    return this.http.post<ApiResponse<ForgotPasswordResponse>>(`${this.authBaseUrl}/forgot-password`, { email });
+  }
+
+  verifyForgotPasswordOtp(email: string, otpCode: string): Observable<ApiResponse<null>> {
+    return this.http.post<ApiResponse<null>>(`${this.authBaseUrl}/verify-forgot-password-otp`, { email, otpCode });
+  }
+
+  resetPassword(payload: ResetPasswordRequest): Observable<ApiResponse<null>> {
+    return this.http.post<ApiResponse<null>>(`${this.authBaseUrl}/reset-password`, payload);
   }
 
   login(payload: LoginRequest): Observable<ApiResponse<LoginResponse>> {
@@ -133,6 +157,13 @@ export class AuthService {
         // Non-fatal — sidebar/panel just keep showing the initial fallback.
       }
     });
+  }
+
+  /** Called after the "edit profile" page saves changes, so the sidebar and
+   *  other components reflect the new avatar/name without a full reload. */
+  updateCachedProfile(fullName: string, avatarUrl: string | null): void {
+    this.currentFullName.set(fullName);
+    this.currentAvatarUrl.set(avatarUrl);
   }
 
   /** Raw JWT for the Authorization header — see core/http/auth-token.interceptor.ts. */

@@ -26,6 +26,9 @@ namespace Social.Repository.Social.User.Interface
         /// <summary>Batch profile lookup keyed by UserId — avoids one round-trip per user when rendering a list.</summary>
         Task<Dictionary<Guid, UserProfiles>> GetProfilesByUserIdsAsync(IEnumerable<Guid> userIds);
 
+        /// <summary>Batch user lookup keyed by Id — e.g. resolving usernames for a page of feed posts/stories.</summary>
+        Task<Dictionary<Guid, Users>> GetUsersByIdsAsync(IEnumerable<Guid> userIds);
+
         /// <summary>Batch primary-avatar URL lookup keyed by UserId.</summary>
         Task<Dictionary<Guid, string>> GetPrimaryAvatarUrlsByUserIdsAsync(IEnumerable<Guid> userIds);
     }

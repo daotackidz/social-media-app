@@ -1,6 +1,6 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Frame">
-<path id="Line" d="M22 3L9.218 10.083" stroke="#262626" stroke-width="2" stroke-linejoin="round"/>
-<path id="Vector" d="M11.698 20.334L22 3.001H2L9.218 10.084L11.698 20.334Z" stroke="#262626" stroke-width="2" stroke-linejoin="round"/>
+<g id="Img - Chia s&#225;&#186;&#187;">
+<path id="Vector" d="M13.973 20.046L21.77 6.928C22.8 5.195 21.55 3 19.535 3H4.466C2.138 3 0.984 5.825 2.646 7.456L7.488 12.208L9.211 19.329C9.759 21.595 12.782 22.05 13.973 20.046Z" stroke="#0C1014" stroke-width="2" stroke-linejoin="round"/>
+<path id="Vector_2" d="M7.488 12.208L15.515 7.641" stroke="#0C1014" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 </svg>

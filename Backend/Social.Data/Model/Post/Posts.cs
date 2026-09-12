@@ -60,6 +60,10 @@ namespace Social.Data.Model.Post
         [Display(Name = "Bài viết gốc")]
         public Guid? OriginalPostId { get; set; }
 
+        [Column("is_ai_generated")]
+        [Display(Name = "Nội dung do AI tạo")]
+        public bool IsAiGenerated { get; set; }
+
         #region Related Tables
 
         [ForeignKey(nameof(UserId))]

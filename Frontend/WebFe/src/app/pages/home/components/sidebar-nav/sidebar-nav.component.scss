@@ -1,0 +1,5 @@
+// Global styles.scss underlines every <a> on hover; the nav's links (logo, Home,
+// Profile) are menu items, not text links, so that underline is overridden here.
+:host a:hover {
+  text-decoration: none;
+}
