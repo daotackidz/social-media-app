@@ -64,10 +64,13 @@ namespace Social.WebApi.Controllers
             var ownerUserIds = posts.Select(p => p.UserId).Distinct().ToList();
             var usersById = await _userRepository.GetUsersByIdsAsync(ownerUserIds);
             var avatars = await _userRepository.GetPrimaryAvatarUrlsByUserIdsAsync(ownerUserIds);
+            var likedPostIds = await _postRepository.GetLikedPostIdsAsync(posts.Select(p => p.Id), CurrentUserId.Value);
 
             var items = posts.Select(p =>
             {
-                var images = (p.PostFiles ?? Enumerable.Empty<PostFiles>())
+                var postFiles = p.PostFiles ?? Enumerable.Empty<PostFiles>();
+
+                var images = postFiles
                     .Where(f => f.FileType == PostFileType.Image && f.Files is not null)
                     .OrderByDescending(f => f.IsPrimary)
                     .ThenBy(f => f.DisplayOrder)
@@ -75,7 +78,19 @@ namespace Social.WebApi.Controllers
                     .Select(f => f.Files!.StoragePath)
                     .ToList();
 
+                var videoUrl = postFiles
+                    .Where(f => f.FileType == PostFileType.Video && f.Files is not null)
+                    .OrderByDescending(f => f.IsPrimary)
+                    .ThenBy(f => f.DisplayOrder)
+                    .Select(f => f.Files!.StoragePath)
+                    .FirstOrDefault();
+
                 usersById.TryGetValue(p.UserId, out var user);
+
+                // A video post's "image" is really its auto-captured cover frame (see
+                // PostsController.Create) — expose it as PosterUrl for <video poster>,
+                // not as a carousel slide alongside the video.
+                var isVideoPost = videoUrl is not null;
 
                 return new FeedPostResponse
                 {
@@ -83,9 +98,12 @@ namespace Social.WebApi.Controllers
                     Username = user?.UserName ?? string.Empty,
                     Verified = user?.IsVerified ?? false,
                     AvatarUrl = avatars.TryGetValue(p.UserId, out var avatarUrl) ? avatarUrl : null,
-                    ImageUrls = images,
+                    ImageUrls = isVideoPost ? new List<string>() : images,
+                    VideoUrl = videoUrl,
+                    PosterUrl = isVideoPost ? images.FirstOrDefault() : null,
                     Caption = p.Caption,
                     LikeCount = p.LikeCount,
+                    IsLiked = likedPostIds.Contains(p.Id),
                     CommentCount = p.CommentCount,
                     CreatedDate = p.CreatedDate
                 };
@@ -126,12 +144,15 @@ namespace Social.WebApi.Controllers
         }
 
         [HttpGet("suggestions")]
-        public async Task<IActionResult> GetSuggestions([FromQuery] int take = DefaultSuggestionsTake)
+        public async Task<IActionResult> GetSuggestions([FromQuery] int skip = 0, [FromQuery] int take = DefaultSuggestionsTake)
         {
             if (!CurrentUserId.HasValue) return ApiUnauthorized();
+            skip = Math.Max(0, skip);
             take = Math.Clamp(take, 1, MaxSuggestionsTake);
 
-            var candidates = await _relationRepository.GetSuggestionsAsync(CurrentUserId.Value, take);
+            var page = await _relationRepository.GetSuggestionsAsync(CurrentUserId.Value, skip, take + 1);
+            var hasMore = page.Count > take;
+            var candidates = page.Take(take).ToList();
 
             var candidateIds = candidates.Select(c => c.UserId).ToList();
             var reasonUserIds = candidates.Where(c => c.ReasonUserId.HasValue).Select(c => c.ReasonUserId!.Value).Distinct().ToList();
@@ -159,7 +180,7 @@ namespace Social.WebApi.Controllers
                 };
             }).ToList();
 
-            return ApiOk(items);
+            return ApiOk(new PagedResponse<FeedSuggestedUserResponse> { Items = items, HasMore = hasMore });
         }
 
         /// <summary>Self + everyone the caller actively follows — the audience for their home feed.</summary>

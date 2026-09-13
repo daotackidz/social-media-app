@@ -21,6 +21,9 @@ namespace Social.Common.Constants
         /// <summary>Endpoint requires authentication and none (or an invalid one) was supplied.</summary>
         UNAUTHORIZED,
 
+        /// <summary>Token is well-formed but no longer the active session for this (user, client type) — superseded by a newer login elsewhere.</summary>
+        SESSION_REVOKED,
+
         /// <summary>Registration attempted with an email that already has an account.</summary>
         EMAIL_EXISTS,
 
@@ -65,6 +68,15 @@ namespace Social.Common.Constants
 
         /// <summary>The requested search-history entry does not exist (or was already deleted) for the current user.</summary>
         SEARCH_HISTORY_NOT_FOUND,
+
+        /// <summary>No post found for the given id, or its owner is private and the caller doesn't have access.</summary>
+        POST_NOT_FOUND,
+
+        /// <summary>No story found for the given id (never existed, expired, deleted, or its owner is private and the caller doesn't have access).</summary>
+        STORY_NOT_FOUND,
+
+        /// <summary>No conversation found for the given id, or the caller isn't one of its participants.</summary>
+        CONVERSATION_NOT_FOUND,
 
         /// <summary>Unhandled server-side exception.</summary>
         INTERNAL_ERROR

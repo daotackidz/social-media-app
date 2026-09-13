@@ -1,0 +1,74 @@
+<div class="flex min-h-dvh w-full justify-center bg-white">
+  <app-sidebar-nav class="h-dvh flex-shrink-0" [currentUsername]="sidebarUsername()" [avatarUrl]="sidebarAvatarUrl()" />
+
+  <div class="flex w-full max-w-[935px] flex-col">
+    <main class="mx-auto w-full max-w-[935px] flex-1 px-5 py-10 sm:px-9">
+      <div class="mb-2 flex items-center gap-3">
+        <a [routerLink]="['/profile', sidebarUsername()]" aria-label="Quay lại trang cá nhân"
+          class="rounded-full p-1 text-[#262626] hover:bg-[#fafafa]">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7" />
+          </svg>
+        </a>
+        <h1 class="text-xl font-semibold text-[#262626]">{{ 'storyArchive.title' | translate }}</h1>
+      </div>
+
+      <div class="flex justify-center border-b border-[#dbdbdb]">
+        <span class="flex items-center gap-1.5 border-t-2 border-[#262626] px-1 py-3 text-xs font-semibold tracking-wide text-[#262626]">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+          {{ 'storyArchive.tab' | translate }}
+        </span>
+      </div>
+
+      <p class="py-4 text-sm text-[#8e8e8e]">{{ 'storyArchive.hint' | translate }}</p>
+
+      @if (loading()) {
+      <div class="flex flex-col items-center gap-3 py-16">
+        <span class="h-8 w-8 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+      </div>
+      } @else if (loadError()) {
+      <p class="py-16 text-center text-sm text-[#ed4956]">{{ 'storyArchive.loadError' | translate }}</p>
+      } @else if (!stories().length) {
+      <div class="flex flex-col items-center gap-3 py-24 text-center">
+        <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#262626]">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+        </div>
+        <p class="text-lg font-light text-[#262626]">{{ 'storyArchive.empty' | translate }}</p>
+      </div>
+      } @else {
+      <div class="grid grid-cols-2 gap-1 sm:grid-cols-3 md:grid-cols-4">
+        @for (story of stories(); track story.id; let i = $index) {
+        <button type="button" (click)="open(i)" [attr.aria-label]="'Xem tin'"
+          class="group relative aspect-[9/16] overflow-hidden border-0 bg-[#111] p-0">
+          @if (story.mediaType === 'video') {
+          <video [src]="story.mediaUrl" muted playsinline preload="metadata" class="absolute inset-0 h-full w-full object-cover"></video>
+          } @else {
+          <img [src]="story.mediaUrl" alt="" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
+          }
+
+          <span class="absolute left-2 top-2 flex flex-col items-center rounded-md bg-white/95 px-2 py-1 text-[#262626] shadow">
+            <span class="text-base font-bold leading-none">{{ dayLabel(story.createdDate) }}</span>
+            <span class="text-[10px] leading-tight">{{ monthYearLabel(story.createdDate) }}</span>
+          </span>
+
+          <span class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/10"></span>
+        </button>
+        }
+      </div>
+
+      @if (hasMore()) {
+      <div class="flex justify-center py-6">
+        <button type="button" (click)="loadMore()" [disabled]="loadingMore()"
+          class="rounded-lg bg-[#efefef] px-4 py-2 text-sm font-semibold text-[#262626] hover:bg-[#dbdbdb] disabled:opacity-60">
+          {{ loadingMore() ? '...' : ('storyArchive.loadMore' | translate) }}
+        </button>
+      </div>
+      }
+      }
+    </main>
+  </div>
+</div>

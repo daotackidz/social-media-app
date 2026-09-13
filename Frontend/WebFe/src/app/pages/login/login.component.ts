@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormControl } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { apiErrorOf } from '../../core/api';
@@ -24,6 +24,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   isLoading = signal(false);
   error = signal('');
@@ -33,6 +34,14 @@ export class LoginComponent {
     email: ['', [Validators.required, Validators.minLength(3)]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
+
+  constructor() {
+    // Landed here from sessionRevokedInterceptor (core/http) — this browser was
+    // signed out because the account logged in somewhere else.
+    if (this.route.snapshot.queryParamMap.get('sessionRevoked')) {
+      this.error.set('Tài khoản đã được đăng nhập ở một nơi khác.');
+    }
+  }
 
   get isSubmitDisabled() {
     return this.isLoading() || this.loginForm.invalid;

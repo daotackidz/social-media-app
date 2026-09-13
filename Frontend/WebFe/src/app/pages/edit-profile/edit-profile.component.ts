@@ -4,7 +4,6 @@ import { Router, RouterLink } from '@angular/router';
 
 import { apiErrorOf } from '../../core/api';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { FooterComponent } from '../../shared/layout/footer/footer.component';
 import { AppSelectComponent, SelectOption } from '../../shared/components';
 import { AuthService } from '../../services/auth.service';
 import { SidebarNavComponent } from '../home/components/sidebar-nav/sidebar-nav.component';
@@ -14,7 +13,7 @@ import { EditProfileService } from './services/edit-profile.service';
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [FormsModule, RouterLink, TranslatePipe, AppSelectComponent, SidebarNavComponent, FooterComponent],
+  imports: [FormsModule, RouterLink, TranslatePipe, AppSelectComponent, SidebarNavComponent],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss'
 })

@@ -2,6 +2,7 @@ import { Component, HostListener, Input, OnChanges, SimpleChanges, inject, signa
 import { RouterLink } from '@angular/router';
 
 import { apiErrorOf } from '../../../../core/api';
+import { ChatWidgetService } from '../../../../core/chat-widget/chat-widget.service';
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { UserProfileSummary } from '../../models/profile.models';
@@ -19,6 +20,7 @@ export class ProfileHeaderComponent implements OnChanges {
 
   private readonly languageService = inject(LanguageService);
   private readonly profileService = inject(ProfileService);
+  private readonly chatWidgetService = inject(ChatWidgetService);
 
   readonly isFollowing = signal(false);
   readonly isRequested = signal(false);
@@ -73,6 +75,11 @@ export class ProfileHeaderComponent implements OnChanges {
         this.followError.set(apiError?.message || this.languageService.t('profile.followError'));
       }
     });
+  }
+
+  /** Opens the floating chat widget's mini popup with this profile's owner (the "Nhắn tin" button). */
+  openMessage(): void {
+    this.chatWidgetService.openConversationWith(this.profile.username);
   }
 
   formatCount(value: number): string {

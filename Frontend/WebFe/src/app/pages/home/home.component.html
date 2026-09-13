@@ -1,15 +1,12 @@
 <div class="flex min-h-dvh w-full justify-center bg-white">
-  <app-sidebar-nav class="sticky top-0 h-dvh flex-shrink-0" [currentUsername]="currentUser().username" [avatarUrl]="currentUser().avatarUrl" />
+  <app-sidebar-nav class="h-dvh flex-shrink-0" [currentUsername]="currentUser().username" [avatarUrl]="currentUser().avatarUrl" />
 
   <div class="flex w-full max-w-[1080px] items-start gap-16 px-6 py-9">
     <main class="mx-auto flex w-full max-w-[630px] flex-col gap-4">
-      <app-stories-bar [stories]="stories()" />
+      <app-stories-bar [stories]="stories()" [currentUser]="currentUser()" />
 
-      @for (post of posts(); track post.id; let i = $index) {
+      @for (post of posts(); track post.id) {
         <app-feed-post [post]="post" />
-        @if (showInlineSuggestionsAfter(i)) {
-          <app-suggestions-inline [suggestions]="inlineSuggestions()" />
-        }
       }
 
       <!-- Infinite-scroll trigger: the observer in HomeComponent fires loadMorePosts() once this scrolls into view. -->

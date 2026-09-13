@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Social.Common.Constants;
+using Social.Data.Model.Notification;
 using Social.Data.Model.Post;
 using Social.Data.Model.Response.Profile;
 using Social.Data.Model.User;
+using Social.Repository.Social.Notification.Interface;
 using Social.Repository.Social.Post.Interface;
 using Social.Repository.Social.Relation.Interface;
 using Social.Repository.Social.User.Interface;
@@ -27,16 +29,19 @@ namespace Social.WebApi.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IUserRelationRepository _relationRepository;
         private readonly IPostRepository _postRepository;
+        private readonly INotificationRepository _notificationRepository;
 
         public ProfileViewController(
             IUserRepository userRepository,
             IUserRelationRepository relationRepository,
             IPostRepository postRepository,
+            INotificationRepository notificationRepository,
             ICurrentUserService currentUserService) : base(currentUserService)
         {
             _userRepository = userRepository;
             _relationRepository = relationRepository;
             _postRepository = postRepository;
+            _notificationRepository = notificationRepository;
         }
 
         [HttpGet("{username}")]
@@ -167,6 +172,18 @@ namespace Social.WebApi.Controllers
             var isRequested = status == UserRelations.UserRelationStatus.Pending;
             var followersCount = await _relationRepository.CountFollowersAsync(user.Id);
 
+            if (isFollowing || isRequested)
+            {
+                await _notificationRepository.CreateAsync(new Notifications
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    ActorUserId = CurrentUserId.Value,
+                    Type = isRequested ? Notifications.NotificationType.FollowRequest : Notifications.NotificationType.Follow,
+                    CreatedByUserId = CurrentUserId.Value
+                });
+            }
+
             var message = isRequested ? "Đã gửi yêu cầu theo dõi." : "Đã theo dõi.";
             return ApiOk(new { isFollowing, isRequested, followersCount }, message);
         }
@@ -230,6 +247,15 @@ namespace Social.WebApi.Controllers
                 return ApiNotFound("Không tìm thấy yêu cầu theo dõi.", ErrorCode.VALIDATION_ERROR);
             }
 
+            await _notificationRepository.CreateAsync(new Notifications
+            {
+                Id = Guid.NewGuid(),
+                UserId = followerId.Value,
+                ActorUserId = CurrentUserId.Value,
+                Type = Notifications.NotificationType.FollowAccepted,
+                CreatedByUserId = CurrentUserId.Value
+            });
+
             var followersCount = await _relationRepository.CountFollowersAsync(CurrentUserId.Value);
             return ApiOk(new { followersCount }, "Đã chấp nhận yêu cầu theo dõi.");
         }
@@ -260,9 +286,14 @@ namespace Social.WebApi.Controllers
 
             var cover = files.FirstOrDefault();
 
-            var type = files.Count > 1
-                ? "carousel"
-                : cover?.FileType == PostFileType.Video ? "video" : "image";
+            // A generated thumbnail adds an extra Image row alongside its video (see
+            // PostsController.Create), so "carousel" must be decided by counting actual
+            // attachments (non-video files, since posts don't mix video with images) rather
+            // than raw files.Count, or every video post would misreport as a carousel.
+            var isVideoPost = files.Any(f => f.FileType == PostFileType.Video);
+            var type = isVideoPost
+                ? "video"
+                : files.Count > 1 ? "carousel" : "image";
 
             return new ProfilePostResponse
             {

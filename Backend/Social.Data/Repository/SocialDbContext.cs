@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Social.Data.Model.Base;
 using Social.Data.Model.File;
+using Social.Data.Model.Messaging;
 using Social.Data.Model.Notification;
 using Social.Data.Model.Post;
 using Social.Data.Model.Story;
@@ -27,9 +28,11 @@ namespace Social.Data.Repository
         public DbSet<UserFiles> UserFiles { get; set; }
         public DbSet<UserHighlights> UserHighlights { get; set; }
         public DbSet<UserSearchHistories> UserSearchHistories { get; set; }
+        public DbSet<UserSessions> UserSessions { get; set; }
         public DbSet<Posts> Posts { get; set; }
         public DbSet<PostLikes> PostLikes { get; set; }
         public DbSet<PostComments> PostComments { get; set; }
+        public DbSet<PostCommentLikes> PostCommentLikes { get; set; }
         public DbSet<PostFiles> PostFiles { get; set; }
         public DbSet<PostHashTags> PostHashTags { get; set; }
         public DbSet<HashTags> HashTags { get; set; }
@@ -38,8 +41,14 @@ namespace Social.Data.Repository
         public DbSet<Notifications> Notifications { get; set; }
         public DbSet<Stories> Stories { get; set; }
         public DbSet<StoryViews> StoryViews { get; set; }
+        public DbSet<StoryLikes> StoryLikes { get; set; }
+        public DbSet<StoryReplies> StoryReplies { get; set; }
         public DbSet<Files> Files { get; set; }
         public DbSet<FileVersion> FileVersions { get; set; }
         public DbSet<RecordStatus> RecordStatuses { get; set; }
+        public DbSet<Conversations> Conversations { get; set; }
+        public DbSet<ConversationParticipants> ConversationParticipants { get; set; }
+        public DbSet<Messages> Messages { get; set; }
+        public DbSet<MessageReactions> MessageReactions { get; set; }
     }
 }

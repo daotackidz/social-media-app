@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { FooterComponent } from '../../shared/layout/footer/footer.component';
 import { AuthService } from '../../services/auth.service';
 import { ProfileHeaderComponent } from './components/profile-header/profile-header.component';
 import { ProfileHighlightsComponent } from './components/profile-highlights/profile-highlights.component';
@@ -18,7 +17,6 @@ import { SidebarNavComponent } from '../home/components/sidebar-nav/sidebar-nav.
     TranslatePipe,
     RouterLink,
     SidebarNavComponent,
-    FooterComponent,
     ProfileHeaderComponent,
     ProfileHighlightsComponent,
     ProfilePostGridComponent

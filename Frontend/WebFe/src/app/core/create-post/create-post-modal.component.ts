@@ -11,6 +11,8 @@ interface SelectedFile {
   file: File;
   previewUrl: string;
   isVideo: boolean;
+  /** Auto-captured first frame, for videos only — becomes the post's cover image (grid thumbnail, feed <video poster>) since a raw video URL can't be used as an <img src>. */
+  thumbnailBlob?: Blob;
 }
 
 type ModalStep = 'picker' | 'compose';
@@ -212,7 +214,9 @@ export class CreatePostModalComponent implements OnDestroy {
     this.setSubmitting(true);
     this.error.set('');
 
-    this.createPostService.createPost(selected.map((s) => s.file), this.caption(), this.aiLabel(), this.altTexts()).subscribe({
+    const thumbnail = selected.find((s) => s.isVideo && s.thumbnailBlob)?.thumbnailBlob;
+
+    this.createPostService.createPost(selected.map((s) => s.file), this.caption(), this.aiLabel(), this.altTexts(), thumbnail).subscribe({
       next: () => {
         this.setSubmitting(false);
         this.dialogRef.close();
@@ -264,6 +268,65 @@ export class CreatePostModalComponent implements OnDestroy {
     this.files.update((current) => [...current, ...accepted]);
     if (wasEmpty) this.activeIndex.set(0);
     this.step.set('compose');
+
+    for (const entry of accepted) {
+      if (entry.isVideo) this.captureVideoThumbnail(entry);
+    }
+  }
+
+  /**
+   * Grabs the video's first frame into a JPEG blob so the post has a real
+   * cover image (a raw video URL can't be used as an <img src> — that's why
+   * video posts showed a broken thumbnail in the grid before this existed).
+   * Runs off-screen; updates the matching SelectedFile once the frame is ready.
+   */
+  private captureVideoThumbnail(entry: SelectedFile): void {
+    const video = document.createElement('video');
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+    video.src = entry.previewUrl;
+
+    const cleanup = () => {
+      video.removeAttribute('src');
+      video.load();
+    };
+
+    video.addEventListener(
+      'loadeddata',
+      () => {
+        // A hair past 0 avoids some encoders' all-black very first frame.
+        video.currentTime = Math.min(0.1, (video.duration || 1) / 10);
+      },
+      { once: true }
+    );
+
+    video.addEventListener(
+      'seeked',
+      () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx || canvas.width === 0 || canvas.height === 0) {
+          cleanup();
+          return;
+        }
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+          (blob) => {
+            cleanup();
+            if (!blob) return;
+            this.files.update((current) => current.map((f) => (f === entry ? { ...f, thumbnailBlob: blob } : f)));
+          },
+          'image/jpeg',
+          0.85
+        );
+      },
+      { once: true }
+    );
+
+    video.addEventListener('error', cleanup, { once: true });
   }
 
   ngOnDestroy(): void {

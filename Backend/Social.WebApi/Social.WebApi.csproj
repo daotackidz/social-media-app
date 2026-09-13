@@ -31,6 +31,8 @@
     <ProjectReference Include="..\Social.Repository\Social.Repository.Social.Relation\Social.Repository.Social.Relation.csproj" />
     <ProjectReference Include="..\Social.Repository\Social.Repository.Social.Search\Social.Repository.Social.Search.csproj" />
     <ProjectReference Include="..\Social.Repository\Social.Repository.Social.Story\Social.Repository.Social.Story.csproj" />
+    <ProjectReference Include="..\Social.Repository\Social.Repository.Social.Notification\Social.Repository.Social.Notification.csproj" />
+    <ProjectReference Include="..\Social.Repository\Social.Repository.Social.Messaging\Social.Repository.Social.Messaging.csproj" />
     <ProjectReference Include="..\Social.Service\Social.Service.Social.Auth\Social.Service.Social.Auth.csproj" />
     <ProjectReference Include="..\Social.Service\Social.Service.Social.Email\Social.Service.Social.Email.csproj" />
     <ProjectReference Include="..\Social.Service\Social.Service.Social.Jwt\Social.Service.Social.Jwt.csproj" />

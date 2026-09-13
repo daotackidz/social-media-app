@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Social.Data.Model.Base;
 using Social.Data.Model.Post;
+using Social.Data.Model.Story;
 using Social.Data.Model.User;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +10,7 @@ namespace Social.Data.Model.Notification
 {
     [Table("notifications")]
     [Index(nameof(UserId), nameof(IsRead))]
-    public class Notifications
+    public class Notifications : BaseRecordModel
     {
         public enum NotificationType
         {
@@ -18,7 +20,17 @@ namespace Social.Data.Model.Notification
             ReplyComment = 4,
             LikeComment = 5,
             SharePost = 6,
-            Mention = 7
+            Mention = 7,
+
+            /// <summary>A private account received a new follow request (not yet accepted/rejected).</summary>
+            FollowRequest = 8,
+
+            /// <summary>The recipient's own follow request to ActorUserId was accepted.</summary>
+            FollowAccepted = 9,
+            LikeStory = 10,
+
+            /// <summary>A reply was sent to the recipient's story.</summary>
+            CommentStory = 11
         }
 
         [Key]
@@ -45,6 +57,9 @@ namespace Social.Data.Model.Notification
         [Column("post_comment_id")]
         public Guid? PostCommentId { get; set; }
 
+        [Column("story_id")]
+        public Guid? StoryId { get; set; }
+
         [Column("data")]
         public string? Data { get; set; } // JSON mở rộng (optional)
 
@@ -64,6 +79,9 @@ namespace Social.Data.Model.Notification
 
         [ForeignKey(nameof(PostCommentId))]
         public PostComments? PostComments { get; set; }
+
+        [ForeignKey(nameof(StoryId))]
+        public Stories? Stories { get; set; }
 
         #endregion
 

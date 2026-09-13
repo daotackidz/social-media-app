@@ -236,6 +236,270 @@ namespace Social.Data.Migrations.Social
                     b.ToTable("files", "app_social");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.Messaging.ConversationParticipants", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("conversation_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<DateTime?>("LastReadAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("last_read_at");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id")
+                        .HasName("pk_conversation_participants");
+
+                    b.HasIndex("ConversationId")
+                        .HasDatabaseName("ix_conversation_participants_conversation_id");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_conversation_participants_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_conversation_participants_reccord_status_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_conversation_participants_user_id");
+
+                    b.ToTable("conversation_participants", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.Conversations", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<bool>("IsGroup")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_group");
+
+                    b.Property<DateTime?>("LastMessageAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("last_message_at");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id")
+                        .HasName("pk_conversations");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_conversations_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_conversations_reccord_status_id");
+
+                    b.ToTable("conversations", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.MessageReactions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Emoji")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("emoji")
+                        .HasColumnOrder(3);
+
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id")
+                        .HasName("pk_message_reactions");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_message_reactions_created_by_user_id");
+
+                    b.HasIndex("MessageId")
+                        .HasDatabaseName("ix_message_reactions_message_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_message_reactions_reccord_status_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_message_reactions_user_id");
+
+                    b.ToTable("message_reactions", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.Messages", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text")
+                        .HasColumnName("content");
+
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("conversation_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<Guid?>("FileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("file_id");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid?>("ReplyToMessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reply_to_message_id");
+
+                    b.Property<Guid>("SenderUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sender_user_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("message_type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_messages");
+
+                    b.HasIndex("ConversationId")
+                        .HasDatabaseName("ix_messages_conversation_id");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_messages_created_by_user_id");
+
+                    b.HasIndex("FileId")
+                        .HasDatabaseName("ix_messages_file_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_messages_reccord_status_id");
+
+                    b.HasIndex("ReplyToMessageId")
+                        .HasDatabaseName("ix_messages_reply_to_message_id");
+
+                    b.HasIndex("SenderUserId")
+                        .HasDatabaseName("ix_messages_sender_user_id");
+
+                    b.ToTable("messages", "app_social");
+                });
+
             modelBuilder.Entity("Social.Data.Model.Notification.Notifications", b =>
                 {
                     b.Property<Guid>("Id")
@@ -247,13 +511,33 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("uuid")
                         .HasColumnName("actor_user_id");
 
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
                     b.Property<string>("Data")
                         .HasColumnType("text")
                         .HasColumnName("data");
 
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean")
                         .HasColumnName("is_read");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
 
                     b.Property<Guid?>("PostCommentId")
                         .HasColumnType("uuid")
@@ -262,6 +546,14 @@ namespace Social.Data.Migrations.Social
                     b.Property<Guid?>("PostId")
                         .HasColumnType("uuid")
                         .HasColumnName("post_id");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid?>("StoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("story_id");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer")
@@ -277,11 +569,20 @@ namespace Social.Data.Migrations.Social
                     b.HasIndex("ActorUserId")
                         .HasDatabaseName("ix_notifications_actor_user_id");
 
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_notifications_created_by_user_id");
+
                     b.HasIndex("PostCommentId")
                         .HasDatabaseName("ix_notifications_post_comment_id");
 
                     b.HasIndex("PostId")
                         .HasDatabaseName("ix_notifications_post_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_notifications_reccord_status_id");
+
+                    b.HasIndex("StoryId")
+                        .HasDatabaseName("ix_notifications_story_id");
 
                     b.HasIndex("UserId", "IsRead")
                         .HasDatabaseName("ix_notifications_user_id_is_read");
@@ -336,6 +637,65 @@ namespace Social.Data.Migrations.Social
                         .HasDatabaseName("ix_hash_tags_reccord_status_id");
 
                     b.ToTable("hash_tags", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Post.PostCommentLikes", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CommentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("comment_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id")
+                        .HasName("pk_post_comment_likes");
+
+                    b.HasIndex("CommentId")
+                        .HasDatabaseName("ix_post_comment_likes_comment_id");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_post_comment_likes_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_post_comment_likes_reccord_status_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_post_comment_likes_user_id");
+
+                    b.ToTable("post_comment_likes", "app_social");
                 });
 
             modelBuilder.Entity("Social.Data.Model.Post.PostComments", b =>
@@ -848,6 +1208,11 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("id")
                         .HasColumnOrder(0);
 
+                    b.Property<string>("Caption")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("caption");
+
                     b.Property<Guid>("CreatedByUserId")
                         .HasColumnType("uuid")
                         .HasColumnName("created_by_user_id");
@@ -874,6 +1239,14 @@ namespace Social.Data.Migrations.Social
                         .HasColumnName("file_id")
                         .HasColumnOrder(2);
 
+                    b.Property<bool>("IsAiGenerated")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_ai_generated");
+
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("like_count");
+
                     b.Property<string>("Note")
                         .HasColumnType("text")
                         .HasColumnName("note");
@@ -886,6 +1259,10 @@ namespace Social.Data.Migrations.Social
                         .HasColumnType("uuid")
                         .HasColumnName("user_id")
                         .HasColumnOrder(1);
+
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("view_count");
 
                     b.HasKey("Id")
                         .HasName("pk_stories");
@@ -903,6 +1280,130 @@ namespace Social.Data.Migrations.Social
                         .HasDatabaseName("ix_stories_user_id");
 
                     b.ToTable("stories", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.StoryLikes", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("story_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id")
+                        .HasName("pk_story_likes");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_story_likes_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_story_likes_reccord_status_id");
+
+                    b.HasIndex("StoryId")
+                        .HasDatabaseName("ix_story_likes_story_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_story_likes_user_id");
+
+                    b.ToTable("story_likes", "app_social");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.StoryReplies", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("content")
+                        .HasColumnOrder(3);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("story_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(2);
+
+                    b.HasKey("Id")
+                        .HasName("pk_story_replies");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_story_replies_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_story_replies_reccord_status_id");
+
+                    b.HasIndex("StoryId")
+                        .HasDatabaseName("ix_story_replies_story_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_story_replies_user_id");
+
+                    b.ToTable("story_replies", "app_social");
                 });
 
             modelBuilder.Entity("Social.Data.Model.Story.StoryViews", b =>
@@ -1412,6 +1913,73 @@ namespace Social.Data.Migrations.Social
                     b.ToTable("user_search_histories", "app_social");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.User.UserSessions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("ClientType")
+                        .HasColumnType("integer")
+                        .HasColumnName("client_type")
+                        .HasColumnOrder(2);
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("create_datetime");
+
+                    b.Property<long>("CreatedDateUnix")
+                        .HasColumnType("bigint")
+                        .HasColumnName("create_datetime_unix");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer")
+                        .HasColumnName("display_order");
+
+                    b.Property<DateTime>("LastLoginDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("last_login_date");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("text")
+                        .HasColumnName("note");
+
+                    b.Property<int>("RecordStatusId")
+                        .HasColumnType("integer")
+                        .HasColumnName("reccord_status_id");
+
+                    b.Property<string>("SessionToken")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("session_token");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasColumnOrder(1);
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_sessions");
+
+                    b.HasIndex("CreatedByUserId")
+                        .HasDatabaseName("ix_user_sessions_created_by_user_id");
+
+                    b.HasIndex("RecordStatusId")
+                        .HasDatabaseName("ix_user_sessions_reccord_status_id");
+
+                    b.HasIndex("UserId", "ClientType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_sessions_user_id_client_type");
+
+                    b.ToTable("user_sessions", "app_social");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.Users", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1592,6 +2160,122 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("RecordStatus");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.Messaging.ConversationParticipants", b =>
+                {
+                    b.HasOne("Social.Data.Model.Messaging.Conversations", "Conversations")
+                        .WithMany("Participants")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_conversation_participants_conversations_conversation_id");
+
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_conversation_participants_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_conversation_participants_users_user_id");
+
+                    b.Navigation("Conversations");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.Conversations", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_conversations_record_status_reccord_status_id");
+
+                    b.Navigation("RecordStatus");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.MessageReactions", b =>
+                {
+                    b.HasOne("Social.Data.Model.Messaging.Messages", "Messages")
+                        .WithMany()
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_message_reactions_messages_message_id");
+
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_message_reactions_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_message_reactions_users_user_id");
+
+                    b.Navigation("Messages");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.Messages", b =>
+                {
+                    b.HasOne("Social.Data.Model.Messaging.Conversations", "Conversations")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_conversations_conversation_id");
+
+                    b.HasOne("Social.Data.Model.File.Files", "Files")
+                        .WithMany()
+                        .HasForeignKey("FileId")
+                        .HasConstraintName("fk_messages_files_file_id");
+
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.Messaging.Messages", "ReplyToMessage")
+                        .WithMany()
+                        .HasForeignKey("ReplyToMessageId")
+                        .HasConstraintName("fk_messages_messages_reply_to_message_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_messages_users_sender_user_id");
+
+                    b.Navigation("Conversations");
+
+                    b.Navigation("Files");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("ReplyToMessage");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("Social.Data.Model.Notification.Notifications", b =>
                 {
                     b.HasOne("Social.Data.Model.User.Users", "ActorUser")
@@ -1611,6 +2295,18 @@ namespace Social.Data.Migrations.Social
                         .HasForeignKey("PostId")
                         .HasConstraintName("fk_notifications_posts_post_id");
 
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_notifications_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.Story.Stories", "Stories")
+                        .WithMany()
+                        .HasForeignKey("StoryId")
+                        .HasConstraintName("fk_notifications_stories_story_id");
+
                     b.HasOne("Social.Data.Model.User.Users", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1623,6 +2319,10 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("PostComments");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Stories");
 
                     b.Navigation("User");
                 });
@@ -1637,6 +2337,36 @@ namespace Social.Data.Migrations.Social
                         .HasConstraintName("fk_hash_tags_record_status_reccord_status_id");
 
                     b.Navigation("RecordStatus");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Post.PostCommentLikes", b =>
+                {
+                    b.HasOne("Social.Data.Model.Post.PostComments", "PostComments")
+                        .WithMany()
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_post_comment_likes_post_comments_comment_id");
+
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_post_comment_likes_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_post_comment_likes_users_user_id");
+
+                    b.Navigation("PostComments");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Social.Data.Model.Post.PostComments", b =>
@@ -1877,6 +2607,66 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.Story.StoryLikes", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_likes_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.Story.Stories", "Stories")
+                        .WithMany()
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_likes_stories_story_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_likes_users_user_id");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Stories");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Story.StoryReplies", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_replies_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.Story.Stories", "Stories")
+                        .WithMany()
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_replies_stories_story_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_story_replies_users_user_id");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Stories");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Social.Data.Model.Story.StoryViews", b =>
                 {
                     b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
@@ -2058,6 +2848,27 @@ namespace Social.Data.Migrations.Social
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("Social.Data.Model.User.UserSessions", b =>
+                {
+                    b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
+                        .WithMany()
+                        .HasForeignKey("RecordStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_sessions_record_status_reccord_status_id");
+
+                    b.HasOne("Social.Data.Model.User.Users", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_sessions_users_user_id");
+
+                    b.Navigation("RecordStatus");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Social.Data.Model.User.Users", b =>
                 {
                     b.HasOne("Social.Data.Model.Base.RecordStatus", "RecordStatus")
@@ -2068,6 +2879,13 @@ namespace Social.Data.Migrations.Social
                         .HasConstraintName("fk_users_record_status_reccord_status_id");
 
                     b.Navigation("RecordStatus");
+                });
+
+            modelBuilder.Entity("Social.Data.Model.Messaging.Conversations", b =>
+                {
+                    b.Navigation("Messages");
+
+                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("Social.Data.Model.Post.Posts", b =>

@@ -9,13 +9,18 @@ export interface RegisterRequest {
   password: string;
   fullName: string;
   username: string;
-  dateOfBirth: string | Date;
+  /** Optional — omitted (not an empty string) when the user leaves it blank,
+   *  since the backend can't parse "" into its nullable DateTime. */
+  dateOfBirth: string | Date | null;
 }
 
 export interface LoginRequest {
   email: string;
   password: string;
 }
+
+/** Mirrors Backend/Social.Common/Constants/ClientType.cs — keep the two in sync. */
+export type ClientType = 'Web' | 'Mobile';
 
 export interface RegisterResponse {
   email: string;
@@ -103,8 +108,16 @@ export class AuthService {
     return this.http.post<ApiResponse<null>>(`${this.authBaseUrl}/reset-password`, payload);
   }
 
+  /**
+   * Signing in here always claims the "Web" session slot — the backend keeps one
+   * active session per (user, client type) and signs out whoever previously held
+   * it, so only one browser can be logged into a given account at a time. A
+   * future native app would send "Mobile" instead and get its own independent
+   * slot, able to stay signed in at the same time as a web session.
+   */
   login(payload: LoginRequest): Observable<ApiResponse<LoginResponse>> {
-    return this.http.post<ApiResponse<LoginResponse>>(`${this.accountBaseUrl}/login`, payload).pipe(
+    const body: LoginRequest & { clientType: ClientType } = { ...payload, clientType: 'Web' };
+    return this.http.post<ApiResponse<LoginResponse>>(`${this.accountBaseUrl}/login`, body).pipe(
       tap((response) => {
         if (response.data) {
           this.setSession(response.data, payload.email);

@@ -1,4 +1,8 @@
-﻿using Social.Repository.Social.Post.Interface;
+﻿using Social.Repository.Social.Messaging.Interface;
+using Social.Repository.Social.Messaging.Repository;
+using Social.Repository.Social.Notification.Interface;
+using Social.Repository.Social.Notification.Repository;
+using Social.Repository.Social.Post.Interface;
 using Social.Repository.Social.Post.Repository;
 using Social.Repository.Social.Relation.Interface;
 using Social.Repository.Social.Relation.Repository;
@@ -21,6 +25,8 @@ namespace Social.WebApi.Installers
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<ISearchHistoryRepository, SearchHistoryRepository>();
             services.AddScoped<IStoryRepository, StoryRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IConversationRepository, ConversationRepository>();
         }
     }
 }

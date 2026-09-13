@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Social.Common.Constants;
 using Social.Data.Model.Base;
 using Social.Data.Model.File;
 using Social.Data.Model.User;
@@ -165,6 +166,40 @@ namespace Social.Repository.Social.User.Repository
                          && x.Files != null)
                 .GroupBy(x => x.UserId)
                 .ToDictionaryAsync(g => g.Key, g => g.First().Files!.StoragePath);
+        }
+
+        public async Task SetActiveSessionAsync(Guid userId, ClientType clientType, string sessionToken)
+        {
+            var session = await _db.UserSessions
+                .FirstOrDefaultAsync(s => s.UserId == userId && s.ClientType == clientType);
+
+            if (session is null)
+            {
+                await _db.UserSessions.AddAsync(new UserSessions
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    ClientType = clientType,
+                    SessionToken = sessionToken,
+                    LastLoginDate = DateTime.UtcNow,
+                    CreatedByUserId = userId
+                });
+            }
+            else
+            {
+                // Overwriting here — rather than inserting a second row — is what invalidates
+                // whatever token was issued for this (userId, clientType) before this login.
+                session.SessionToken = sessionToken;
+                session.LastLoginDate = DateTime.UtcNow;
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsSessionActiveAsync(Guid userId, ClientType clientType, string sessionToken)
+        {
+            return await _db.UserSessions.AnyAsync(s =>
+                s.UserId == userId && s.ClientType == clientType && s.SessionToken == sessionToken);
         }
     }
 }

@@ -65,12 +65,29 @@ a {
 // (rounded white surface + shadow) sized responsively via Tailwind classes,
 // so MatDialog's default surface chrome is stripped here instead of pinning
 // a width/height on the panel itself.
-.create-post-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+.create-post-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface,
+.post-detail-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface,
+.post-likes-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
   padding: 0;
   border-radius: 0.75rem;
   box-shadow: none;
   background: transparent;
   overflow: visible;
+}
+
+// The story viewer is a true full-bleed black overlay (no card, no rounded
+// corners) — unlike the other dialogs above it also drops the surface's own
+// scroll/overflow so the fixed-size viewer never grows a scrollbar.
+.story-viewer-dialog-panel {
+  max-width: 100vw !important;
+
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: #000;
+    overflow: hidden;
+  }
 }
 
 /* You can add global styles to this file, and also import other style files */

@@ -1,0 +1,77 @@
+<div class="flex min-h-dvh w-full justify-center bg-white">
+  <app-sidebar-nav class="h-dvh flex-shrink-0" [currentUsername]="sidebarUsername()" [avatarUrl]="sidebarAvatarUrl()" />
+
+  <div class="flex w-full max-w-[935px] flex-col">
+    <main class="mx-auto w-full max-w-[600px] flex-1 px-5 py-10 sm:px-0">
+      <div class="mb-8 flex items-center gap-3">
+        <a [routerLink]="['/home']" aria-label="Quay lại trang chủ"
+          class="rounded-full p-1 text-[#262626] hover:bg-[#fafafa]">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7" />
+          </svg>
+        </a>
+        <h1 class="text-xl font-semibold text-[#262626]">{{ 'suggestions.title' | translate }}</h1>
+      </div>
+
+      @if (loading()) {
+      <div class="flex flex-col items-center gap-3 py-16">
+        <span class="h-8 w-8 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+      </div>
+      } @else if (!users().length) {
+      <div class="flex flex-col items-center gap-3 py-24 text-center">
+        <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#262626]">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="9" cy="8" r="3.5" /><path stroke-linecap="round" d="M2.5 19c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6" />
+            <path stroke-linecap="round" d="M17 9l2 2 3.5-3.5" />
+          </svg>
+        </div>
+        <p class="text-lg font-light text-[#262626]">{{ 'suggestions.empty' | translate }}</p>
+      </div>
+      } @else {
+      <ul class="flex flex-col">
+        @for (user of users(); track user.id) {
+        <li class="flex items-center gap-3 border-b border-[#efefef] py-3 last:border-b-0">
+          <a [routerLink]="['/profile', user.username]" class="flex-shrink-0">
+            @if (user.avatarUrl) {
+            <img [src]="user.avatarUrl" alt="" loading="lazy" class="h-11 w-11 rounded-full object-cover" />
+            } @else {
+            <span class="flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold text-white"
+              [style.background]="user.avatarColor">{{ (user.fullName || user.username).charAt(0).toUpperCase() }}</span>
+            }
+          </a>
+
+          <a [routerLink]="['/profile', user.username]" class="min-w-0 flex-1 no-underline hover:no-underline">
+            <p class="truncate text-sm font-semibold text-[#262626]">{{ user.username }}</p>
+            @if (user.fullName) {
+            <p class="truncate text-sm text-[#8e8e8e]">{{ user.fullName }}</p>
+            }
+            <p class="truncate text-xs text-[#8e8e8e]">
+              @if (user.reason === 'followsYou') {
+                {{ 'home.followsYou' | translate }}
+              } @else if (user.reason === 'followedBy') {
+                {{ 'home.followedBy' | translate: { name: user.reasonName || '' } }}
+              } @else {
+                {{ 'home.newSuggestion' | translate }}
+              }
+            </p>
+          </a>
+
+          <button type="button" (click)="toggleFollow(user)" [disabled]="isPending(user.id)"
+            class="flex-shrink-0 rounded-lg px-4 py-1.5 text-sm font-semibold transition disabled:opacity-60"
+            [ngClass]="(isFollowed(user.id) || isRequested(user.id)) ? 'bg-[#efefef] text-[#262626]' : 'bg-[#0095f6] text-white hover:bg-[#1877f2]'">
+            {{ (isFollowed(user.id) ? 'home.following' : isRequested(user.id) ? 'profile.requested' : 'home.follow') | translate }}
+          </button>
+        </li>
+        }
+      </ul>
+
+      <!-- Infinite-scroll trigger -->
+      <div #scrollSentinel aria-hidden="true"></div>
+
+      @if (loadingMore()) {
+      <p class="py-6 text-center text-sm text-[#8e8e8e]">{{ 'suggestions.loadingMore' | translate }}</p>
+      }
+      }
+    </main>
+  </div>
+</div>

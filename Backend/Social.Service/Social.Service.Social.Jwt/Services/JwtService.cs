@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Social.Common.Constants;
 using Social.Common.Handlers;
 using Social.Data.Model.Base;
 using Social.Data.Model.Request.User;
 using Social.Data.Model.Response.User;
 using Social.Data.Repository;
+using Social.Repository.Social.User.Interface;
 using Social.Service.Social.Jwt.Interface;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,11 +19,13 @@ namespace Social.Service.Social.Jwt.Services
     {
         private readonly SocialDbContext _dbContext;
         private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepository;
 
-        public JwtService(SocialDbContext dbContext, IConfiguration configuration)
+        public JwtService(SocialDbContext dbContext, IConfiguration configuration, IUserRepository userRepository)
         {
             _configuration = configuration;
             _dbContext = dbContext;
+            _userRepository = userRepository;
         }
 
         public async Task<LoginResponse?> Authenticate(LoginRequest request)
@@ -49,6 +53,15 @@ namespace Social.Service.Social.Jwt.Services
                     return null;
                 }
 
+                // Single active session per client type: this login becomes the only
+                // valid one for (user, clientType) — any token issued to a previous
+                // session of the *same* clientType stops working as soon as its "sid"
+                // no longer matches (see Program.cs's OnTokenValidated). A different
+                // clientType (e.g. a future mobile app) gets its own independent slot.
+                var clientType = request.ClientType ?? ClientType.Web;
+                var sessionToken = Guid.NewGuid().ToString("N");
+                await _userRepository.SetActiveSessionAsync(userAccount.Id, clientType, sessionToken);
+
                 var issuer = _configuration["JwtConfig:Issuer"];
                 var audience = _configuration["JwtConfig:Audience"];
                 var key = _configuration["JwtConfig:Key"];
@@ -64,6 +77,8 @@ namespace Social.Service.Social.Jwt.Services
                         new Claim(ClaimTypes.Name, userAccount.UserName ?? userAccount.Email),
                         new Claim("username", userAccount.UserName ?? userAccount.Email),
                         new Claim(JwtRegisteredClaimNames.Email, userAccount.Email),
+                        new Claim("sid", sessionToken),
+                        new Claim("clientType", clientType.ToString()),
                     }),
                     Expires = tokenExpiryTimeStamp,
                     Issuer = issuer,

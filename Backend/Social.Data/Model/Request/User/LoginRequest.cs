@@ -20,5 +20,9 @@ namespace Social.Data.Model.Request.User
         [DataType(DataType.Password)]
         [MaxLength(SocialConstantsLengths.Length50, ErrorMessage = "{0} quá dài")]
         public required string Password { get; set; }
+
+        /// <summary>Which app is logging in — defaults to Web when omitted (today's only client).
+        /// A future mobile app would send Mobile here so it gets its own session slot alongside the web one.</summary>
+        public ClientType? ClientType { get; set; }
     }
 }

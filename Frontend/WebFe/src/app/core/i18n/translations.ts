@@ -21,7 +21,6 @@ export const TRANSLATIONS: Record<AppLang, Record<string, string>> = {
     'nav.create': 'Bài viết mới',
     'nav.profile': 'Trang cá nhân',
     'nav.settings': 'Cài đặt',
-    'nav.meta': 'Cũng của Meta',
 
     'search.title': 'Tìm kiếm',
     'search.placeholder': 'Tìm kiếm',
@@ -35,6 +34,10 @@ export const TRANSLATIONS: Record<AppLang, Record<string, string>> = {
 
     'home.suggestions': 'Gợi ý cho bạn',
     'home.seeAll': 'Xem tất cả',
+
+    'suggestions.title': 'Gợi ý',
+    'suggestions.empty': 'Không có gợi ý nào.',
+    'suggestions.loadingMore': 'Đang tải thêm…',
     'home.follow': 'Theo dõi',
     'home.following': 'Đang theo dõi',
     'home.followsYou': 'Đang theo dõi bạn',
@@ -132,7 +135,43 @@ export const TRANSLATIONS: Record<AppLang, Record<string, string>> = {
     'create.discardTitle': 'Bỏ bài viết?',
     'create.discardHint': 'Nếu rời đi, bạn sẽ mất những gì vừa chỉnh sửa.',
     'create.discard': 'Bỏ',
-    'create.cancel': 'Hủy'
+    'create.cancel': 'Hủy',
+
+    'createStory.title': 'Tin mới',
+    'createStory.dragHint': 'Kéo ảnh hoặc video vào đây',
+    'createStory.videoLimitHint': 'Video tối đa 15 giây.',
+    'createStory.videoTooLong': 'Video không được dài quá 15 giây.',
+    'createStory.invalidType': 'Chỉ hỗ trợ tệp ảnh hoặc video.',
+    'createStory.error': 'Đăng tin thất bại. Vui lòng thử lại.',
+    'createStory.discardTitle': 'Bỏ tin?',
+    'storyViewer.loadError': 'Không thể tải tin này.',
+    'storyViewer.replyPlaceholder': 'Trả lời {name}...',
+    'storyViewer.replySent': 'Đã gửi',
+    'storyViewer.viewers': '{count} người xem',
+    'storyViewer.noViewers': 'Chưa có ai xem tin này.',
+    'storyViewer.viewersTitle': 'Người xem tin',
+    'storyViewer.likedBy': 'Lượt thích',
+
+    'notifications.title': 'Thông báo',
+    'notifications.filterAll': 'Tất cả',
+    'notifications.filterFollows': 'Người mà bạn theo dõi',
+    'notifications.filterComments': 'Bình luận',
+    'notifications.filterLikes': 'Lượt thích',
+    'notifications.thisMonth': 'Tháng này',
+    'notifications.earlier': 'Trước đó',
+    'notifications.followRequestsTitle': 'Yêu cầu theo dõi',
+    'notifications.followRequestsOthers': ' + {count} người khác',
+    'notifications.empty': 'Chưa có thông báo nào.',
+    'notifications.loadError': 'Không thể tải thông báo.',
+    'notifications.loadMore': 'Xem thêm',
+
+    'profile.viewArchive': 'Xem kho lưu trữ',
+    'storyArchive.title': 'Kho lưu trữ',
+    'storyArchive.tab': 'TIN',
+    'storyArchive.hint': 'Tin đã lưu trữ chỉ hiển thị với mình bạn, trừ khi bạn chọn chia sẻ.',
+    'storyArchive.empty': 'Chưa có tin nào được lưu trữ.',
+    'storyArchive.loadError': 'Không thể tải kho lưu trữ.',
+    'storyArchive.loadMore': 'Xem thêm'
   },
   en: {
     'nav.home': 'Home',
@@ -143,7 +182,6 @@ export const TRANSLATIONS: Record<AppLang, Record<string, string>> = {
     'nav.create': 'Create',
     'nav.profile': 'Profile',
     'nav.settings': 'Settings',
-    'nav.meta': 'Also from Meta',
 
     'search.title': 'Search',
     'search.placeholder': 'Search',
@@ -157,6 +195,10 @@ export const TRANSLATIONS: Record<AppLang, Record<string, string>> = {
 
     'home.suggestions': 'Suggestions for you',
     'home.seeAll': 'See all',
+
+    'suggestions.title': 'Suggestions',
+    'suggestions.empty': 'No suggestions right now.',
+    'suggestions.loadingMore': 'Loading more…',
     'home.follow': 'Follow',
     'home.following': 'Following',
     'home.followsYou': 'Follows you',
@@ -254,6 +296,42 @@ export const TRANSLATIONS: Record<AppLang, Record<string, string>> = {
     'create.discardTitle': 'Discard post?',
     'create.discardHint': 'If you leave, your edits won\'t be saved.',
     'create.discard': 'Discard',
-    'create.cancel': 'Cancel'
+    'create.cancel': 'Cancel',
+
+    'createStory.title': 'New story',
+    'createStory.dragHint': 'Drag a photo or video here',
+    'createStory.videoLimitHint': 'Videos are limited to 15 seconds.',
+    'createStory.videoTooLong': 'Video must be 15 seconds or shorter.',
+    'createStory.invalidType': 'Only image or video files are supported.',
+    'createStory.error': 'Failed to share the story. Please try again.',
+    'createStory.discardTitle': 'Discard story?',
+    'storyViewer.loadError': "Couldn't load this story.",
+    'storyViewer.replyPlaceholder': 'Reply to {name}...',
+    'storyViewer.replySent': 'Sent',
+    'storyViewer.viewers': '{count} views',
+    'storyViewer.noViewers': 'No one has viewed this story yet.',
+    'storyViewer.viewersTitle': 'Viewers',
+    'storyViewer.likedBy': 'Likes',
+
+    'notifications.title': 'Notifications',
+    'notifications.filterAll': 'All',
+    'notifications.filterFollows': 'Follows',
+    'notifications.filterComments': 'Comments',
+    'notifications.filterLikes': 'Likes',
+    'notifications.thisMonth': 'This month',
+    'notifications.earlier': 'Earlier',
+    'notifications.followRequestsTitle': 'Follow requests',
+    'notifications.followRequestsOthers': ' + {count} others',
+    'notifications.empty': 'No notifications yet.',
+    'notifications.loadError': "Couldn't load notifications.",
+    'notifications.loadMore': 'See more',
+
+    'profile.viewArchive': 'View archive',
+    'storyArchive.title': 'Archive',
+    'storyArchive.tab': 'STORIES',
+    'storyArchive.hint': 'Archived stories are only visible to you, unless you choose to share them.',
+    'storyArchive.empty': 'No archived stories yet.',
+    'storyArchive.loadError': "Couldn't load the archive.",
+    'storyArchive.loadMore': 'See more'
   }
 };

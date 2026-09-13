@@ -90,7 +90,7 @@ export class RegisterComponent {
       fullName: formValue.fullName ?? '',
       username: formValue.username ?? '',
       password: formValue.password ?? '',
-      dateOfBirth: dob ?? ''
+      dateOfBirth: dob
     };
 
     this.error.set('');

@@ -3,10 +3,11 @@ import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 import { CreatePostService } from '../../core/create-post/create-post.service';
+import { CreateStoryService } from '../../core/create-story/create-story.service';
+import { StoryViewerService } from '../../core/story-viewer/story-viewer.service';
 import { SidebarNavComponent } from './components/sidebar-nav/sidebar-nav.component';
 import { StoriesBarComponent } from './components/stories-bar/stories-bar.component';
 import { FeedPostComponent } from './components/feed-post/feed-post.component';
-import { SuggestionsInlineComponent } from './components/suggestions-inline/suggestions-inline.component';
 import { SuggestionsPanelComponent } from './components/suggestions-panel/suggestions-panel.component';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { FeedPost, StoryItem, SuggestedUser } from './models/feed.models';
@@ -21,7 +22,6 @@ const POSTS_PAGE_SIZE = 10;
     SidebarNavComponent,
     StoriesBarComponent,
     FeedPostComponent,
-    SuggestionsInlineComponent,
     SuggestionsPanelComponent,
     TranslatePipe
   ],
@@ -32,10 +32,11 @@ export class HomeComponent implements OnDestroy {
   private readonly feedService = inject(FeedService);
   private readonly authService = inject(AuthService);
   private readonly createPostService = inject(CreatePostService);
+  private readonly createStoryService = inject(CreateStoryService);
+  private readonly storyViewerService = inject(StoryViewerService);
 
   readonly stories = signal<StoryItem[]>([]);
   readonly posts = signal<FeedPost[]>([]);
-  readonly inlineSuggestions = signal<SuggestedUser[]>([]);
   readonly panelSuggestions = signal<SuggestedUser[]>([]);
 
   /** Infinite-scroll state for the post list — the stories tray is a single fixed-size fetch, not paged. */
@@ -43,8 +44,8 @@ export class HomeComponent implements OnDestroy {
   readonly postsLoading = signal(false);
   readonly postsHasMore = signal(true);
 
-  /** "You're all caught up" is shown once loading stops and there is nothing left to fetch. */
-  readonly showCaughtUp = computed(() => !this.postsHasMore() && !this.postsLoading() && this.posts().length > 0);
+  /** "You're all caught up" is shown once loading stops and there is nothing left to fetch — including when there were no posts at all to begin with. */
+  readonly showCaughtUp = computed(() => !this.postsHasMore() && !this.postsLoading());
 
   /** Days spanned by the loaded feed — matches the "...from the past N days" caught-up copy. */
   readonly caughtUpDays = computed(() => {
@@ -55,12 +56,11 @@ export class HomeComponent implements OnDestroy {
     return Math.max(1, days);
   });
 
-  /** Index (0-based) of the post after which the inline suggestions carousel appears. */
-  private readonly inlineSuggestionsAfterPost = 1;
-
   @ViewChild('scrollSentinel') private scrollSentinel?: ElementRef<HTMLElement>;
   private scrollObserver?: IntersectionObserver;
   private readonly postCreatedSub: Subscription;
+  private readonly storyCreatedSub: Subscription;
+  private readonly storyViewedSub: Subscription;
 
   readonly currentUser = computed(() => {
     const fallback = (this.authService.currentEmail() ?? '').split('@')[0] || 'you';
@@ -77,7 +77,6 @@ export class HomeComponent implements OnDestroy {
     this.authService.loadCurrentUserProfile();
     this.feedService.getStories().subscribe((page) => this.stories.set(page.items));
     this.loadMorePosts();
-    this.feedService.getInlineSuggestions().subscribe((suggestions) => this.inlineSuggestions.set(suggestions));
     this.feedService.getPanelSuggestions().subscribe((suggestions) => this.panelSuggestions.set(suggestions));
 
     // The sentinel only exists once the template renders — wire the observer up after the first paint.
@@ -86,11 +85,26 @@ export class HomeComponent implements OnDestroy {
     // A post created from the "new post" modal (open from anywhere via the
     // sidebar) should show up here right away, so reload the feed from the top.
     this.postCreatedSub = this.createPostService.postCreated$.subscribe(() => this.refreshFeed());
+
+    // A story created just now should appear in the tray immediately too.
+    this.storyCreatedSub = this.createStoryService.storyCreated$.subscribe(() => this.refreshStories());
+
+    // Grays out a ring the moment its owner's story is marked viewed in the
+    // open viewer, without waiting on a full tray refetch.
+    this.storyViewedSub = this.storyViewerService.storyViewed$.subscribe((ownerUserId) => {
+      this.stories.update((current) => current.map((s) => (s.userId === ownerUserId ? { ...s, viewed: true } : s)));
+    });
   }
 
   ngOnDestroy(): void {
     this.scrollObserver?.disconnect();
     this.postCreatedSub.unsubscribe();
+    this.storyCreatedSub.unsubscribe();
+    this.storyViewedSub.unsubscribe();
+  }
+
+  private refreshStories(): void {
+    this.feedService.getStories().subscribe((page) => this.stories.set(page.items));
   }
 
   /** Resets pagination and reloads the feed from the top — used after creating a post. */
@@ -99,10 +113,6 @@ export class HomeComponent implements OnDestroy {
     this.postsHasMore.set(true);
     this.posts.set([]);
     this.loadMorePosts();
-  }
-
-  showInlineSuggestionsAfter(index: number): boolean {
-    return index === this.inlineSuggestionsAfterPost;
   }
 
   loadMorePosts(): void {

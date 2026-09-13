@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 
 import { LanguageService } from '../../../../core/i18n/language.service';
 import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
+import { PostDetailService } from '../../../../core/post-detail/post-detail.service';
 import { ProfilePost, ProfileTab } from '../../models/profile.models';
 
 interface TabDef {
@@ -25,6 +26,7 @@ export class ProfilePostGridComponent {
   @Output() readonly tabChange = new EventEmitter<ProfileTab>();
 
   private readonly languageService = inject(LanguageService);
+  private readonly postDetailService = inject(PostDetailService);
 
   readonly tabs: TabDef[] = [
     { id: 'posts', labelKey: 'profile.tabs.posts' },
@@ -35,6 +37,23 @@ export class ProfilePostGridComponent {
   selectTab(tab: ProfileTab): void {
     if (tab === this.activeTab) return;
     this.tabChange.emit(tab);
+  }
+
+  openPost(postId: string): void {
+    this.postDetailService.open(postId);
+  }
+
+  /** Per-URL "has this actually finished downloading" flag — each cover starts hidden behind a spinner sized to its own tile and fades in on its (load) event. */
+  private readonly loadedMedia = signal<Set<string>>(new Set());
+
+  isMediaLoaded(url: string | null | undefined): boolean {
+    return !url || this.loadedMedia().has(url);
+  }
+
+  /** Also used as the (error) handler — a broken image should still clear its own spinner rather than spin forever. */
+  onMediaLoad(url: string): void {
+    if (this.loadedMedia().has(url)) return;
+    this.loadedMedia.update((set) => new Set(set).add(url));
   }
 
   formatCount(value: number): string {

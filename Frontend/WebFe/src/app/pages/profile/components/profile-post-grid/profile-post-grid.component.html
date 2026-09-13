@@ -47,10 +47,17 @@
   } @else if (posts.length) {
   <div class="grid grid-cols-3 gap-1">
     @for (post of posts; track post.id) {
-    <div class="group relative aspect-square overflow-hidden"
+    <button type="button" (click)="openPost(post.id)" [attr.aria-label]="'Xem bài viết'"
+      class="group relative aspect-square overflow-hidden border-0 p-0"
       [style.background]="post.coverUrl ? null : 'linear-gradient(135deg,' + post.avatarColor + '33,' + post.avatarColor + '11)'">
       @if (post.coverUrl) {
-      <img [src]="post.coverUrl" alt="" loading="lazy" class="absolute inset-0 h-full w-full object-cover" />
+      <img [src]="post.coverUrl" alt="" loading="lazy" class="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-300"
+        [class.opacity-100]="isMediaLoaded(post.coverUrl)" (load)="onMediaLoad(post.coverUrl)" (error)="onMediaLoad(post.coverUrl)" />
+      @if (!isMediaLoaded(post.coverUrl)) {
+      <span class="absolute inset-0 flex items-center justify-center">
+        <span class="h-6 w-6 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+      </span>
+      }
       } @else {
       <svg class="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 text-[#26262622]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
@@ -82,7 +89,7 @@
           {{ formatCount(post.commentCount) }}
         </span>
       </div>
-    </div>
+    </button>
     }
   </div>
   } @else {

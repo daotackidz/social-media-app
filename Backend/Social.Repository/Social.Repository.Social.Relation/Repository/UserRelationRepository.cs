@@ -157,26 +157,35 @@ namespace Social.Repository.Social.Relation.Repository
                 .Select(r => r.FollowingUserId)
                 .ToListAsync();
 
-        public async Task<List<SuggestionCandidate>> GetSuggestionsAsync(Guid userId, int limit)
+        public async Task<HashSet<Guid>> GetFollowingSetAsync(Guid followerUserId, IEnumerable<Guid> targetUserIds)
         {
+            var ids = targetUserIds.ToList();
+            if (ids.Count == 0) return new HashSet<Guid>();
+
+            var following = await ActiveFollows()
+                .Where(r => r.FollowerUserId == followerUserId && ids.Contains(r.FollowingUserId))
+                .Select(r => r.FollowingUserId)
+                .ToListAsync();
+
+            return following.ToHashSet();
+        }
+
+        public async Task<List<SuggestionCandidate>> GetSuggestionsAsync(Guid userId, int skip, int take)
+        {
+            // The algorithm below is deterministic for a given follow-graph state, so paging
+            // through it is just computing enough candidates to cover skip+take and slicing —
+            // simpler than threading a resume cursor through three different candidate sources.
+            var limit = skip + take;
+
             var followingIds = await GetFollowingUserIdsAsync(userId);
             var excludeIds = new HashSet<Guid>(followingIds) { userId };
             var results = new List<SuggestionCandidate>();
 
-            // A) People who follow me that I don't follow back.
-            var followsYou = await ActiveFollows()
-                .Where(r => r.FollowingUserId == userId && !excludeIds.Contains(r.FollowerUserId))
-                .Select(r => r.FollowerUserId)
-                .Distinct()
-                .Take(limit)
-                .ToListAsync();
-
-            results.AddRange(followsYou.Select(id => new SuggestionCandidate { UserId = id, Reason = "followsYou" }));
-            foreach (var id in followsYou) excludeIds.Add(id);
-
-            // B) Followed by someone I follow (2nd degree) — grouped/deduped in memory since
-            // the row count here is bounded by follow-graph size, not the whole users table.
-            if (results.Count < limit && followingIds.Count > 0)
+            // A) Followed by someone I follow (2nd degree / mutual connection) — grouped/deduped
+            // in memory since the row count here is bounded by follow-graph size, not the whole
+            // users table. Ranked first: a mutual connection is a stronger signal than either of
+            // the other two sources below.
+            if (followingIds.Count > 0)
             {
                 var secondDegreeRows = await ActiveFollows()
                     .Where(r => followingIds.Contains(r.FollowerUserId) && !excludeIds.Contains(r.FollowingUserId))
@@ -186,11 +195,25 @@ namespace Social.Repository.Social.Relation.Repository
                 var secondDegree = secondDegreeRows
                     .GroupBy(r => r.FollowingUserId)
                     .Select(g => new SuggestionCandidate { UserId = g.Key, Reason = "followedBy", ReasonUserId = g.First().FollowerUserId })
-                    .Take(limit - results.Count)
+                    .Take(limit)
                     .ToList();
 
                 results.AddRange(secondDegree);
                 foreach (var s in secondDegree) excludeIds.Add(s.UserId);
+            }
+
+            // B) People who follow me that I don't follow back.
+            if (results.Count < limit)
+            {
+                var followsYou = await ActiveFollows()
+                    .Where(r => r.FollowingUserId == userId && !excludeIds.Contains(r.FollowerUserId))
+                    .Select(r => r.FollowerUserId)
+                    .Distinct()
+                    .Take(limit - results.Count)
+                    .ToListAsync();
+
+                results.AddRange(followsYou.Select(id => new SuggestionCandidate { UserId = id, Reason = "followsYou" }));
+                foreach (var id in followsYou) excludeIds.Add(id);
             }
 
             // C) Fallback filler: other active accounts, newest first.
@@ -206,7 +229,7 @@ namespace Social.Repository.Social.Relation.Repository
                 results.AddRange(fillers.Select(id => new SuggestionCandidate { UserId = id, Reason = "new" }));
             }
 
-            return results;
+            return results.Skip(skip).Take(take).ToList();
         }
     }
 }

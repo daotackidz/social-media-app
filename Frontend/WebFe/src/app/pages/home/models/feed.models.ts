@@ -15,10 +15,16 @@ export interface FeedPost {
   avatarUrl?: string;
   avatarColor: string;
   avatarInitial: string;
-  /** Every image attached to the post, in display order — empty when the API has none yet (falls back to a plain avatarColor tile). */
+  /** Every image attached to the post, in display order — empty for a video post (falls back to a plain avatarColor tile when there's neither). */
   imageUrls: string[];
+  /** Set when the post is a video — takes priority over imageUrls when present. */
+  videoUrl?: string;
+  /** The video's captured cover frame, shown before playback starts. Only set alongside videoUrl. */
+  posterUrl?: string;
   caption: string;
   likeCount: number;
+  /** Whether the signed-in user currently has an active like on this post. */
+  isLiked: boolean;
   commentCount: number;
   /** ISO datetime string from the API. */
   createdDate: string;

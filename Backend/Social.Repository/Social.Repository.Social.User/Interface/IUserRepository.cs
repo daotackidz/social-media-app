@@ -1,4 +1,5 @@
-﻿using Social.Data.Model.File;
+﻿using Social.Common.Constants;
+using Social.Data.Model.File;
 using Social.Data.Model.User;
 
 namespace Social.Repository.Social.User.Interface
@@ -31,5 +32,15 @@ namespace Social.Repository.Social.User.Interface
 
         /// <summary>Batch primary-avatar URL lookup keyed by UserId.</summary>
         Task<Dictionary<Guid, string>> GetPrimaryAvatarUrlsByUserIdsAsync(IEnumerable<Guid> userIds);
+
+        /// <summary>
+        /// Records a fresh login for (userId, clientType), overwriting any previous session
+        /// token for that same pair — which is what actually signs the old session out (see
+        /// Program.cs's OnTokenValidated). A different clientType gets its own independent row.
+        /// </summary>
+        Task SetActiveSessionAsync(Guid userId, ClientType clientType, string sessionToken);
+
+        /// <summary>True only if sessionToken is still the current one for (userId, clientType) — false once a newer login on that same clientType has overwritten it.</summary>
+        Task<bool> IsSessionActiveAsync(Guid userId, ClientType clientType, string sessionToken);
     }
 }

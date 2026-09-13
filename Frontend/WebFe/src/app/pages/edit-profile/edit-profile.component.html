@@ -1,5 +1,5 @@
 <div class="flex min-h-dvh w-full justify-center bg-white">
-  <app-sidebar-nav class="sticky top-0 h-dvh flex-shrink-0" [currentUsername]="sidebarUsername()" [avatarUrl]="sidebarAvatarUrl()" />
+  <app-sidebar-nav class="h-dvh flex-shrink-0" [currentUsername]="sidebarUsername()" [avatarUrl]="sidebarAvatarUrl()" />
 
   <div class="flex w-full max-w-[935px] flex-col">
     <main class="mx-auto w-full max-w-[540px] flex-1 px-5 py-10 sm:px-0">
@@ -122,8 +122,6 @@
       </form>
       }
     </main>
-
-    <app-footer />
   </div>
 
   @if (saving()) {

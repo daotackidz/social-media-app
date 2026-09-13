@@ -57,11 +57,15 @@ namespace Social.Repository.Social.Relation.Interface
         /// <summary>Ids of everyone userId actively follows — the audience for their home feed (paired with their own id by the caller).</summary>
         Task<List<Guid>> GetFollowingUserIdsAsync(Guid userId);
 
+        /// <summary>Of targetUserIds, which ones followerUserId actively follows — for hydrating a list's per-row "isFollowing" flag in one query.</summary>
+        Task<HashSet<Guid>> GetFollowingSetAsync(Guid followerUserId, IEnumerable<Guid> targetUserIds);
+
         /// <summary>
-        /// "Suggested for you": people who follow userId back, then mutual connections
-        /// (followed by someone userId follows), then newest other accounts as filler —
-        /// self and everyone already followed are excluded throughout.
+        /// "Suggested for you": mutual connections (followed by someone userId follows) first,
+        /// then people who follow userId back, then newest other accounts as filler — self and
+        /// everyone already followed are excluded throughout. Deterministic for a given
+        /// follow-graph state, so callers page through it with plain skip/take.
         /// </summary>
-        Task<List<SuggestionCandidate>> GetSuggestionsAsync(Guid userId, int limit);
+        Task<List<SuggestionCandidate>> GetSuggestionsAsync(Guid userId, int skip, int take);
     }
 }

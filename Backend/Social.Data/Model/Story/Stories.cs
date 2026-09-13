@@ -29,6 +29,21 @@ namespace Social.Data.Model.Story
         [Column("expires_date", Order = 3)]
         public DateTime ExpiresDate { get; set; } = DateTime.UtcNow.AddHours(24);
 
+        [Column("caption")]
+        public string Caption { get; set; } = string.Empty;
+
+        [Column("is_ai_generated")]
+        [Display(Name = "Nội dung do AI tạo")]
+        public bool IsAiGenerated { get; set; }
+
+        [Column("like_count")]
+        [Display(Name = "Lượt thích")]
+        public int LikeCount { get; set; }
+
+        [Column("view_count")]
+        [Display(Name = "Lượt xem")]
+        public int ViewCount { get; set; }
+
         #region Related Tables
 
         [ForeignKey(nameof(UserId))]

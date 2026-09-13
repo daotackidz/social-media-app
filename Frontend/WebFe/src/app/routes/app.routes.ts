@@ -62,6 +62,26 @@ export const routes: Routes = [
     loadComponent: () => import('../pages/follow-requests/follow-requests.component').then((m) => m.FollowRequestsComponent)
   },
   {
+    path: 'accounts/archive',
+    canActivate: [authGuard],
+    loadComponent: () => import('../pages/story-archive/story-archive.component').then((m) => m.StoryArchiveComponent)
+  },
+  {
+    path: 'accounts/suggestions',
+    canActivate: [authGuard],
+    loadComponent: () => import('../pages/suggestions/suggestions.component').then((m) => m.SuggestionsComponent)
+  },
+  {
+    path: 'messages',
+    canActivate: [authGuard],
+    loadComponent: () => import('../pages/messages/messages.component').then((m) => m.MessagesComponent)
+  },
+  {
+    path: 'messages/:id',
+    canActivate: [authGuard],
+    loadComponent: () => import('../pages/messages/messages.component').then((m) => m.MessagesComponent)
+  },
+  {
     path: 'vn',
     canActivate: [languageSwitchGuard],
     data: { lang: 'vi' },

@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 
 import { apiErrorOf } from '../../core/api';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
-import { FooterComponent } from '../../shared/layout/footer/footer.component';
 import { AuthService } from '../../services/auth.service';
 import { SidebarNavComponent } from '../home/components/sidebar-nav/sidebar-nav.component';
 import { FollowRequestItem } from '../profile/models/profile.models';
@@ -12,7 +11,7 @@ import { ProfileService } from '../profile/services/profile.service';
 @Component({
   selector: 'app-follow-requests',
   standalone: true,
-  imports: [RouterLink, TranslatePipe, SidebarNavComponent, FooterComponent],
+  imports: [RouterLink, TranslatePipe, SidebarNavComponent],
   templateUrl: './follow-requests.component.html'
 })
 export class FollowRequestsComponent {

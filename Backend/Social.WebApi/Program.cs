@@ -5,16 +5,32 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Social.Common.Constants;
 using Social.Data.Model.Response.Base;
+using Social.Repository.Social.User.Interface;
 using Social.Service.Social.Email.Models;
 using Social.WebApi.Infrastructure.Extensions;
 using Social.WebApi.Installers;
 using Social.WebApi.Middleware;
 using Social.WebApi.Models;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Kestrel's default MaxRequestBodySize is ~28.6MB — plenty for a photo, not
+// for a video, so a video post silently failed the upload before it even
+// reached PostsController. Raised to 500MB here (matches FormOptions below,
+// which ASP.NET Core's form-parsing middleware also enforces independently).
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 500 * 1024 * 1024;
+});
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 500 * 1024 * 1024;
+});
 
 builder.Services
     .AddControllers()
@@ -136,17 +152,53 @@ builder.Services
         // other error on the API uses.
         options.Events = new JwtBearerEvents
         {
+            // Enforces "one active session per client type": a JWT is only honored while its
+            // "sid" claim still matches UserSessions' current token for (userId, clientType).
+            // Logging in again on the same clientType overwrites that row (JwtService), which
+            // makes every request from the older session fail here from that point on — this
+            // is what actually signs the other session out, since a stateless JWT can't
+            // otherwise be revoked before it expires on its own.
+            OnTokenValidated = async context =>
+            {
+                var principal = context.Principal;
+                var userIdValue = principal?.FindFirstValue(ClaimTypes.NameIdentifier) ?? principal?.FindFirstValue("userId");
+                var sessionToken = principal?.FindFirstValue("sid");
+                var clientTypeValue = principal?.FindFirstValue("clientType");
+
+                if (!Guid.TryParse(userIdValue, out var userId)
+                    || string.IsNullOrEmpty(sessionToken)
+                    || !Enum.TryParse<ClientType>(clientTypeValue, out var clientType))
+                {
+                    // Tokens minted before this feature shipped carry none of these claims —
+                    // fail closed rather than treat a missing session as still valid.
+                    context.Fail("Phiên đăng nhập không hợp lệ.");
+                    return;
+                }
+
+                var userRepository = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
+                var isActive = await userRepository.IsSessionActiveAsync(userId, clientType, sessionToken);
+                if (!isActive)
+                {
+                    context.Fail("Tài khoản đã được đăng nhập ở một nơi khác.");
+                }
+            },
             OnChallenge = async context =>
             {
+                // OnTokenValidated above sets this message specifically for a session
+                // that's been superseded by a newer login — surfaced as its own
+                // ErrorCode so the frontend can redirect to /login with a distinct
+                // "signed in elsewhere" notice instead of the generic "please sign in".
+                var revoked = context.AuthenticateFailure?.Message == "Tài khoản đã được đăng nhập ở một nơi khác.";
+
                 context.HandleResponse();
                 context.Response.StatusCode = 401;
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsJsonAsync(new ApiResponse<object>
                 {
                     Success = false,
-                    Message = "Bạn cần đăng nhập để thực hiện thao tác này.",
+                    Message = revoked ? "Tài khoản đã được đăng nhập ở một nơi khác." : "Bạn cần đăng nhập để thực hiện thao tác này.",
                     StatusCode = 401,
-                    ErrorCode = ErrorCode.UNAUTHORIZED
+                    ErrorCode = revoked ? ErrorCode.SESSION_REVOKED : ErrorCode.UNAUTHORIZED
                 });
             },
             OnForbidden = async context =>

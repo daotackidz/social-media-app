@@ -1,0 +1,181 @@
+@if (visible()) {
+<div class="fixed bottom-5 right-5 z-[900] hidden flex-col items-end gap-3 sm:flex">
+  @if (panelOpen()) {
+  <div class="flex h-[520px] w-[360px] max-w-[92vw] flex-col overflow-hidden rounded-2xl border border-[#dbdbdb] bg-white shadow-2xl" (click)="$event.stopPropagation()">
+    @if (!activeConversation()) {
+    <!-- Conversation list -->
+    <div class="flex flex-shrink-0 items-center justify-between border-b border-[#efefef] px-4 py-3">
+      <span class="text-base font-semibold text-[#262626]">Tin nhắn</span>
+      <div class="flex items-center gap-1">
+        <button type="button" (click)="expandList()" aria-label="Mở rộng" class="rounded-full p-1.5 text-[#262626] hover:bg-[#fafafa]">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+        </button>
+        <button type="button" (click)="closePanel()" aria-label="Đóng" class="rounded-full p-1.5 text-[#262626] hover:bg-[#fafafa]">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+      @if (conversationsLoading()) {
+      <div class="flex justify-center py-8">
+        <span class="h-6 w-6 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+      </div>
+      } @else if (!conversations().length) {
+      <p class="px-4 py-6 text-center text-sm text-[#8e8e8e]">Chưa có cuộc trò chuyện nào.</p>
+      } @else {
+      @for (c of conversations(); track c.id) {
+      <button type="button" (click)="openThread(c)" class="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-[#fafafa]">
+        @if (c.avatarUrl) {
+        <img [src]="c.avatarUrl" alt="" class="h-11 w-11 flex-shrink-0 rounded-full object-cover" />
+        } @else {
+        <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#405de6] text-sm font-semibold text-white">
+          {{ c.username.charAt(0).toUpperCase() }}
+        </span>
+        }
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-sm text-[#262626]" [class.font-semibold]="c.hasUnread">{{ c.username }}</p>
+          <p class="truncate text-xs text-[#8e8e8e]" [class.font-semibold]="c.hasUnread" [class.text-[#262626]]="c.hasUnread">
+            @if (c.lastMessageAt) { {{ previewOf(c) }} · {{ relativeTime(c.lastMessageAt) }} } @else { Bắt đầu trò chuyện }
+          </p>
+        </div>
+        @if (c.hasUnread) {
+        <span class="h-2 w-2 flex-shrink-0 rounded-full bg-[#0095f6]" aria-hidden="true"></span>
+        }
+      </button>
+      }
+      }
+    </div>
+    } @else {
+    <!-- Mini thread -->
+    <div class="flex flex-shrink-0 items-center gap-2 border-b border-[#efefef] px-3 py-2.5">
+      <button type="button" (click)="backToList()" aria-label="Quay lại" class="flex-shrink-0 rounded-full p-1.5 text-[#262626] hover:bg-[#fafafa]">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 18l-6-6 6-6" />
+        </svg>
+      </button>
+      @if (activeConversation(); as other) {
+      @if (other.avatarUrl) {
+      <img [src]="other.avatarUrl" alt="" class="h-8 w-8 flex-shrink-0 rounded-full object-cover" />
+      } @else {
+      <span class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#405de6] text-xs font-semibold text-white">
+        {{ other.username.charAt(0).toUpperCase() }}
+      </span>
+      }
+      <span class="min-w-0 flex-1 truncate text-sm font-semibold text-[#262626]">{{ other.username }}</span>
+      }
+      <button type="button" (click)="expandThread()" aria-label="Mở rộng" class="flex-shrink-0 rounded-full p-1.5 text-[#262626] hover:bg-[#fafafa]">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+        </svg>
+      </button>
+      <button type="button" (click)="closePanel()" aria-label="Đóng" class="flex-shrink-0 rounded-full p-1.5 text-[#262626] hover:bg-[#fafafa]">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </div>
+
+    <div #widgetMessages class="flex-1 overflow-y-auto px-3 py-3">
+      @if (threadLoading()) {
+      <div class="flex h-full items-center justify-center">
+        <span class="h-6 w-6 animate-spin rounded-full border-2 border-[#dbdbdb] border-t-[#262626]"></span>
+      </div>
+      } @else {
+      @for (message of messages(); track message.id) {
+      <div class="mb-2 flex" [class.justify-end]="isMine(message)" [class.justify-start]="!isMine(message)">
+        @switch (message.type) {
+          @case ('Image') {
+          <img [src]="message.fileUrl" alt="" class="max-h-48 max-w-[75%] rounded-xl object-cover" />
+          }
+          @case ('Video') {
+          <video [src]="message.fileUrl" controls playsinline class="max-h-48 max-w-[75%] rounded-xl"></video>
+          }
+          @case ('Audio') {
+          <audio [src]="message.fileUrl" controls class="max-w-[75%]"></audio>
+          }
+          @default {
+          <p [class]="isMine(message) ? 'max-w-[75%] rounded-2xl bg-[#0095f6] px-3 py-1.5 text-sm text-white' : 'max-w-[75%] rounded-2xl bg-[#efefef] px-3 py-1.5 text-sm text-[#262626]'">
+            {{ message.content }}
+          </p>
+          }
+        }
+      </div>
+      @if (isSeenIndicator(message)) {
+      <p class="mb-2 text-right text-[11px] text-[#8e8e8e]">Đã xem</p>
+      }
+      }
+      }
+    </div>
+
+    <div class="relative flex flex-shrink-0 items-center gap-1.5 border-t border-[#efefef] px-2.5 py-2">
+      <button type="button" (click)="toggleEmojiPicker($event)" aria-label="Chọn emoji" class="flex-shrink-0 text-[#262626] hover:opacity-70">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" /><circle cx="9" cy="10" r="1" /><circle cx="15" cy="10" r="1" />
+          <path stroke-linecap="round" d="M8.5 14.5c1 1 2.2 1.5 3.5 1.5s2.5-.5 3.5-1.5" />
+        </svg>
+      </button>
+
+      @if (emojiPickerOpen()) {
+      <div class="absolute bottom-full left-1 z-10 mb-2 w-64 rounded-xl border border-[#dbdbdb] bg-white p-2.5 shadow-lg" (click)="$event.stopPropagation()">
+        <div class="grid grid-cols-7 gap-0.5">
+          @for (emoji of commonEmojis; track emoji) {
+          <button type="button" (click)="addEmoji(emoji)" class="flex h-7 w-7 items-center justify-center rounded text-base hover:bg-[#f5f5f5]">{{ emoji }}</button>
+          }
+        </div>
+      </div>
+      }
+
+      <input #widgetFileInput type="file" accept="image/*,video/*" class="hidden" (change)="onFileSelected($event)" />
+      <button type="button" (click)="widgetFileInput.click()" [disabled]="sending()" aria-label="Gửi ảnh/video" class="flex-shrink-0 text-[#262626] hover:opacity-70 disabled:opacity-40">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="8.5" cy="10.5" r="1.5" />
+          <path d="M3 16l4.5-4.5a2 2 0 0 1 2.8 0L15 16" />
+        </svg>
+      </button>
+
+      <textarea rows="1" [value]="draft()" (input)="onDraftInput($event)" (keydown)="onDraftKeydown($event)"
+        placeholder="Nhắn tin..." [disabled]="sending()"
+        class="max-h-20 flex-1 resize-none rounded-full border border-[#dbdbdb] bg-white px-3 py-1.5 text-sm text-[#262626] placeholder:text-[#8e8e8e] focus:border-[#8e8e8e] focus:outline-none"></textarea>
+
+      @if (draft().trim()) {
+      <button type="button" (click)="send()" [disabled]="sending()" class="flex-shrink-0 text-sm font-semibold text-[#0095f6] disabled:opacity-40">
+        Gửi
+      </button>
+      }
+    </div>
+    }
+  </div>
+  }
+
+  @if (!panelOpen()) {
+  <button type="button" (click)="togglePanel(); $event.stopPropagation()"
+    class="flex items-center gap-2 rounded-full bg-white py-2 pl-3.5 pr-2 shadow-[0_1px_3px_rgba(0,0,0,0.12),0_4px_14px_rgba(0,0,0,0.14)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.14),0_6px_18px_rgba(0,0,0,0.18)]">
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#262626" stroke-width="1.8" aria-hidden="true">
+      <path stroke-linejoin="round" d="M3 3l18 9-18 9 4-9-4-9Z" />
+    </svg>
+    <span class="text-sm font-medium text-[#262626]">Tin nhắn</span>
+    @if (previewAvatars().length) {
+    <span class="relative ml-0.5 flex items-center">
+      @for (c of previewAvatars(); track c.id) {
+      @if (c.avatarUrl) {
+      <img [src]="c.avatarUrl" alt="" class="-ml-2.5 h-7 w-7 rounded-full border-2 border-white object-cover first:ml-0" />
+      } @else {
+      <span class="-ml-2.5 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-[#405de6] text-[11px] font-semibold text-white first:ml-0">
+        {{ c.username.charAt(0).toUpperCase() }}
+      </span>
+      }
+      }
+      @if (hasUnread()) {
+      <span class="absolute -right-[3px] -top-[2px] h-2.5 w-2.5 rounded-full border-2 border-white bg-[#ff3040]" aria-hidden="true"></span>
+      }
+    </span>
+    }
+  </button>
+  }
+</div>
+}

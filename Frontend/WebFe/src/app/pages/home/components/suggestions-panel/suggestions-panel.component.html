@@ -1,16 +1,18 @@
 <aside class="flex w-[319px] flex-shrink-0 flex-col gap-6 py-6 text-sm">
   <!-- Current user -->
   <div class="flex items-center gap-3 px-1">
+    <a [routerLink]="['/profile', currentUser.username]" class="flex-shrink-0">
     @if (currentUser.avatarUrl) {
-    <img [src]="currentUser.avatarUrl" alt="" loading="lazy" class="h-11 w-11 flex-shrink-0 rounded-full border border-black/10 object-cover" />
+    <img [src]="currentUser.avatarUrl" alt="" loading="lazy" class="h-11 w-11 rounded-full border border-black/10 object-cover" />
     } @else {
-    <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-base font-semibold text-white"
+    <span class="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-base font-semibold text-white"
       [style.background]="currentUser.avatarColor">{{ (currentUser.fullName || currentUser.username || '?').charAt(0).toUpperCase() }}</span>
     }
-    <div class="flex flex-1 flex-col overflow-hidden">
+    </a>
+    <a [routerLink]="['/profile', currentUser.username]" class="flex flex-1 flex-col overflow-hidden no-underline hover:no-underline">
       <span class="truncate font-semibold text-[#0c1014]">{{ currentUser.username }}</span>
       <span class="truncate text-[#6a717a]">{{ currentUser.fullName }}</span>
-    </div>
+    </a>
     <button type="button" (click)="switchAccount()" class="flex-shrink-0 text-xs font-semibold text-[#0095f6]">
       {{ 'home.switch' | translate }}
     </button>
@@ -21,18 +23,20 @@
   <div class="flex flex-col gap-4 px-1">
     <div class="flex items-center justify-between">
       <span class="font-semibold text-[#6a717a]">{{ 'home.suggestions' | translate }}</span>
-      <button type="button" class="text-xs font-semibold text-[#0c1014]">{{ 'home.seeAll' | translate }}</button>
+      <a routerLink="/accounts/suggestions" class="text-xs font-semibold text-[#0c1014] no-underline hover:no-underline">{{ 'home.seeAll' | translate }}</a>
     </div>
 
     @for (user of suggestions; track user.id) {
     <div class="flex items-center gap-3">
+      <a [routerLink]="['/profile', user.username]" class="flex-shrink-0">
       @if (user.avatarUrl) {
-      <img [src]="user.avatarUrl" alt="" loading="lazy" class="h-11 w-11 flex-shrink-0 rounded-full border border-black/10 object-cover" />
+      <img [src]="user.avatarUrl" alt="" loading="lazy" class="h-11 w-11 rounded-full border border-black/10 object-cover" />
       } @else {
-      <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full border border-black/10 text-sm font-semibold text-white"
+      <span class="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-sm font-semibold text-white"
         [style.background]="user.avatarColor">{{ (user.fullName || user.username).charAt(0).toUpperCase() }}</span>
       }
-      <div class="flex flex-1 flex-col overflow-hidden">
+      </a>
+      <a [routerLink]="['/profile', user.username]" class="flex flex-1 flex-col overflow-hidden no-underline hover:no-underline">
         <span class="truncate font-semibold text-[#0c1014]">{{ user.username }}</span>
         <span class="truncate text-xs text-[#6a717a]">
           @if (user.reason === 'followsYou') {
@@ -43,11 +47,11 @@
             {{ 'home.newSuggestion' | translate }}
           }
         </span>
-      </div>
-      <button type="button" (click)="toggleFollow(user.id)"
-        class="flex-shrink-0 text-xs font-semibold"
-        [ngClass]="isFollowed(user.id) ? 'text-[#0c1014]' : 'text-[#0095f6]'">
-        {{ (isFollowed(user.id) ? 'home.following' : 'home.follow') | translate }}
+      </a>
+      <button type="button" (click)="toggleFollow(user)" [disabled]="isPending(user.id)"
+        class="flex-shrink-0 text-xs font-semibold disabled:opacity-60"
+        [ngClass]="(isFollowed(user.id) || isRequested(user.id)) ? 'text-[#0c1014]' : 'text-[#0095f6]'">
+        {{ (isFollowed(user.id) ? 'home.following' : isRequested(user.id) ? 'profile.requested' : 'home.follow') | translate }}
       </button>
     </div>
     }

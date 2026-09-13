@@ -24,6 +24,12 @@
   </button>
   }
 
+  <a routerLink="/messages"
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-[15px] text-[#262626] transition hover:bg-[#efefef]">
+    <img src="/assets/icons/nav-messages.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
+    <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.messages' | translate }}</span>
+  </a>
+
   <button type="button" (click)="toggleSearch($event)"
     class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]"
     [class.font-bold]="searchOpen()">
@@ -31,11 +37,12 @@
     <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.search' | translate }}</span>
   </button>
 
-  <button type="button"
-    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
+  <button type="button" (click)="toggleNotifications($event)"
+    class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]"
+    [class.font-bold]="notificationsOpen()">
     <span class="relative flex-shrink-0">
       <img src="/assets/icons/nav-notifications.svg" alt="" class="h-6 w-6" aria-hidden="true" />
-      @if (hasUnreadNotifications) {
+      @if (notificationService.unreadCount() > 0) {
       <span class="absolute -right-[5px] -top-[2px] h-3 w-3 rounded-full border-2 border-white bg-[#ff3040]" aria-hidden="true"></span>
       }
     </span>
@@ -90,16 +97,17 @@
       <img src="/assets/icons/nav-settings.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
       <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.settings' | translate }}</span>
     </button>
-    <button type="button"
-      class="flex items-center gap-4 whitespace-nowrap rounded-lg px-3 py-3 text-left text-[15px] text-[#262626] transition hover:bg-[#efefef]">
-      <img src="/assets/icons/nav-meta.svg" alt="" class="h-6 w-6 flex-shrink-0" aria-hidden="true" />
-      <span class="transition-opacity duration-300 ease-in-out" [class.opacity-0]="!expanded()">{{ 'nav.meta' | translate }}</span>
-    </button>
   </div>
 </nav>
 
 @if (searchOpen()) {
 <div class="fixed top-0 z-40 h-dvh" [style.left.px]="collapsedWidth" (click)="$event.stopPropagation()">
   <app-search-popup (picked)="closeSearch()" />
+</div>
+}
+
+@if (notificationsOpen()) {
+<div class="fixed top-0 z-40 h-dvh" [style.left.px]="collapsedWidth" (click)="$event.stopPropagation()">
+  <app-notifications-popup (closed)="closeNotifications()" />
 </div>
 }

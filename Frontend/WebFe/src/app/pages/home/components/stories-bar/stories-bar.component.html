@@ -1,6 +1,28 @@
 <div class="flex gap-4 overflow-x-auto border-b border-[#dbdfe4] bg-white px-2 py-4" role="list" aria-label="Stories">
-  @for (story of stories; track story.userId) {
-  <div class="flex w-[74px] flex-shrink-0 flex-col items-center gap-2" role="listitem">
+  <!-- Your story: own ring (gradient only if you have an unviewed-by-yourself story, i.e. always plain since you've "seen" your own) plus a "+" badge to add a new one. -->
+  <button type="button" (click)="openOwnRing()" class="flex w-[74px] flex-shrink-0 flex-col items-center gap-2" role="listitem">
+    <div class="relative flex h-[74px] w-[74px] items-center justify-center rounded-full p-[3px]"
+      [class.bg-[#dbdfe4]]="!ownStory"
+      [style.background-image]="ownStory && !ownStory.viewed ? 'url(/assets/icons/story-ring.png)' : null"
+      [style.background-size]="'cover'">
+      @if (currentUser.avatarUrl) {
+      <img [src]="currentUser.avatarUrl" alt="" loading="lazy" class="h-full w-full rounded-full border-2 border-white object-cover" />
+      } @else {
+      <span class="flex h-full w-full items-center justify-center rounded-full border-2 border-white text-base font-semibold text-white"
+        [style.background]="currentUser.avatarColor">{{ avatarInitial }}</span>
+      }
+      <span (click)="openAddStory($event)" role="button" aria-label="Thêm tin"
+        class="absolute bottom-0 right-0 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white bg-[#0095f6] text-white">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+          <path stroke-linecap="round" d="M12 5v14M5 12h14" />
+        </svg>
+      </span>
+    </div>
+    <span class="max-w-full truncate text-center text-xs text-[#0c1014]">Tin của bạn</span>
+  </button>
+
+  @for (story of otherStories; track story.userId) {
+  <button type="button" (click)="openStory(story)" class="flex w-[74px] flex-shrink-0 flex-col items-center gap-2" role="listitem">
     <div class="relative flex h-[74px] w-[74px] items-center justify-center rounded-full p-[3px]"
       [class.bg-[#dbdfe4]]="story.viewed"
       [style.background-image]="story.viewed ? null : 'url(/assets/icons/story-ring.png)'"
@@ -13,6 +35,6 @@
       }
     </div>
     <span class="max-w-full truncate text-center text-xs text-[#0c1014]">{{ story.username }}</span>
-  </div>
+  </button>
   }
 </div>

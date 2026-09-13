@@ -1,5 +1,5 @@
 <div class="flex min-h-dvh w-full justify-center bg-white">
-  <app-sidebar-nav class="sticky top-0 h-dvh flex-shrink-0" [currentUsername]="currentUsername()" [avatarUrl]="currentAvatarUrl()" />
+  <app-sidebar-nav class="h-dvh flex-shrink-0" [currentUsername]="currentUsername()" [avatarUrl]="currentAvatarUrl()" />
 
   <div class="flex w-full max-w-[935px] flex-col">
     @if (loading()) {
@@ -33,7 +33,5 @@
         [isPrivateLocked]="p.isPrivate && !p.isCurrentUser && !p.isFollowing" (tabChange)="onTabChange($event)" />
     </main>
     }
-
-    <app-footer />
   </div>
 </div>

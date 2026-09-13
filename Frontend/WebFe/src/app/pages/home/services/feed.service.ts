@@ -12,8 +12,11 @@ interface FeedPostDto {
   verified: boolean;
   avatarUrl?: string | null;
   imageUrls: string[];
+  videoUrl?: string | null;
+  posterUrl?: string | null;
   caption: string;
   likeCount: number;
+  isLiked: boolean;
   commentCount: number;
   createdDate: string;
 }
@@ -106,8 +109,11 @@ export class FeedService {
               avatarColor: avatarColorFor(p.username),
               avatarInitial: avatarInitialFor(p.username),
               imageUrls: p.imageUrls ?? [],
+              videoUrl: p.videoUrl ?? undefined,
+              posterUrl: p.posterUrl ?? undefined,
               caption: p.caption,
               likeCount: p.likeCount,
+              isLiked: p.isLiked,
               commentCount: p.commentCount,
               createdDate: p.createdDate
             })
@@ -117,17 +123,20 @@ export class FeedService {
     );
   }
 
-  getInlineSuggestions(take = 5): Observable<SuggestedUser[]> {
-    return this.getSuggestions(take);
+  /** Home page's sidebar card — a flat, capped list, not paged (see the "all suggestions" page for that). */
+  getPanelSuggestions(take = 10): Observable<SuggestedUser[]> {
+    return this.getSuggestions(0, take).pipe(map((page) => page.items));
   }
 
-  getPanelSuggestions(take = 5): Observable<SuggestedUser[]> {
-    return this.getSuggestions(take);
-  }
-
-  private getSuggestions(take: number): Observable<SuggestedUser[]> {
+  /** "See all" page: paged, 10 at a time, ranked mutual-connections-first by the backend. */
+  getSuggestions(skip = 0, take = 10): Observable<FeedPage<SuggestedUser>> {
     return this.http
-      .get<ApiResponse<FeedSuggestedUserDto[]>>(`${this.baseUrl}/suggestions`, { params: { take } })
-      .pipe(map((res) => (res.data ?? []).map(toSuggestedUser)));
+      .get<ApiResponse<{ items: FeedSuggestedUserDto[]; hasMore: boolean }>>(`${this.baseUrl}/suggestions`, { params: { skip, take } })
+      .pipe(
+        map((res) => {
+          const data = res.data ?? { items: [], hasMore: false };
+          return { hasMore: data.hasMore, items: data.items.map(toSuggestedUser) };
+        })
+      );
   }
 }

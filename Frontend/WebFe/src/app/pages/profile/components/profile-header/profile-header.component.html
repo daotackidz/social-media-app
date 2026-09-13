@@ -43,6 +43,9 @@
       <a routerLink="/accounts/edit" class="rounded-lg bg-[#efefef] px-4 py-[7px] text-sm font-semibold text-black no-underline hover:bg-[#dbdbdb] hover:no-underline">
         {{ 'profile.editProfile' | translate }}
       </a>
+      <a routerLink="/accounts/archive" class="rounded-lg bg-[#efefef] px-4 py-[7px] text-sm font-semibold text-black no-underline hover:bg-[#dbdbdb] hover:no-underline">
+        {{ 'profile.viewArchive' | translate }}
+      </a>
       <button type="button" aria-label="Cài đặt" class="rounded-lg bg-[#efefef] p-2 hover:bg-[#dbdbdb]">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <circle cx="12" cy="12" r="3" />
@@ -60,7 +63,7 @@
         }
         {{ (isFollowing() ? 'profile.following.action' : isRequested() ? 'profile.requested' : 'profile.follow') | translate }}
       </button>
-      <button type="button" class="rounded-lg bg-[#efefef] px-4 py-[7px] text-sm font-semibold text-black hover:bg-[#dbdbdb]">
+      <button type="button" (click)="openMessage()" class="rounded-lg bg-[#efefef] px-4 py-[7px] text-sm font-semibold text-black hover:bg-[#dbdbdb]">
         {{ 'profile.message' | translate }}
       </button>
       <button type="button" aria-label="Tuỳ chọn khác" class="rounded-full p-1.5 hover:bg-[#fafafa]">

@@ -47,7 +47,13 @@ export class CreatePostService {
     });
   }
 
-  createPost(files: File[], caption: string, isAiGenerated: boolean, altTexts: Record<number, string>): Observable<CreatedPost> {
+  createPost(
+    files: File[],
+    caption: string,
+    isAiGenerated: boolean,
+    altTexts: Record<number, string>,
+    thumbnail?: Blob
+  ): Observable<CreatedPost> {
     const formData = new FormData();
     if (caption.trim()) {
       formData.append('Caption', caption.trim());
@@ -57,6 +63,9 @@ export class CreatePostService {
       formData.append('Files', file, file.name);
       formData.append('AltTexts', altTexts[index]?.trim() ?? '');
     });
+    if (thumbnail) {
+      formData.append('Thumbnail', thumbnail, 'thumbnail.jpg');
+    }
 
     return this.http.post<ApiResponse<CreatePostApiResponse>>('/api/posts', formData).pipe(
       map((res) => {

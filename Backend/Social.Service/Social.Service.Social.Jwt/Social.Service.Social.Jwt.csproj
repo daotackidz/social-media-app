@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Social.Data\Social.Data.csproj" />
+    <ProjectReference Include="..\..\Social.Repository\Social.Repository.Social.User\Social.Repository.Social.User.csproj" />
   </ItemGroup>
 
 </Project>
